@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "261952748521",
+    "firebase_url": "https://androidfamilyproject.firebaseio.com",
+    "project_id": "androidfamilyproject",
+    "storage_bucket": "androidfamilyproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:261952748521:android:df1fb5fc7e4601b6",
+        "android_client_info": {
+          "package_name": "com.example.adima.familyalbumproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "261952748521-oanelp25orn34egmon4rorqum9is911d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8k3nTAMWS8LSxLvhI-TqoAVWoXWlarRg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
