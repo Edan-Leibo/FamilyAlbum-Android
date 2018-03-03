@@ -80,13 +80,13 @@ public class MainActivity extends AppCompatActivity implements AlbumsFragment.On
                 .commit();
     }
 
-/*
+
     public void showCommentsFragment(Album album) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, CommentsFragment.newInstance(album))
                 .commit();
-    }*/
+    }
 
 
 

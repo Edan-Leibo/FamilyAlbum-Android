@@ -6,6 +6,7 @@ package com.example.adima.familyalbumproject.Entities;
 
 public class Comment {
     private String text;
+    private String imageUrl;
 
     public Comment(String text) {
         this.text = text;
@@ -17,5 +18,13 @@ public class Comment {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

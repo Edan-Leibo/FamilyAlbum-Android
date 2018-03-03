@@ -1,24 +1,35 @@
 package com.example.adima.familyalbumproject.Controller.Album;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.Entities.Album;
 import com.example.adima.familyalbumproject.R;
 
+import static android.view.View.GONE;
+
 /**
  * Created by adima on 03/03/2018.
  */
 
 public class AlbumFragment extends Fragment {
+
+    ImageView imageView;
+    Bitmap imageBitmap;
     private Album album;
 
     public static AlbumFragment newInstance(Album album) {
@@ -46,7 +57,7 @@ public class AlbumFragment extends Fragment {
         view.findViewById(R.id.btn_comments).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //((MainActivity) getActivity()).showCommentsFragment(album);
+                ((MainActivity) getActivity()).showCommentsFragment(album);
             }
         });
 
@@ -63,5 +74,62 @@ public class AlbumFragment extends Fragment {
 
 
         //album.getImages()
+
+        ImageView addPhotoBtn = (ImageView) view.findViewById(R.id.fragment_album_btn_add);
+        //Button cancelBtn = (Button) findViewById(R.id.mainCancelBtn);
+
+        addPhotoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //progressBar.setVisibility(View.VISIBLE);
+
+                Log.d("TAG","Btn add click");
+                dispatchTakePictureIntent();
+            }
+        });
+
+
+        ///
+    }
+
+
+
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    final static int RESULT_SUCCESS = 0;
+    //final static int RESULT_FAIL = 1;
+
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_SUCCESS) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+            //imageView.setImageBitmap(imageBitmap);
+            Model.instace.saveImage(imageBitmap, st.id + ".jpeg", new Model.SaveImageListener() {
+                @Override
+                public void complete(String url) {
+                    //st.imageUrl = url;
+                    //Model.instace.addStudent(st);
+                    //setResult(RESULT_SUCCESS);
+                    //progressBar.setVisibility(GONE);
+                    finish();
+                }
+
+                @Override
+                public void fail() {
+                    //notify operation fail,...
+                    //setResult(RESULT_SUCCESS);
+                    //progressBar.setVisibility(GONE);
+                    finish();
+                }
+        }
     }
 }
