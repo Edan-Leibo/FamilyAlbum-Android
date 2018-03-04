@@ -14,9 +14,11 @@ import java.util.List;
 public class CommentListViewModel extends ViewModel {
     private LiveData<List<Comment>> comments;
 
-    public CommentListViewModel() {
-        comments = CommentRepository.instance.getAllComments();
+    public void init(String albumID){
+        comments = CommentRepository.instance.getAllComments(albumID);
     }
+
+    public CommentListViewModel() {}
 
     public LiveData<List<Comment>> getCommentsList() {
         return comments;

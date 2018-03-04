@@ -1,5 +1,34 @@
 package com.example.adima.familyalbumproject.Controller.Comments;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.example.adima.familyalbumproject.Album.Model.Album;
+import com.example.adima.familyalbumproject.Comment.Model.Comment;
+import com.example.adima.familyalbumproject.Comment.Model.CommentListViewModel;
+import com.example.adima.familyalbumproject.Controller.MainActivity;
+import com.example.adima.familyalbumproject.R;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import Model.Model;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -8,17 +37,15 @@ package com.example.adima.familyalbumproject.Controller.Comments;
  * Use the {@link CommentListFragemnt#newInstance} factory method to
  * create an instance of this fragment.
  */
-/*public class CommentListFragemnt extends Fragment {
+public class CommentListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
-    private Album album;
-
+    private String albumId;
     List<Comment> commentList = new LinkedList<>();
     CommentListAdapter adapter;
     ProgressBar progressBar;
-
     private CommentListViewModel commentsListViewModel;
 
-    public CommentListFragemnt() {
+    public CommentListFragment() {
     }
 
     /**
@@ -26,11 +53,13 @@ package com.example.adima.familyalbumproject.Controller.Comments;
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment EmployeeListFragment.
-     *//*
+     */
     // TODO: Rename and change types and number of parameters
-    public static CommentListFragemnt newInstance(Album album) {
-        CommentListFragemnt fragment = new CommentListFragemnt();
-        fragment.album = album;
+    public static CommentListFragment newInstance(String albumId) {
+        CommentListFragment fragment = new CommentListFragment();
+        Bundle args = new Bundle();
+        args.putString("albumId", albumId);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -42,25 +71,19 @@ package com.example.adima.familyalbumproject.Controller.Comments;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
         view.findViewById(R.id.btn_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) getActivity()).showAlbumFragment(album);
+                ((MainActivity) getActivity()).showAlbumFragment(albumId);
             }
         });
-
         ListView list = view.findViewById(R.id.comment_listView);
         adapter = new CommentListAdapter();
         list.setAdapter(adapter);
         progressBar = view.findViewById(R.id.commentList_progressbar);
-        //MyTask task = new MyTask();
         progressBar.setVisibility(View.GONE);
-        //task.execute("");
-
-
-        //
-
         return view;
     }
 
@@ -70,11 +93,14 @@ package com.example.adima.familyalbumproject.Controller.Comments;
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+            //throw new RuntimeException(context.toString()
+            //        + " must implement OnFragmentInteractionListener");
         }
+        Bundle args = getArguments();
+        albumId = args.getString("albumId", "");
 
         commentsListViewModel = ViewModelProviders.of(this).get(CommentListViewModel.class);
+        commentsListViewModel.init(albumId);
         commentsListViewModel.getCommentsList().observe(this, new Observer<List<Comment>>() {
             @Override
             public void onChanged(@Nullable List<Comment> comments) {
@@ -99,7 +125,7 @@ package com.example.adima.familyalbumproject.Controller.Comments;
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
-     *//*
+     */
     public interface OnFragmentInteractionListener {
         void onItemSelected(Comment comment);
     }
@@ -122,27 +148,21 @@ package com.example.adima.familyalbumproject.Controller.Comments;
             return 0;
         }
 
-
-
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null){
-                convertView = inflater.inflate(R.layout.cell_comment,null);
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.cell_comment, null);
             }
-
             TextView commentText = (TextView) convertView.findViewById(R.id.cell_comment_text);
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.cell_comment_user_image);
             final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.comment_cell_progressBar);
-
             final Comment cmt = commentList.get(position);
             commentText.setText(cmt.getText());
-
             imageView.setTag(cmt.getImageUrl());
-            //imageView.setImageDrawable(getContext().getDrawable(R.drawable.avatar));
-
-            if (cmt.getImageUrl() != null && !cmt.getImageUrl().isEmpty() && !cmt.getImageUrl().equals("")){
+            imageView.setImageDrawable(getContext().getDrawable(R.drawable.avatar));
+            if (cmt.getImageUrl() != null && !cmt.getImageUrl().isEmpty() && !cmt.getImageUrl().equals("")) {
                 progressBar.setVisibility(View.VISIBLE);
-                Model.instace.getImage(cmt.getImageUrl(), new Model.GetImageListener() {
+                Model.instance().getImage(cmt.getImageUrl(), new Model.GetImageListener() {
                     @Override
                     public void onSuccess(Bitmap image) {
                         String tagUrl = imageView.getTag().toString();
@@ -161,38 +181,4 @@ package com.example.adima.familyalbumproject.Controller.Comments;
             return convertView;
         }
     }
-
-
-    class MyTask extends AsyncTask<String, Integer, Double> {
-
-        @Override
-        protected Double doInBackground(String... strings) {
-            // do all the asynch jobs ...
-            for (int i=0;i<10;i++) {
-                Log.d("TAG", "performing task offline...");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                publishProgress(i);
-            }
-            return 10.0;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            Log.d("TAG","progress update execute on main thread");
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(Double aDouble) {
-            Log.d("TAG","execute on main thread");
-            progressBar.setVisibility(View.GONE);
-            super.onPostExecute(aDouble);
-        }
-    }
-}*/
-
-
+}

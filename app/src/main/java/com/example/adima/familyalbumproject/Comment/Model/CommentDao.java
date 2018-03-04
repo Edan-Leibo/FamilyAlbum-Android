@@ -18,7 +18,7 @@ public interface CommentDao {
     List<Comment> getAll();
 
     @Query("SELECT * FROM Comment WHERE albumId IN (:albumId)")
-    List<Comment> loadAllByIds(int[] albumId);
+    List<Comment> loadAllByIds(String albumId);
 
     @Query("SELECT * FROM Comment WHERE albumId = :id")
     Comment findById(String id);

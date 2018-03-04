@@ -19,13 +19,24 @@ import java.util.List;
  */
 
 public class CommentFirebase {
+
+    //public static  String albumId;
+
+    CommentFirebase(){
+        //this.albumId=albumId;
+
+    }
+
+
+
     public interface Callback<T>{
         void onComplete(T data);
     }
 
-    public static void getAllCommentsAndObserve(final Callback<List<Comment>> callback){
+    public static void getAllCommentsAndObserve(String albumId,final Callback<List<Comment>> callback){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("comments");
+        DatabaseReference myRef = database.getReference("comments").child(albumId);
+
 
         ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -57,11 +68,12 @@ public class CommentFirebase {
         });
     }
 
-    public static void getAllCommentsAndObserve(long lastUpdate,final Callback<List<Comment>> callback){
+    public static void getAllCommentsAndObserve(String albumId,long lastUpdate,final Callback<List<Comment>> callback){
         Log.d("TAG", "getAllCommentsAndObserve " + lastUpdate);
         Log.d("TAG", "getAllCommentsAndObserve");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("comments");
+        //DatabaseReference myRef = database.getReference("comments");
+        DatabaseReference myRef = database.getReference("comments").child(albumId);
 
         Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
         Log.d("TAG","the query is ok");
@@ -99,13 +111,13 @@ public class CommentFirebase {
     }
 
 
-    public static void addComment(Comment comment){
+    public static void addComment(String albumId,Comment comment){
         Log.d("TAG", "add comment to firebase");
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        String key = database.getReference("comments").push().getKey();
+        String key = database.getReference("comments").child(albumId).push().getKey();
 
 
        comment.setCommentId(key);
@@ -116,8 +128,10 @@ public class CommentFirebase {
         //DatabaseReference myRef = database.getReference("albums");
 
 
+        Log.d("TAG","the command id is:"+comment.getCommentId());
 
-        DatabaseReference ref = database.getReference("comments").child(comment.getCommentId());
+        //DatabaseReference ref = database.getReference("albums").child(albumId).
+        DatabaseReference ref = database.getReference("comments").child(albumId).child(comment.getCommentId());
 
         ref.setValue(json);
         //myRef.child(employee.id).setValue(json);

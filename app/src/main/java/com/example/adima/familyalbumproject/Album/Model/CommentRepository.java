@@ -26,14 +26,14 @@ public class CommentRepository {
     }
     MutableLiveData<List<Comment>> commentsListliveData;
 
-    public LiveData<List<Comment>> getCommentsList() {
+    public LiveData<List<Comment>> getCommentsList(String albumId) {
         synchronized (this) {
             if (commentsListliveData == null) {
                 Log.d("TAG", "comment live data is null");
 
                 commentsListliveData = new MutableLiveData<List<Comment>>();
 
-                CommentFirebase.getAllCommentsAndObserve(new CommentFirebase.Callback<List<Comment>>() {
+                CommentFirebase.getAllCommentsAndObserve(albumId,new CommentFirebase.Callback<List<Comment>>() {
                     @Override
                     public void onComplete(List<Comment> data) {
 
@@ -49,7 +49,7 @@ public class CommentRepository {
         return commentsListliveData;
     }
 
-    public LiveData<List<Comment>> getAllComments() {
+    public LiveData<List<Comment>> getAllComments(final String albumId) {
         synchronized (this) {
             if (commentsListliveData == null) {
                 Log.d("TAG","Live data is null");
@@ -65,11 +65,11 @@ public class CommentRepository {
                 }
 
 
-                CommentFirebase.getAllCommentsAndObserve(lastUpdateDate, new CommentFirebase.Callback<List<Comment>>() {
+                CommentFirebase.getAllCommentsAndObserve(albumId,lastUpdateDate, new CommentFirebase.Callback<List<Comment>>() {
                     @Override
                     public void onComplete(List<Comment> data) {
 
-                        updateCommentDataInLocalStorage(data);
+                        updateCommentDataInLocalStorage(data,albumId);
                     }
                 });
 
@@ -79,14 +79,21 @@ public class CommentRepository {
         return commentsListliveData;
     }
 
-    private void updateCommentDataInLocalStorage(List<Comment> data) {
+    private void updateCommentDataInLocalStorage(List<Comment> data,String albumId) {
         Log.d("TAG", "got items from firebase: " + data.size());
         CommentRepository.MyTask task = new CommentRepository.MyTask();
+
+        task.setAlbumId(albumId);
 
         task.execute(data);
     }
 
     class MyTask extends AsyncTask<List<Comment>,String,List<Comment>> {
+        private String albumId;
+
+        public void setAlbumId(String albumId) {
+            this.albumId = albumId;
+        }
         @Override
         protected List<Comment> doInBackground(List<Comment>[] lists) {
             Log.d("TAG","starting updateAlbumDataInLocalStorage in thread");
@@ -123,7 +130,7 @@ public class CommentRepository {
                     editor.commit();
                 }
                 //return the complete student list to the caller
-                List<Comment> commentList = AppLocalStore.db.commentDao().getAll();
+                List<Comment> commentList = AppLocalStore.db.commentDao().loadAllByIds(albumId);
                 Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
 
                 return commentList;

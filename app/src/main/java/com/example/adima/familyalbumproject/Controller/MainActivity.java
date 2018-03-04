@@ -4,28 +4,27 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.adima.familyalbumproject.Album.Model.Album;
+import com.example.adima.familyalbumproject.Comment.Model.Comment;
 import com.example.adima.familyalbumproject.Controller.Album.AlbumFragment;
 import com.example.adima.familyalbumproject.Controller.Album.CreateAlbumFragment;
 import com.example.adima.familyalbumproject.Controller.Albums.AlbumsFragment;
+import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragment;
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
 import com.example.adima.familyalbumproject.R;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentInteractionListener,CommentListFragment.OnFragmentInteractionListener {
 
     private List<Album> albums;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-   
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         showLoginFragment();
     }
-
-
-
 
 
 
@@ -52,28 +51,33 @@ public class MainActivity extends AppCompatActivity implements AlbumsFragment.On
 
 
     public void showAlbumFragment() {
-        showAlbumFragment(albums.get(0));
+        showAlbumFragment("-L6lY_t5pKGBZTTzoeJ0");
     }
 
-    public void showAlbumFragment(Album album) {
+    public void showAlbumFragment(String albumID) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, AlbumFragment.newInstance(album))
+                .replace(R.id.container, AlbumFragment.newInstance(albumID))
                 .commit();
     }
 
-/*
-    public void showCommentsFragment(Album album) {
+
+    public void showCommentsFragment(String albumId) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, CommentsFragment.newInstance(album))
+                .replace(R.id.container, CommentListFragment.newInstance(albumId))
                 .commit();
     }
-*/
+
 
 
     @Override
     public void onItemSelected(Album album) {
+
+    }
+
+    @Override
+    public void onItemSelected(Comment comment) {
 
     }
 }

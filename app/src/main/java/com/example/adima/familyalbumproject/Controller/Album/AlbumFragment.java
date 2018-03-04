@@ -21,9 +21,9 @@ import com.example.adima.familyalbumproject.R;
 public class AlbumFragment extends Fragment {
     private Album album;
 
-    public static AlbumFragment newInstance(Album album) {
+    public static AlbumFragment newInstance(String albumId) {
         AlbumFragment albumFragment = new AlbumFragment();
-        albumFragment.album = album;
+        //albumFragment.album = album;
         return albumFragment;
     }
 
