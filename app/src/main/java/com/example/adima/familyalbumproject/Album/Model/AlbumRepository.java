@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.Entities.Album;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;
@@ -59,8 +58,19 @@ public class AlbumRepository {
                     lastUpdateDate = MyApplication.getMyContext()
                             .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDate", 0);
                 }catch (Exception e){
+                    Log.d("TAG","exeption");
 
                 }
+
+                AlbumFirebase.getAllAlbumsAndObserve(lastUpdateDate, new AlbumFirebase.Callback<List<Album>>() {
+                    @Override
+                    public void onComplete(List<Album> data) {
+
+                        updateAlbumDataInLocalStorage(data);
+                    }
+                });
+
+/*
 
                 //2. get all students records that where updated since last update date
                 AlbumFirebase.getAllAlbumsAndObserve(lastUpdateDate, new AlbumFirebase.Callback<List<Album>>() {
@@ -80,6 +90,8 @@ public class AlbumRepository {
                         //updateEmployeeDataInLocalStorage(data);
                     }
                 });
+                */
+
             }
         }
         return albumsListliveData;
@@ -88,6 +100,7 @@ public class AlbumRepository {
     private void updateAlbumDataInLocalStorage(List<Album> data) {
         Log.d("TAG", "got items from firebase: " + data.size());
         MyTask task = new MyTask();
+
         task.execute(data);
     }
 
@@ -101,14 +114,26 @@ public class AlbumRepository {
                 try {
                     lastUpdateDate = MyApplication.getMyContext()
                             .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDate", 0);
+
+                    Log.d("Tag","got the last update date");
                 }catch (Exception e){
+                    Log.d("Tag","in the exception");
+
 
                 }
                 if (data != null && data.size() > 0) {
                     //3. update the local DB
                     long reacentUpdate = lastUpdateDate;
+                    Log.d("Tag","in the data");
+
                     for (Album album : data) {
+                        Log.d("Tag","in the for");
+
+
+
                         AppLocalStore.db.albumDao().insertAll(album);
+                        Log.d("Tag","after insert all");
+
                         if (album.lastUpdated > reacentUpdate) {
                             reacentUpdate = album.lastUpdated;
                         }

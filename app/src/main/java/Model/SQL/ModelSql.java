@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.adima.familyalbumproject.Entities.Album;
+import com.example.adima.familyalbumproject.Album.Model.Album;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Entities;
+package com.example.adima.familyalbumproject.Album.Model;
 
 
 import android.arch.persistence.room.Entity;
@@ -93,7 +93,7 @@ public class Album {
         this.date=(String)albumFromFirebase.get("date");
         this.location=(String)albumFromFirebase.get("location");
         this.name=(String)albumFromFirebase.get("name");
-        //this.lastUpdated=(String)albumFromFirebase.get("lastUpdated");
+        this.lastUpdated=(long)albumFromFirebase.get("lastUpdated");
 
 
 

@@ -2,7 +2,7 @@ package Model;
 
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.Entities.Album;
+import com.example.adima.familyalbumproject.Album.Model.Album;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;
@@ -18,6 +18,8 @@ import Model.SQL.ModelSql;
 public class Model {
 
     private static Model instance = new Model();
+
+
     ModelFirebase modelFirebase;
     ModelSql modelSql;
 
@@ -58,7 +60,7 @@ public class Model {
         void onCancel();
     }
 
-    public void getAllStudentsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
+    public void getAllAlbumsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
         //return StudentSql.getAllStudents(modelSql.getReadableDatabase());
         modelFirebase.getAllAlbumsAndObserve(new ModelFirebase.GetAllAlbumsAndObserveCallback() {
             @Override

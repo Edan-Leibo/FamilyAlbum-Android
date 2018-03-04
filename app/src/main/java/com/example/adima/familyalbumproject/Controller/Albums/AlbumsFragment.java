@@ -1,6 +1,10 @@
 package com.example.adima.familyalbumproject.Controller.Albums;
+
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +14,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.adima.familyalbumproject.Album.Model.Album;
+import com.example.adima.familyalbumproject.Album.Model.AlbumListViewModel;
 import com.example.adima.familyalbumproject.Controller.MainActivity;
-import com.example.adima.familyalbumproject.Entities.Album;
 import com.example.adima.familyalbumproject.R;
 
 import java.util.LinkedList;
@@ -28,7 +33,7 @@ public class AlbumsFragment extends Fragment {
     AlbumListAdapter adapter;
     ProgressBar progressBar;
 
-    //private AlbumListViewModel albumListViewModel;
+    private AlbumListViewModel albumListViewModel;
 
     public AlbumsFragment() {
     }
@@ -42,7 +47,7 @@ public class AlbumsFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static AlbumsFragment newInstance(List<Album> albums) {
         AlbumsFragment fragment = new AlbumsFragment();
-        albumList = albums;
+       // albumList = albums;
         return fragment;
     }
 
@@ -89,14 +94,14 @@ public class AlbumsFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
 
-        /*employeeListViewModel = ViewModelProviders.of(this).get(EmployeeListViewModel.class);
-        employeeListViewModel.getEmployeesList().observe(this, new Observer<List<Employee>>() {
+        this.albumListViewModel = ViewModelProviders.of(this).get(AlbumListViewModel.class);
+        albumListViewModel.getAlbumssList().observe(this, new Observer<List<Album>>() {
             @Override
-            public void onChanged(@Nullable List<Employee> employees) {
-                employeesList = employees;
+            public void onChanged(@Nullable List<Album> albums) {
+                albumList = albums;
                 if (adapter != null) adapter.notifyDataSetChanged();
             }
-        });*/
+        });
     }
 
     @Override

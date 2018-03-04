@@ -3,8 +3,6 @@ package com.example.adima.familyalbumproject.Album.Model;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.example.adima.familyalbumproject.Entities.Album;
-
 import java.util.List;
 
 /**
