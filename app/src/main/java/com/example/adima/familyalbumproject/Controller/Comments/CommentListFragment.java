@@ -159,7 +159,7 @@ public class CommentListFragment extends Fragment {
             final Comment cmt = commentList.get(position);
             commentText.setText(cmt.getText());
             imageView.setTag(cmt.getImageUrl());
-            imageView.setImageDrawable(getContext().getDrawable(R.drawable.avatar));
+            //imageView.setImageDrawable(getContext().getDrawable(R.drawable.avatar));
             if (cmt.getImageUrl() != null && !cmt.getImageUrl().isEmpty() && !cmt.getImageUrl().equals("")) {
                 progressBar.setVisibility(View.VISIBLE);
                 Model.instance().getImage(cmt.getImageUrl(), new Model.GetImageListener() {

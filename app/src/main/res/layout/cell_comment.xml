@@ -11,8 +11,7 @@
             android:id="@+id/cell_comment_user_image"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@drawable/avatar"
-            android:background="@drawable/circle"/>
+            android:src="@drawable/avatar" />
 
         <ProgressBar
             android:id="@+id/comment_cell_progressBar"
