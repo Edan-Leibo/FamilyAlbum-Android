@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Album.Model;
+package com.example.adima.familyalbumproject.Comment.Model;
 
 import android.util.Log;
 
@@ -15,32 +15,32 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by adima on 02/03/2018.
+ * Created by adima on 04/03/2018.
  */
 
-public class AlbumFirebase {
+public class CommentFirebase {
     public interface Callback<T>{
         void onComplete(T data);
     }
 
-    public static void getAllAlbumsAndObserve(final Callback<List<Album>> callback){
+    public static void getAllCommentsAndObserve(final Callback<List<Comment>> callback){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("albums");
+        DatabaseReference myRef = database.getReference("comments");
 
         ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //List<Album> list = new LinkedList<Album>();
 
-                List<Album> list = new LinkedList<Album>();
+                    List<Comment> list = new LinkedList<Comment>();
 
 
 
                 for(DataSnapshot snap:dataSnapshot.getChildren()){
 
-                    Album album = snap.getValue(Album.class);
-                    Log.d("TAG",album.name);
-                    list.add(album);
+                        Comment comment = snap.getValue(Comment.class);
+                    Log.d("TAG",comment.getText());
+                    list.add(comment);
                 }
 
                 callback.onComplete(list);
@@ -57,11 +57,11 @@ public class AlbumFirebase {
         });
     }
 
-    public static void getAllAlbumsAndObserve(long lastUpdate,final Callback<List<Album>> callback){
-        Log.d("TAG", "getAllAlbumsAndObserve " + lastUpdate);
-        Log.d("TAG", "getAllAlbumsAndObserve");
+    public static void getAllCommentsAndObserve(long lastUpdate,final Callback<List<Comment>> callback){
+        Log.d("TAG", "getAllCommentsAndObserve " + lastUpdate);
+        Log.d("TAG", "getAllCommentsAndObserve");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("albums");
+        DatabaseReference myRef = database.getReference("comments");
 
         Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
         Log.d("TAG","the query is ok");
@@ -71,21 +71,22 @@ public class AlbumFirebase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("TAG","the data changed");
 
-                List<Album> list = new LinkedList<Album>();
+                List<Comment> list = new LinkedList<Comment>();
+                if(dataSnapshot ==null){
+                    Log.d("TAG","the snapshot is null");
 
+                }
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     Log.d("TAG","got the children");
-                    Log.d("TAG","got the children"+snap.toString());
 
+                    Comment comment = snap.getValue(Comment.class);
+                    Log.d("TAG","got the data in comment repository"+comment.getAlbumId());
+                    Log.d("TAG","got the data in comment repository"+comment.getCommentId());
+                    Log.d("TAG","got the data in comment repository"+comment.getText());
 
-                    Album album = snap.getValue(Album.class);
-                        Log.d("TAG","got the data in Album repository"+album.name);
-                        Log.d("TAG","got the data in Album repository"+album.location);
-                        Log.d("TAG","got the data in Album repository"+album.serialNumber);
+                    Log.d("TAG","got the data in comment repository"+comment.getUserId());
 
-                        Log.d("TAG","got the data in Album repository"+album.date);
-
-                    list.add(album);
+                    list.add(comment);
                 }
                 callback.onComplete(list);
             }
@@ -98,30 +99,27 @@ public class AlbumFirebase {
     }
 
 
-    public static void addAlbum(Album album){
-        Log.d("TAG", "add album to firebase");
+    public static void addComment(Comment comment){
+        Log.d("TAG", "add comment to firebase");
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        String key = database.getReference("albums").push().getKey();
+        String key = database.getReference("comments").push().getKey();
 
 
-        album.albumId = key;
+       comment.setCommentId(key);
 
-        HashMap<String, Object> json = album.toJson();
+        HashMap<String, Object> json = comment.toJson();
         json.put("lastUpdated", ServerValue.TIMESTAMP);
 
         //DatabaseReference myRef = database.getReference("albums");
 
 
 
-        DatabaseReference ref = database.getReference("albums").child(album.albumId);
+        DatabaseReference ref = database.getReference("comments").child(comment.getCommentId());
 
         ref.setValue(json);
         //myRef.child(employee.id).setValue(json);
     }
-
-
-
 }

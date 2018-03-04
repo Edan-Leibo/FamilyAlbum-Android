@@ -21,4 +21,9 @@ public class MyApplication extends Application {
     public static Context getMyContext(){
         return context;
     }
+
+
+
+
+
 }

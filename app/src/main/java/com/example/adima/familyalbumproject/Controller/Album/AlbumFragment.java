@@ -11,7 +11,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Controller.MainActivity;
-import com.example.adima.familyalbumproject.Entities.Album;
+import com.example.adima.familyalbumproject.Album.Model.Album;
 import com.example.adima.familyalbumproject.R;
 
 /**
