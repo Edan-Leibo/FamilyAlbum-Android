@@ -6,9 +6,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Controller.MainActivity;
+import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
+
+import Model.Firebase.FirebaseAuthentication;
 
 /**
  * Created by adima on 03/03/2018.
@@ -32,6 +36,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         ((MainActivity) getActivity()).showAlbumsFragment();
+        FirebaseAuthentication fb = new FirebaseAuthentication();
+        fb.registerUser("edan@gmail.com", "1234abcd", new FirebaseAuthentication.regUserCallBack() {
+            @Override
+            public void onRegistration(boolean t) {
+                Toast.makeText(MyApplication.getMyContext(), "Authentication "+t, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

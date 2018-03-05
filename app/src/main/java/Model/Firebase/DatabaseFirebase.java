@@ -20,7 +20,7 @@ import java.util.Map;
  */
 
 public class DatabaseFirebase {
-/*
+
     public FirebaseDatabase database;
 
     public String albumsPath = "albums";
@@ -86,5 +86,5 @@ public class DatabaseFirebase {
         });
     }
 
-*/
+
 }
