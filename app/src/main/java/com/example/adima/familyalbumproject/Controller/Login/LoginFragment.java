@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +24,14 @@ import Model.Firebase.FirebaseAuthentication;
  */
 
 public class LoginFragment extends Fragment {
+
+    ProgressBar progressBar;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+        progressBar = view.findViewById(R.id.login_progressbar);
         return view;
     }
 
@@ -47,6 +52,7 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(MyApplication.getMyContext(), "Please insert a correct Email", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuthentication.loginUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.loginUserCallBack(){
                     @Override
                     public void onLogin(boolean t) {
@@ -57,6 +63,7 @@ public class LoginFragment extends Fragment {
                         else{
                             Toast.makeText(MyApplication.getMyContext(), "Login failed", Toast.LENGTH_SHORT).show();
                         }
+                        progressBar.setVisibility(View.GONE);
                     }
                 });
             }
@@ -72,6 +79,7 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(MyApplication.getMyContext(), "Please insert a correct Email", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuthentication.registerUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.regUserCallBack(){
                     @Override
                     public void onRegistration(boolean t) {
@@ -82,6 +90,7 @@ public class LoginFragment extends Fragment {
                         else{
                             Toast.makeText(MyApplication.getMyContext(), "Registration failed", Toast.LENGTH_SHORT).show();
                         }
+                        progressBar.setVisibility(View.GONE);
                     }
                 });
             }
