@@ -9,6 +9,7 @@ import android.util.Log;
 import android.webkit.URLUtil;
 
 import com.example.adima.familyalbumproject.Album.Model.Album;
+import com.example.adima.familyalbumproject.FamiliesModel.FamiliesFirebase;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.io.File;
@@ -73,6 +74,32 @@ public class Model {
         void onCancel();
     }
 
+    public interface IsFamilyExistCallback{
+        void onComplete(boolean exist);
+
+        void onCancel();
+    }
+
+
+
+    public void isFamilyExist(final String serialNumber,final IsFamilyExistCallback callback){
+       modelFirebase.isFamilyExist(serialNumber,new ModelFirebase.IsFamilyExistCallback() {
+           @Override
+           public void onComplete(boolean exist) {
+               callback.onComplete(exist);
+           }
+
+           @Override
+           public void onCancel() {
+               callback.onCancel();
+           }
+       });
+
+
+
+
+
+    }
 
 
     public void getAllAlbumsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
@@ -112,6 +139,9 @@ public class Model {
 
 
     }
+
+
+
 
 
     public interface GetImageListener{
@@ -194,6 +224,11 @@ public class Model {
         Uri contentUri = Uri.fromFile(imageFile);
         mediaScanIntent.setData(contentUri);
         MyApplication.getMyContext().sendBroadcast(mediaScanIntent);
+    }
+
+    public String addFamilyToFirebase(){
+        String key= FamiliesFirebase.addFamily();
+        return key;
     }
 
 

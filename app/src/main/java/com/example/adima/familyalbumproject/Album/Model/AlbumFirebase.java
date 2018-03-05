@@ -107,6 +107,7 @@ public class AlbumFirebase {
         String key = database.getReference("albums").push().getKey();
 
 
+
         album.albumId = key;
 
         HashMap<String, Object> json = album.toJson();
