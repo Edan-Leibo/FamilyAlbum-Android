@@ -47,7 +47,19 @@ public class ModelFirebase {
         void onCancel();
     }
 
-    //work
+    /*
+    public interface GetAllImageUrlsAndObserveCallback{
+        void onComplete(List<String> list);
+        void onCancel();
+    }
+
+    public void getAllImageUrlsAndObserve(final GetAllImageUrlsAndObserveCallback){
+
+    }
+
+    */
+
+
     public void getAllAlbumsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("albums");

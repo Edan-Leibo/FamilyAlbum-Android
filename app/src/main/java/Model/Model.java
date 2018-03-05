@@ -73,6 +73,8 @@ public class Model {
         void onCancel();
     }
 
+
+
     public void getAllAlbumsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
         //return StudentSql.getAllStudents(modelSql.getReadableDatabase());
         modelFirebase.getAllAlbumsAndObserve(new ModelFirebase.GetAllAlbumsAndObserveCallback() {
@@ -193,6 +195,8 @@ public class Model {
         mediaScanIntent.setData(contentUri);
         MyApplication.getMyContext().sendBroadcast(mediaScanIntent);
     }
+
+
 
 
 

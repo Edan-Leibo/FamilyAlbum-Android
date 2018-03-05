@@ -79,7 +79,8 @@ public class AlbumsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //((MainActivity) getActivity()).showCreateAlbumFragment();
-                ((MainActivity) getActivity()).showCommentsFragment("-L6lY_t5pKGBZTTzoeJ0");
+                //((MainActivity) getActivity()).showCommentsFragment("-L6lY_t5pKGBZTTzoeJ0");
+                ((MainActivity) getActivity()).showAlbumFragment();
             }
         });
         return view;
