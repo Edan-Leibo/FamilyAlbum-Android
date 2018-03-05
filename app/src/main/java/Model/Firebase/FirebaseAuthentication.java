@@ -11,17 +11,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class FirebaseAuthentication {
-    private FirebaseAuth mAuth;
-    String userEmail; //The string of the current user which logged in to the app
-    private FirebaseUser user;
-    //This string is needed in order to add Edit rights to the users posts
+    private static FirebaseAuth mAuth;
+    private static String  userEmail; //The string of the current user which logged in to the app
+    private static FirebaseUser user;
 
 
-    public interface loginUserCallBack{
+    public static interface loginUserCallBack{
         void onLogin(boolean t);
     }
     //validate the value entered by the user when the user is logging in to the app
-    public void loginUser(final String email, String password, final loginUserCallBack callback) {
+    public static void loginUser(final String email, String password, final loginUserCallBack callback) {
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -46,7 +45,7 @@ public class FirebaseAuthentication {
         void onRegistration(boolean t);
     }
 
-    public void registerUser(final String email, String password, final regUserCallBack callback) {
+    public static void registerUser(final String email, String password, final regUserCallBack callback) {
         mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -67,7 +66,7 @@ public class FirebaseAuthentication {
 
     /*
      */
-    public void signOut() {
+    public static void signOut() {
         mAuth = FirebaseAuth.getInstance();
         FirebaseAuth.getInstance().signOut(); //sign out of the FireBase
         user = null;
@@ -77,7 +76,7 @@ public class FirebaseAuthentication {
     /*
     returns if the user is signed in or not
      */
-    public boolean isSignedIn() {
+    public static boolean isSignedIn() {
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -92,7 +91,7 @@ public class FirebaseAuthentication {
     /*
     Return the User email
      */
-    public String getUserEmail() {
+    public static String getUserEmail() {
         return userEmail;
     }
 

@@ -7,42 +7,38 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:orientation="horizontal">
-        <TextView
+        <Button
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/btn_add_album"
-            android:padding="6dp"/>
-        <TextView
+            android:text="@string/btn_add_album" />
+        <Button
             android:id="@+id/btn_get_family_serial"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/btn_get_family_serial"
-            android:padding="6dp"/>
-        <TextView
+            android:text="@string/btn_get_family_serial" />
+        <Button
             android:id="@+id/btn_create_family"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/btn_create_family"
-            android:padding="6dp"/>
+            android:text="@string/btn_create_family" />
 
 
-        <TextView
+        <Button
             android:id="@+id/btn_exit"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/btn_exit"
-            android:padding="6dp"/>
+            android:text="@string/btn_exit" />
     </LinearLayout>
 
     <ListView

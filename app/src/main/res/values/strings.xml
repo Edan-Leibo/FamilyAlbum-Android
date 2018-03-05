@@ -5,7 +5,7 @@
     <string name="btn_login">Login</string>
     <string name="btn_create_new_account">Create New Account</string>
     <string name="label_keep_signed_in">Keep me signed in</string>
-    <string name="btn_exit">exit</string>
+    <string name="btn_exit">Logout</string>
     <string name="btn_create_album">Create Album</string>
     <string name="btn_cancel">Cancel</string>
     <string name="hint_album_name">Album\'s name</string>
@@ -13,4 +13,8 @@
     <string name="hint_location">Event\'s location</string>
     <string name="btn_go_to_comments">Go to\ncomments</string>
     <string name="btn_send">Send</string>
+    <string name="btn_add_album">Add Album</string>
+    <string name="btn_get_family_serial">Get Serial</string>
+    <string name="btn_create_family">Create Family</string>
+
 </resources>
