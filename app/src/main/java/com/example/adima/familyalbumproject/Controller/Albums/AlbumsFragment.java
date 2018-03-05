@@ -28,9 +28,6 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 
 
-/**
- * Created by adima on 03/03/2018.
- */
 
 public class AlbumsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
@@ -39,7 +36,7 @@ public class AlbumsFragment extends Fragment {
     AlbumListAdapter adapter;
     ProgressBar progressBar;
     private static String familySerial;
-    private final static String FAMILY_SERIAL = "FAMILY_SERIAL"
+    private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
 
     private AlbumListViewModel albumListViewModel;
 
