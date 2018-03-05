@@ -93,7 +93,7 @@ public class AlbumFragment extends Fragment {
             }
         });
 
-        
+
         return view;
     }
 
