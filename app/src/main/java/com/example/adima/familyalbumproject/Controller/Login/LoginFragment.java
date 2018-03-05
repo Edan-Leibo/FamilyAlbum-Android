@@ -37,9 +37,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         ((MainActivity) getActivity()).showAlbumsFragment();
         FirebaseAuthentication fb = new FirebaseAuthentication();
-        fb.registerUser("edan@gmail.com", "1234abcd", new FirebaseAuthentication.regUserCallBack() {
+//        fb.registerUser("edan@gmail.com", "1234abcd", new FirebaseAuthentication.regUserCallBack() {
+//            @Override
+//            public void onRegistration(boolean t) {
+//                Toast.makeText(MyApplication.getMyContext(), "Authentication "+t, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+        fb.loginUser("edan@gmail.com", "1234abcd", new FirebaseAuthentication.loginUserCallBack(){
+
             @Override
-            public void onRegistration(boolean t) {
+            public void onLogin(boolean t) {
                 Toast.makeText(MyApplication.getMyContext(), "Authentication "+t, Toast.LENGTH_SHORT).show();
             }
         });
