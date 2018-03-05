@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.adima.familyalbumproject.Album.Model.Album;
-import com.example.adima.familyalbumproject.Album.Model.AlbumListViewModel;
+import com.example.adima.familyalbumproject.Album.Model.AlbumsListViewModel;
 import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.R;
 
@@ -33,7 +33,7 @@ public class AlbumsFragment extends Fragment {
     AlbumListAdapter adapter;
     ProgressBar progressBar;
 
-    private AlbumListViewModel albumListViewModel;
+    private AlbumsListViewModel albumListViewModel;
 
     public AlbumsFragment() {
     }
@@ -96,8 +96,10 @@ public class AlbumsFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
 
-        this.albumListViewModel = ViewModelProviders.of(this).get(AlbumListViewModel.class);
-        albumListViewModel.getAlbumssList().observe(this, new Observer<List<Album>>() {
+        this.albumListViewModel = ViewModelProviders.of(this).get(AlbumsListViewModel.class);
+
+        albumListViewModel.init("");
+        albumListViewModel.getAlbumList().observe(this, new Observer<List<Album>>() {
             @Override
             public void onChanged(@Nullable List<Album> albums) {
                 albumList = albums;

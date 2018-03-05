@@ -59,6 +59,37 @@ public class ModelFirebase {
 
     */
 
+    public interface IsFamilyExistCallback{
+        void onComplete(boolean exist);
+        void onCancel();
+    }
+
+
+    public void isFamilyExist(final String serialNumber,final IsFamilyExistCallback callback){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("families").child(serialNumber);
+        ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() !=null) {
+                    Log.d("TAG","the family exist");
+                    callback.onComplete(true);
+                }
+                else {
+                    Log.d("TAG","the family is not exist");
+
+                    callback.onComplete(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onCancel();
+            }
+        });
+
+    }
+
 
     public void getAllAlbumsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -141,6 +172,8 @@ public class ModelFirebase {
             }
         });
     }
+
+
 
 
 

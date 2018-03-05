@@ -25,6 +25,12 @@ public class Album {
     public long lastUpdated;
 
 
+
+    public Album (){
+
+    }
+
+
     public Album (String name,String date,String location,String serialNumber){
         this.name=name;
         this.date = date;
@@ -34,10 +40,6 @@ public class Album {
     }
 
 
-
-    public Album (){
-
-    }
 
     public String getName() {
         return name;
@@ -83,6 +85,9 @@ public class Album {
         this.serialNumber = serialNumber;
     }
 
+
+
+
     public void setLastUpdated(long lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
@@ -94,10 +99,10 @@ public class Album {
         this.location=(String)albumFromFirebase.get("location");
         this.name=(String)albumFromFirebase.get("name");
         this.lastUpdated=(long)albumFromFirebase.get("lastUpdated");
-
-
-
     }
+
+
+
 
     public HashMap<String,Object> toJson(){
 

@@ -18,23 +18,21 @@ import java.util.List;
 public class AlbumRepository {
 
 
+
     public static final AlbumRepository instance = new AlbumRepository();
 
     AlbumRepository() {
     }
     MutableLiveData<List<Album>> albumsListliveData;
 
-
-
-
-    public LiveData<List<Album>> getAlbumsList() {
+    public LiveData<List<Album>> getAlbumsList(String serialNumber) {
         synchronized (this) {
             if (albumsListliveData == null) {
                 Log.d("TAG", "album live data is null");
 
                 albumsListliveData = new MutableLiveData<List<Album>>();
 
-                AlbumFirebase.getAllAlbumsAndObserve(new AlbumFirebase.Callback<List<Album>>() {
+                AlbumFirebase.getAllAlbumsAndObserve(serialNumber,new AlbumFirebase.Callback<List<Album>>() {
 
                     @Override
                     public void onComplete(List<Album> data) {
@@ -47,7 +45,7 @@ public class AlbumRepository {
         return albumsListliveData;
     }
 
-    public LiveData<List<Album>> getAllAlbums() {
+    public LiveData<List<Album>> getAllAlbums(final String serialNumber) {
         synchronized (this) {
             if (albumsListliveData == null) {
                 albumsListliveData = new MutableLiveData<List<Album>>();
@@ -62,11 +60,11 @@ public class AlbumRepository {
 
                 }
 
-                AlbumFirebase.getAllAlbumsAndObserve(lastUpdateDate, new AlbumFirebase.Callback<List<Album>>() {
+                AlbumFirebase.getAllAlbumsAndObserve(serialNumber,lastUpdateDate, new AlbumFirebase.Callback<List<Album>>() {
                     @Override
                     public void onComplete(List<Album> data) {
 
-                        updateAlbumDataInLocalStorage(data);
+                        updateAlbumDataInLocalStorage(data,serialNumber);
                     }
                 });
 
@@ -97,14 +95,20 @@ public class AlbumRepository {
         return albumsListliveData;
     }
 
-    private void updateAlbumDataInLocalStorage(List<Album> data) {
+    private void updateAlbumDataInLocalStorage(List<Album> data,String serialNumber) {
         Log.d("TAG", "got items from firebase: " + data.size());
         MyTask task = new MyTask();
-
+        task.setSerialNumber(serialNumber);
         task.execute(data);
     }
 
     class MyTask extends AsyncTask<List<Album>,String,List<Album>> {
+        private String serialNumber;
+
+        public void setSerialNumber(String serialNumber) {
+            this.serialNumber = serialNumber;
+        }
+
         @Override
         protected List<Album> doInBackground(List<Album>[] lists) {
             Log.d("TAG","starting updateAlbumDataInLocalStorage in thread");
@@ -144,7 +148,7 @@ public class AlbumRepository {
                     editor.commit();
                 }
                 //return the complete student list to the caller
-                List<Album> albumsList = AppLocalStore.db.albumDao().getAll();
+                List<Album> albumsList = AppLocalStore.db.albumDao(). loadAllByIds(serialNumber);
                 Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
 
                 return albumsList;

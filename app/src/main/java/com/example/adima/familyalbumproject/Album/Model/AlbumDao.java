@@ -19,6 +19,11 @@ public interface AlbumDao {
     @Query("SELECT * FROM Album WHERE albumId IN (:albumId)")
     List<Album> loadAllByIds(int[] albumId);
 
+
+
+    @Query("SELECT * FROM Album WHERE serialNumber IN (:serialNumber)")
+    List<Album> loadAllByIds(String serialNumber);
+
     @Query("SELECT * FROM Album WHERE albumId = :id")
     Album findById(String id);
 
