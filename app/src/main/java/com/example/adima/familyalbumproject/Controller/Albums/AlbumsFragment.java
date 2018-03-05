@@ -3,6 +3,7 @@ package com.example.adima.familyalbumproject.Controller.Albums;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,18 +14,20 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Album.Model.Album;
 import com.example.adima.familyalbumproject.Album.Model.AlbumsListViewModel;
 import com.example.adima.familyalbumproject.Controller.MainActivity;
+import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by adima on 03/03/2018.
- */
+import static android.content.Context.MODE_PRIVATE;
+
+
 
 public class AlbumsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
@@ -32,6 +35,8 @@ public class AlbumsFragment extends Fragment {
     private static List<Album> albumList = new LinkedList<>();
     AlbumListAdapter adapter;
     ProgressBar progressBar;
+    private static String familySerial;
+    private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
 
     private AlbumsListViewModel albumListViewModel;
 
@@ -45,9 +50,14 @@ public class AlbumsFragment extends Fragment {
      * @return A new instance of fragment EmployeeListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AlbumsFragment newInstance(List<Album> albums) {
+    public static AlbumsFragment newInstance() {
         AlbumsFragment fragment = new AlbumsFragment();
-       // albumList = albums;
+        //getFamilyID
+        SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
+        familySerial = ref.getString(FAMILY_SERIAL,"NONE");
+        Bundle args = new Bundle();
+        args.putString(FAMILY_SERIAL, familySerial);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -63,11 +73,6 @@ public class AlbumsFragment extends Fragment {
         ListView list = view.findViewById(R.id.albums_list);
         adapter = new AlbumListAdapter();
         list.setAdapter(adapter);
-        progressBar = view.findViewById(R.id.album_list_progressbar);
-        //MyTask task = new MyTask();
-        progressBar.setVisibility(View.GONE);
-        //task.execute("");
-
         view.findViewById(R.id.btn_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +88,13 @@ public class AlbumsFragment extends Fragment {
                 ((MainActivity) getActivity()).showAlbumFragment();
             }
         });
+
+        progressBar = view.findViewById(R.id.album_list_progressbar);
+        progressBar.setVisibility(View.GONE);
+
+        if (familySerial.equals("NONE")){
+            Toast.makeText(MyApplication.getMyContext(), "You are not connected to a family", Toast.LENGTH_SHORT).show();
+        }
         return view;
     }
 
@@ -95,6 +107,8 @@ public class AlbumsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        Bundle args = getArguments();
+        familySerial = args.getString(FAMILY_SERIAL, "NONE");
 
         this.albumListViewModel = ViewModelProviders.of(this).get(AlbumsListViewModel.class);
 
@@ -102,8 +116,10 @@ public class AlbumsFragment extends Fragment {
         albumListViewModel.getAlbumList().observe(this, new Observer<List<Album>>() {
             @Override
             public void onChanged(@Nullable List<Album> albums) {
-                albumList = albums;
-                if (adapter != null) adapter.notifyDataSetChanged();
+                if (albumList.size()>0) {
+                    albumList = albums;
+                    if (adapter != null) adapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -145,15 +161,6 @@ public class AlbumsFragment extends Fragment {
         public long getItemId(int position) {
             return 0;
         }
-/*DELETE??
-        class CBListener implements View.OnClickListener{
-            @Override
-            public void onClick(View v) {
-                int pos = (int)v.getTag();
-                Album emp = albumList.get(pos);
-                emp.checked = !emp.checked;
-            }
-        }*/
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {

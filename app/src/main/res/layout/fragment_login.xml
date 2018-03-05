@@ -15,6 +15,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/editText_email"
         android:hint="@string/hint_email"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -25,6 +26,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/editText_password"
         android:hint="@string/hint_password"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -47,10 +49,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/label_keep_signed_in"/>
 
 </LinearLayout>
