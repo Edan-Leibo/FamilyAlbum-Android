@@ -13,8 +13,12 @@ public class AlbumsListViewModel extends ViewModel {
 
     private LiveData<List<Album>> albums;
 
+    public void init(String serialNumber){
+        albums = AlbumRepository.instance.getAllAlbums(serialNumber);
+    }
+
     public AlbumsListViewModel(){
-        albums = AlbumRepository.instance.getAllAlbums();
+
     }
 
     public LiveData<List<Album>> getAlbumList(){

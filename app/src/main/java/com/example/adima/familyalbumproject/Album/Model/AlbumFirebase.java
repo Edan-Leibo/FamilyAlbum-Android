@@ -19,13 +19,87 @@ import java.util.List;
  */
 
 public class AlbumFirebase {
+
+    /*
+
+
+
+    public static void getAllImagesAndObserve(String albumId,long lastUpdate,final ImageFirebase.Callback<List<Image>> callback){
+        Log.d("TAG", "getAllImagesAndObserve " + lastUpdate);
+        Log.d("TAG", "getAllImagessAndObserve");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //DatabaseReference myRef = database.getReference("comments");
+        DatabaseReference myRef = database.getReference("images").child(albumId);
+
+        Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
+        Log.d("TAG","the query is ok");
+
+        ValueEventListener listener = query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("TAG","the data changed");
+
+                List<Image> list = new LinkedList<Image>();
+                if(dataSnapshot ==null){
+                    Log.d("TAG","the snapshot is null");
+
+                }
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    Log.d("TAG","got the children");
+
+                    Image image = snap.getValue(Image.class);
+
+
+                    list.add(image);
+                }
+                callback.onComplete(list);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onComplete(null);
+            }
+        });
+    }
+
+
+    public static void addImage(String albumId,Image image){
+        Log.d("TAG", "add image to firebase");
+
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        String key = database.getReference("images").child(albumId).push().getKey();
+
+
+        image.setImageId(key);
+
+        HashMap<String, Object> json = image.toJson();
+        json.put("lastUpdated", ServerValue.TIMESTAMP);
+
+
+        //DatabaseReference myRef = database.getReference("albums");
+
+
+       // Log.d("TAG","the command id is:"+comment.getCommentId());
+
+        //DatabaseReference ref = database.getReference("albums").child(albumId).
+        DatabaseReference ref = database.getReference("images").child(albumId).child(image.getImageId());
+
+        ref.setValue(json);
+        //myRef.child(employee.id).setValue(json);
+    }
+
+     */
+
+
     public interface Callback<T>{
         void onComplete(T data);
     }
 
-    public static void getAllAlbumsAndObserve(final Callback<List<Album>> callback){
+    public static void getAllAlbumsAndObserve(String serialNumber,final Callback<List<Album>> callback){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("albums");
+        DatabaseReference myRef = database.getReference("albums").child(serialNumber);
 
         ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -57,11 +131,11 @@ public class AlbumFirebase {
         });
     }
 
-    public static void getAllAlbumsAndObserve(long lastUpdate,final Callback<List<Album>> callback){
+    public static void getAllAlbumsAndObserve(String serialNumber,long lastUpdate,final Callback<List<Album>> callback){
         Log.d("TAG", "getAllAlbumsAndObserve " + lastUpdate);
         Log.d("TAG", "getAllAlbumsAndObserve");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("albums");
+        DatabaseReference myRef = database.getReference("albums").child(serialNumber);
 
         Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
         Log.d("TAG","the query is ok");
@@ -98,13 +172,13 @@ public class AlbumFirebase {
     }
 
 
-    public static void addAlbum(Album album){
+    public static void addAlbum(Album album,String serialNumber){
         Log.d("TAG", "add album to firebase");
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        String key = database.getReference("albums").push().getKey();
+        String key = database.getReference("albums").child(serialNumber).push().getKey();
 
 
 
@@ -117,7 +191,7 @@ public class AlbumFirebase {
 
 
 
-        DatabaseReference ref = database.getReference("albums").child(album.albumId);
+        DatabaseReference ref = database.getReference("albums").child(serialNumber).child(album.albumId);
 
         ref.setValue(json);
         //myRef.child(employee.id).setValue(json);
