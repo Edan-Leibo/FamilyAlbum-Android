@@ -4,8 +4,14 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +34,7 @@ import com.example.adima.familyalbumproject.Album.Model.AlbumsListViewModel;
 import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
+import com.example.adima.familyalbumproject.User.User;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +42,7 @@ import java.util.List;
 import Model.Firebase.FirebaseAuthentication;
 import Model.Model;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -54,6 +62,7 @@ public class AlbumsFragment extends Fragment {
 
 
     }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -77,6 +86,74 @@ public class AlbumsFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+    static final int REQUEST_IMAGE_CAPTURE = 0;
+    static final int PICK_IMAGE = 1;
+
+
+    private void dispatchGetPictureFromGalleryIntent() {
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (pickPhoto.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(pickPhoto, PICK_IMAGE);
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bitmap imageBitmap = null;
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK){
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            imageBitmap = BitmapFactory.decodeFile(picturePath);
+        }
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+        }
+        if (imageBitmap!=null) {
+            Model.instance().saveImage(imageBitmap, FirebaseAuthentication.getUserEmail(), new Model.SaveImageListener() {
+                @Override
+                public void complete(String url) {
+                    User user = new User();
+                    user.setEmailUser(FirebaseAuthentication.getUserEmail());
+                    user.setImageUrl(url);
+                    Model.instance().addUserProfilePicture(user, new Model.OnCreation() {
+                        @Override
+                        public void onCompletion(boolean success) {
+                            if (success) {
+                                Toast.makeText(MyApplication.getMyContext(), "Photo was saved successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void fail() {
+                    Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else{
+            Toast.makeText(MyApplication.getMyContext(), "Error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,8 +165,8 @@ public class AlbumsFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-               Album album = albumList.get(i);
-                Log.d("TAG","got item number:"+i);
+                Album album = albumList.get(i);
+                Log.d("TAG", "got item number:" + i);
                 ((MainActivity) getActivity()).showAlbumFragment(album.getAlbumId());
 
             }
@@ -118,6 +195,37 @@ public class AlbumsFragment extends Fragment {
                     }
                 });
 
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+            }
+        });
+
+        Button buttonEditPhoto = (Button) view.findViewById(R.id.btn_edit_photo
+        );
+        buttonEditPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder.setMessage("Where do you want to take the profile photo from?\n");
+                alertDialogBuilder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dispatchTakePictureIntent();
+                    }
+                });
+                alertDialogBuilder.setNeutralButton("Gallery", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dispatchGetPictureFromGalleryIntent();
+                    }
+                });
+                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
 
@@ -161,14 +269,15 @@ public class AlbumsFragment extends Fragment {
                                     Toast.makeText(MyApplication.getMyContext(), "Serial does not exist", Toast.LENGTH_SHORT).show();
                                 }
                             }
+
                             @Override
-                            public void onCancel () {
+                            public void onCancel() {
 
                             }
                         });
 
-                        }
-                    });
+                    }
+                });
 
 
                 AlertDialog alertDialog = alertDialogBuilder.create();
@@ -181,17 +290,16 @@ public class AlbumsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //((MainActivity) getActivity()).showLoginFragment();
-               // ((MainActivity) getActivity()).showCommentsFragment("-L6qPSRjtlvsIpxwffsp");
+                // ((MainActivity) getActivity()).showCommentsFragment("-L6qPSRjtlvsIpxwffsp");
                 Model.instance().addNewFamily(new Model.GetKeyListener() {
                     @Override
                     public void onCompletion(String success) {
-                        if(success==null){
+                        if (success == null) {
                             Toast.makeText(MyApplication.getMyContext(), "Creation of family album failed", Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            familySerial=success;
+                        } else {
+                            familySerial = success;
                             Toast.makeText(MyApplication.getMyContext(), "New family album created", Toast.LENGTH_SHORT).show();
-                            Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL,success);
+                            Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
                             ((MainActivity) getActivity()).showAlbumsFragment();
                         }
                     }
@@ -238,10 +346,10 @@ public class AlbumsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Album> albums) {
                 //if (albums.size() > 0) {
-                    albumList = albums;
-                    if (adapter != null) adapter.notifyDataSetChanged();
+                albumList = albums;
+                if (adapter != null) adapter.notifyDataSetChanged();
                 //} else {
-                  //
+                //
                 //}
             }
         });
