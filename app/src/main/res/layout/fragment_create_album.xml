@@ -17,20 +17,26 @@
             android:padding="36dp">
 
             <EditText
+                android:id="@+id/createAlbum_album_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_camera_alt_black_18dp"
                 android:drawablePadding="8dp"
                 android:hint="@string/hint_album_name" />
 
+
             <EditText
+                android:id="@+id/createAlbum_album_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_perm_contact_calendar_black_18dp"
                 android:drawablePadding="8dp"
-                android:hint="@string/hint_date" />
+                android:hint="@string/hint_date"
+                android:focusable="false"
+                android:longClickable="false"/>
 
             <EditText
+                android:id="@+id/createAlbum_album_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_group_work_black_18dp"
@@ -77,6 +83,5 @@
         android:id="@+id/createNewAlbumProgressBar"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:layout_gravity="center"/>
 </FrameLayout>
