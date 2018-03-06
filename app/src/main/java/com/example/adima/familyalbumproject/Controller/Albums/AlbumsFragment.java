@@ -62,8 +62,7 @@ public class AlbumsFragment extends Fragment {
     public static AlbumsFragment newInstance() {
         AlbumsFragment fragment = new AlbumsFragment();
         //getFamilyID
-        SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
-        familySerial = ref.getString(FAMILY_SERIAL, "NONE");
+        familySerial = Model.instance().getFamilySerialFromSharedPrefrences("familyInfo",FAMILY_SERIAL);
         Bundle args = new Bundle();
         args.putString(FAMILY_SERIAL, familySerial);
         fragment.setArguments(args);

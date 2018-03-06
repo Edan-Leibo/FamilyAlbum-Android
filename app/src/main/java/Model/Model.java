@@ -45,9 +45,6 @@ public class Model {
     private Model() {
         this.modelFirebase  = new ModelFirebase();
         this.modelSql = new ModelSql(MyApplication.getMyContext());
-
-
-
     }
 
     public static Model instance() {
@@ -76,6 +73,10 @@ public class Model {
         SharedPreferences.Editor ed = ref.edit();
         ed.putString(key, value);
         ed.commit();
+    }
+
+    public String getFamilySerialFromSharedPrefrences(String familyInfo, String familySerial) {
+        return "";
     }
 
 
