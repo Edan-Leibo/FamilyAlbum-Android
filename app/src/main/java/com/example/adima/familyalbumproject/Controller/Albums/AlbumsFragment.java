@@ -51,6 +51,8 @@ public class AlbumsFragment extends Fragment {
     private AlbumsListViewModel albumListViewModel;
 
     public AlbumsFragment() {
+
+
     }
 
     /**

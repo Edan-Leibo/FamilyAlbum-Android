@@ -13,6 +13,7 @@ import com.example.adima.familyalbumproject.Album.Model.Album;
 import com.example.adima.familyalbumproject.Comment.Model.Comment;
 import com.example.adima.familyalbumproject.Entities.Image;
 import com.example.adima.familyalbumproject.MyApplication;
+import com.example.adima.familyalbumproject.User.User;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,6 +72,9 @@ public class Model {
 
     }
 
+    public void addUserProfilePicture(User user){
+        this.modelFirebase.addUserProfilePicture(user);
+    }
     public void writeToSharedPreferences(String name, String key, String value) {
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences(name,MODE_PRIVATE);
         SharedPreferences.Editor ed = ref.edit();
@@ -265,6 +269,16 @@ public class Model {
         });
 
 
+    }
+
+    public void getUserProfilePicture(final GetKeyListener listener){
+        modelFirebase.getUserImageUrl(new GetKeyListener() {
+            @Override
+            public void onCompletion(String success) {
+                listener.onCompletion(success);
+
+            }
+        });
     }
 
     public void removeAlbum(String albumId,String serialNumber){

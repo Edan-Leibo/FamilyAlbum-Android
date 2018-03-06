@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements AlbumsFragment.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 /*
 
         Image image = new Image();

@@ -12,6 +12,8 @@ import com.example.adima.familyalbumproject.Comment.Model.CommentFirebase;
 import com.example.adima.familyalbumproject.Entities.Image;
 import com.example.adima.familyalbumproject.FamiliesModel.FamiliesFirebase;
 import com.example.adima.familyalbumproject.ImageUrl.Model.ImageFirebase;
+import com.example.adima.familyalbumproject.User.User;
+import com.example.adima.familyalbumproject.User.UserFirebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -82,6 +84,15 @@ public class ModelFirebase {
 
     */
 
+
+    public void getUserImageUrl(final Model.GetKeyListener listener){
+        UserFirebase.getUserImageUrl(new GetKeyListener() {
+            @Override
+            public void onCompletion(String success) {
+                listener.onCompletion(success);
+            }
+        });
+    }
     public interface IsFamilyExistCallback{
         void onComplete(boolean exist);
         void onCancel();
@@ -221,6 +232,9 @@ public class ModelFirebase {
     }
     public  void removeImage(String albumId,String imageId) {
         ImageFirebase.removeImage(albumId,imageId);
+    }
+    public void addUserProfilePicture(User user){
+        UserFirebase.addUserProfilePicture(user);
     }
 
 
