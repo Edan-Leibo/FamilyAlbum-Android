@@ -10,10 +10,7 @@ import com.example.adima.familyalbumproject.Controller.Album.CreateAlbumFragment
 import com.example.adima.familyalbumproject.Controller.Albums.AlbumsFragment;
 import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragment;
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
-import com.example.adima.familyalbumproject.Entities.Image;
 import com.example.adima.familyalbumproject.R;
-
-import Model.Model;
 
 public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentInteractionListener,CommentListFragment.OnFragmentInteractionListener {
 
@@ -21,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements AlbumsFragment.On
     protected void onCreate(Bundle savedInstanceState) {
 
 
-
+/*
 
         Image image = new Image();
         image.setAlbumId("-L6qPSRjtlvsIpxwffsp");
@@ -32,6 +29,7 @@ Model.instance().addImage("-L6qPSRjtlvsIpxwffsp",image, new Model.OnCreation() {
     public void onCompletion(boolean success) {
 
     }
+
 });
 
     /*
