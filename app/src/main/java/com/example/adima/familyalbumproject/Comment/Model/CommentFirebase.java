@@ -110,8 +110,11 @@ public class CommentFirebase {
         });
     }
 
+    public interface OnCreationComment{
+        public void onCompletion(boolean success);
+    }
 
-    public static void addComment(String albumId,Comment comment){
+    public static void addComment(String albumId, Comment comment, final OnCreationComment listener){
         Log.d("TAG", "add comment to firebase");
 
 
@@ -139,8 +142,10 @@ public class CommentFirebase {
                 if (databaseError != null) {
                     Log.e("TAG", "Error: Comment could not be saved "
                             + databaseError.getMessage());
+                    listener.onCompletion(false);
                 } else {
                     Log.e("TAG", "Success : Comment saved successfully.");
+                    listener.onCompletion(true);
 
                 }
             }

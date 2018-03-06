@@ -1,34 +1,33 @@
-package com.example.adima.familyalbumproject.FamiliesModel;
+package com.example.adima.familyalbumproject.User;
 
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.User.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 import Model.Firebase.FirebaseAuthentication;
+import Model.Firebase.ModelFirebase;
 
 /**
- * Created by adima on 05/03/2018.
+ * Created by adima on 06/03/2018.
  */
 
-public class FamiliesFirebase {
-
+public class UserFirebase {
 
     public interface GetKeyListener{
         public void onCompletion(String success);
     }
 
-
-
-    public static void getUserImageUrl(final GetKeyListener listener){
+    public static void getUserImageUrl(final ModelFirebase.GetKeyListener listener){
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        String emailUser = FirebaseAuthentication.getUserEmail();
+        String emailUser = FirebaseAuthentication.getUserEmail().replaceAll("[^A-Za-z]+", "");;
 
 
         DatabaseReference ref= database.getReference("usersProfiles").child(emailUser);
@@ -37,8 +36,9 @@ public class FamiliesFirebase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        User user = snap.getValue(User.class);
-                        listener.onCompletion(user.getImageUrl());
+                    //String url = snap.getValue(String.class);
+                   String url = snap.getValue(String.class);
+                    listener.onCompletion(url);
                 }
             }
 
@@ -53,41 +53,46 @@ public class FamiliesFirebase {
 
     }
 
-    public static void addFamily(final GetKeyListener listener){
-        Log.d("TAG", "add family to firebase");
+    public interface OnCreationUser{
+        public void onCompletion(boolean success);
+    }
+
+    public static void addUserProfilePicture(User user, final OnCreationUser listener){
+        Log.d("TAG", "add user profile picture to firebase");
 
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        final String key = database.getReference("Families").push().getKey();
+        String emailUser = FirebaseAuthentication.getUserEmail().  replaceAll("[^A-Za-z]+", "");;
+        DatabaseReference ref = database.getReference("usersProfiles").child(emailUser);
 
 
-        //HashMap<String, Object> json = album.toJson();
-        //json.put("lastUpdated", ServerValue.TIMESTAMP);
 
-        //DatabaseReference myRef = database.getReference("albums");
+        HashMap<String, Object> json = user.toJson();
 
-        DatabaseReference ref = database.getReference("families").child(key);
+        //DatabaseReference ref = database.getReference("albums").child(albumId).
 
-        ref.setValue(key, new DatabaseReference.CompletionListener() {
+        ref.setValue(json, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if(databaseError!=null){
-                    listener.onCompletion(null);
-                }
-                else{
-                    listener.onCompletion(key);
-                }
+                if (databaseError != null) {
+                    Log.e("TAG", "Error: user could not be saved "
+                            + databaseError.getMessage());
+                    listener.onCompletion(false);
+                } else {
+                    Log.e("TAG", "Success : user saved successfully.");
+                    listener.onCompletion(true);
 
+                }
             }
         });
-        //return key;
         //myRef.child(employee.id).setValue(json);
     }
 
-    public static void removeFamily(String serialNumber) {
+    public static void removeUserImage() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("families").child(serialNumber);
+        String userEmail = FirebaseAuthentication.getUserEmail().  replaceAll("[^A-Za-z]+", "");;
+        DatabaseReference ref = database.getReference("usersProfiles").child(userEmail);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -103,11 +108,5 @@ public class FamiliesFirebase {
             }
         });
     }
-
-
-
-
-
-
 
 }

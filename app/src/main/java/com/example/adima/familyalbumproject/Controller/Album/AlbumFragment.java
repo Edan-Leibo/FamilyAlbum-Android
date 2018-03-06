@@ -90,7 +90,7 @@ public class AlbumFragment extends Fragment {
         view.findViewById(R.id.btn_comments).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // ((MainActivity) getActivity()).showCommentsFragment("-L6qPSRjtlvsIpxwffsp");
+               ((MainActivity) getActivity()).showCommentsFragment(albumId);
             }
         });
 

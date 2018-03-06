@@ -83,7 +83,7 @@ public class AlbumRepository {
         public void setSerialNumber(String serialNumber) {
             this.serialNumber = serialNumber;
         }
-
+        //
         @Override
         protected List<Album> doInBackground(List<Album>[] lists) {
             Log.d("TAG","starting updateAlbumDataInLocalStorage in thread");

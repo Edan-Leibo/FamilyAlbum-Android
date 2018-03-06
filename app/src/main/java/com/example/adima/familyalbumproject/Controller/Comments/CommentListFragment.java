@@ -93,15 +93,32 @@ public class CommentListFragment extends Fragment {
                 {
                     public void onClick(View view)
                     {
-                        String text= commentEditText.getText().toString();
+                        final String text= commentEditText.getText().toString();
                         Log.v("EditText value=", text);
                         commentEditText.setText("");
-                        Comment comment =new Comment();
-                        comment.setText(text);
-                        comment.setAlbumId(albumId);
-                        comment.setUserId("Adi");
-                        comment.setImageUrl("gs://androidfamilyproject.appspot.com/Elza.jpg");
-                        Model.instance().addComment(albumId,comment);
+
+                        Model.instance().getUserProfilePicture(new Model.GetKeyListener() {
+                            @Override
+                            public void onCompletion(String success) {
+                                Comment comment =new Comment();
+                                comment.setText(text);
+                                comment.setAlbumId(albumId);
+                                comment.setUserId("Adi");
+
+                                if(success!=null) {
+                                    String userUrl = success;
+                                    comment.setImageUrl(userUrl);
+                                }
+
+                                Model.instance().addComment(albumId, comment, new Model.OnCreation() {
+                                    @Override
+                                    public void onCompletion(boolean success) {
+                                        Log.d("TAG",""+success);
+                                    }
+                                });
+                            }
+                        });
+
                     }
                 });
 

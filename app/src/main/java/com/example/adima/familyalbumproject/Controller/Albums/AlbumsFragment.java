@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,8 +51,9 @@ public class AlbumsFragment extends Fragment {
     private AlbumsListViewModel albumListViewModel;
 
     public AlbumsFragment() {
-    }
 
+
+    }
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -86,7 +88,10 @@ public class AlbumsFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MyApplication.getMyContext(), i, Toast.LENGTH_SHORT).show();
+               Album album = albumList.get(i);
+                Log.d("TAG","got item number:"+i);
+                ((MainActivity) getActivity()).showAlbumFragment(album.getAlbumId());
+
             }
         });
 

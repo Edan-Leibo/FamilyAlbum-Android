@@ -10,12 +10,30 @@ import com.example.adima.familyalbumproject.Controller.Album.CreateAlbumFragment
 import com.example.adima.familyalbumproject.Controller.Albums.AlbumsFragment;
 import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragment;
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
+import com.example.adima.familyalbumproject.Entities.Image;
 import com.example.adima.familyalbumproject.R;
+
+import Model.Model;
 
 public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentInteractionListener,CommentListFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
+        Image image = new Image();
+        image.setAlbumId("-L6qPSRjtlvsIpxwffsp");
+        image.setName("Adi");
+        image.setImageUrl("gs://androidfamilyproject.appspot.com/harley_quinn.jpg");
+Model.instance().addImage("-L6qPSRjtlvsIpxwffsp",image, new Model.OnCreation() {
+    @Override
+    public void onCompletion(boolean success) {
+
+    }
+});
+
     /*
         Album album= new Album();
         album.setLocation("Brazil");
