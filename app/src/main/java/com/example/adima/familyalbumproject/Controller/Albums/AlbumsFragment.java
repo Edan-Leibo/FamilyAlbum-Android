@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Album.Model.Album;
 import com.example.adima.familyalbumproject.Album.Model.AlbumsListViewModel;
+import com.example.adima.familyalbumproject.Controller.CustomWidgets.ImageProviderButton;
 import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
@@ -44,6 +45,8 @@ import Model.Model;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.adima.familyalbumproject.Controller.CustomWidgets.ImageProviderButton.PICK_IMAGE;
+import static com.example.adima.familyalbumproject.Controller.CustomWidgets.ImageProviderButton.REQUEST_IMAGE_CAPTURE;
 
 
 public class AlbumsFragment extends Fragment {
@@ -84,26 +87,6 @@ public class AlbumsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-
-    static final int REQUEST_IMAGE_CAPTURE = 0;
-    static final int PICK_IMAGE = 1;
-
-
-    private void dispatchGetPictureFromGalleryIntent() {
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (pickPhoto.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(pickPhoto, PICK_IMAGE);
-        }
-    }
-
-    private void dispatchTakePictureIntent() {
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
     }
 
     @Override
@@ -201,36 +184,8 @@ public class AlbumsFragment extends Fragment {
             }
         });
 
-        Button buttonEditPhoto = (Button) view.findViewById(R.id.btn_edit_photo
-        );
-        buttonEditPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        ImageProviderButton buttonEditPhoto = (ImageProviderButton) view.findViewById(R.id.btn_edit_photo);
 
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                alertDialogBuilder.setMessage("Where do you want to take the profile photo from?\n");
-                alertDialogBuilder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dispatchTakePictureIntent();
-                    }
-                });
-                alertDialogBuilder.setNeutralButton("Gallery", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dispatchGetPictureFromGalleryIntent();
-                    }
-                });
-                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-
-            }
-        });
 
         if (familySerial == "NONE") {
             buttonAdd.setEnabled(false);
