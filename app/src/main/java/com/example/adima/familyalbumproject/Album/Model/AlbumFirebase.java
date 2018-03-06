@@ -173,6 +173,7 @@ public class AlbumFirebase {
 
 
     public static void addAlbum(Album album,String serialNumber){
+
         Log.d("TAG", "add album to firebase");
 
 
@@ -189,12 +190,44 @@ public class AlbumFirebase {
 
         //DatabaseReference myRef = database.getReference("albums");
 
-
-
         DatabaseReference ref = database.getReference("albums").child(serialNumber).child(album.albumId);
+        ref.setValue(json, new DatabaseReference.CompletionListener() {
 
-        ref.setValue(json);
+
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e("TAG", "Error: Album could not be saved "
+                            + databaseError.getMessage());
+                } else {
+                    Log.e("TAG", "Success : Album saved successfully.");
+
+                }
+            }
+        });
+        //ref.setValue(json);
         //myRef.child(employee.id).setValue(json);
+    }
+
+    public static void removeAlbum(String albumId,String serialNumber){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("albums").child(serialNumber).child(albumId);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                    snap.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("TAG", "onCancelled", databaseError.toException());
+            }
+        });
+
+
     }
 
 

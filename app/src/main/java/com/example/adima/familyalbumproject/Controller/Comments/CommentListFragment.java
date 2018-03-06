@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,12 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.adima.familyalbumproject.Album.Model.Album;
 import com.example.adima.familyalbumproject.Comment.Model.Comment;
 import com.example.adima.familyalbumproject.Comment.Model.CommentListViewModel;
 import com.example.adima.familyalbumproject.Controller.MainActivity;
@@ -66,11 +66,17 @@ public class CommentListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
 
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
         view.findViewById(R.id.btn_exit).setOnClickListener(new View.OnClickListener() {
@@ -79,6 +85,26 @@ public class CommentListFragment extends Fragment {
                 ((MainActivity) getActivity()).showAlbumFragment(albumId);
             }
         });
+        Button  commentBtn = view.findViewById(R.id.comment_btn);
+        final EditText commentEditText   = view.findViewById(R.id.editText_comment);
+
+        commentBtn .setOnClickListener(
+                new View.OnClickListener()
+                {
+                    public void onClick(View view)
+                    {
+                        String text= commentEditText.getText().toString();
+                        Log.v("EditText value=", text);
+                        commentEditText.setText("");
+                        Comment comment =new Comment();
+                        comment.setText(text);
+                        comment.setAlbumId(albumId);
+                        comment.setUserId("Adi");
+                        comment.setImageUrl("gs://androidfamilyproject.appspot.com/Elza.jpg");
+                        Model.instance().addComment(albumId,comment);
+                    }
+                });
+
         ListView list = view.findViewById(R.id.comment_listView);
         adapter = new CommentListAdapter();
         list.setAdapter(adapter);

@@ -2,8 +2,11 @@ package com.example.adima.familyalbumproject.FamiliesModel;
 
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by adima on 05/03/2018.
@@ -11,13 +14,18 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class FamiliesFirebase {
 
-    public static String addFamily(){
+
+    public interface GetKeyListener{
+        public void onCompletion(String success);
+    }
+
+    public static void addFamily(final GetKeyListener listener){
         Log.d("TAG", "add family to firebase");
 
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        String key = database.getReference("Families").push().getKey();
+        final String key = database.getReference("Families").push().getKey();
 
 
         //HashMap<String, Object> json = album.toJson();
@@ -27,9 +35,39 @@ public class FamiliesFirebase {
 
         DatabaseReference ref = database.getReference("families").child(key);
 
-        ref.setValue(key);
-        return key;
+        ref.setValue(key, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError!=null){
+                    listener.onCompletion(null);
+                }
+                else{
+                    listener.onCompletion(key);
+                }
+
+            }
+        });
+        //return key;
         //myRef.child(employee.id).setValue(json);
+    }
+
+    public static void removeFamily(String serialNumber) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("families").child(serialNumber);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    snap.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("TAG", "onCancelled", databaseError.toException());
+            }
+        });
     }
 
 

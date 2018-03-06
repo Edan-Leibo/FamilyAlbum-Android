@@ -1,6 +1,7 @@
 package Model;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -9,7 +10,8 @@ import android.util.Log;
 import android.webkit.URLUtil;
 
 import com.example.adima.familyalbumproject.Album.Model.Album;
-import com.example.adima.familyalbumproject.FamiliesModel.FamiliesFirebase;
+import com.example.adima.familyalbumproject.Comment.Model.Comment;
+import com.example.adima.familyalbumproject.Entities.Image;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.io.File;
@@ -24,6 +26,8 @@ import java.util.List;
 import Model.Firebase.DatabaseFirebase;
 import Model.Firebase.ModelFirebase;
 import Model.SQL.ModelSql;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by adima on 01/03/2018.
@@ -49,12 +53,12 @@ public class Model {
     public static Model instance() {
         return instance;
     }
-
+/*
     public void addAlbum(Album album) {
         modelFirebase.addAlbum(album);
 
     }
-
+*/
     public void getAlbums() {
        this.modelFirebase.databaseFirebase.getAlbums(new DatabaseFirebase.GetAlbumsListener() {
             @Override
@@ -65,6 +69,13 @@ public class Model {
 
 
 
+    }
+
+    public void writeToSharedPreferences(String name, String key, String value) {
+        SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences(name,MODE_PRIVATE);
+        SharedPreferences.Editor ed = ref.edit();
+        ed.putString(key, value);
+        ed.commit();
     }
 
 
@@ -226,13 +237,56 @@ public class Model {
         MyApplication.getMyContext().sendBroadcast(mediaScanIntent);
     }
 
-    public String addFamilyToFirebase(){
-        String key= FamiliesFirebase.addFamily();
-        return key;
+
+
+    public void addAlbumToFirebase(Album album,String serialNumber){
+        this.modelFirebase.addAlbum(album,serialNumber);
+    }
+
+    public void addComment(String albumId,Comment comment){
+        this.modelFirebase.addComment(albumId,comment);
+    }
+
+    public void addImage(String albumId,Image image){
+        this.modelFirebase.addImage(albumId,image);
+
+    }
+
+    public interface GetKeyListener{
+        public void onCompletion(String success);
+    }
+
+    public void addNewFamily(final GetKeyListener listener){
+        modelFirebase.addNewFamily(new GetKeyListener() {
+            @Override
+            public void onCompletion(String success) {
+                listener.onCompletion(success);
+            }
+        });
+
+
+    }
+
+    public void removeAlbum(String albumId,String serialNumber){
+        this.modelFirebase.removeAlbum(albumId,serialNumber);
+
+
+    }
+
+    public  void removeComment(String albumId,String commentId) {
+        this.modelFirebase.removeComment(albumId,commentId);
+    }
+
+
+    public  void removeFamily(String serialNumber) {
+        this.modelFirebase.removeFamily(serialNumber);
+    }
+
+    public  void removeImage(String albumId,String imageId) {
+        this.modelFirebase.removeImage(albumId,imageId);
     }
 
 
 
 
-
-}
+    }

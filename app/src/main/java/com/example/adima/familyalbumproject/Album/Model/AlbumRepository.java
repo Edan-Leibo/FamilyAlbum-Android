@@ -47,7 +47,6 @@ public class AlbumRepository {
 
     public LiveData<List<Album>> getAllAlbums(final String serialNumber) {
         synchronized (this) {
-            if (albumsListliveData == null) {
                 albumsListliveData = new MutableLiveData<List<Album>>();
 
                 //1. get the last update date
@@ -67,30 +66,6 @@ public class AlbumRepository {
                         updateAlbumDataInLocalStorage(data,serialNumber);
                     }
                 });
-
-/*
-
-                //2. get all students records that where updated since last update date
-                AlbumFirebase.getAllAlbumsAndObserve(lastUpdateDate, new AlbumFirebase.Callback<List<Album>>() {
-                    @Override
-                    public void onComplete(List<Album> data) {
-                        Log.d("TAG","got the data in Album repository");
-                        for(Album album : data){
-                            Log.d("TAG","got the data in Album repository"+album.name);
-                            Log.d("TAG","got the data in Album repository"+album.location);
-                            Log.d("TAG","got the data in Album repository"+album.serialNumber);
-
-                            Log.d("TAG","got the data in Album repository"+album.date);
-
-
-
-                        }
-                        //updateEmployeeDataInLocalStorage(data);
-                    }
-                });
-                */
-
-            }
         }
         return albumsListliveData;
     }

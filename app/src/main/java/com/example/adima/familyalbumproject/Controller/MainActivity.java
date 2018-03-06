@@ -12,17 +12,40 @@ import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragm
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
 import com.example.adima.familyalbumproject.R;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentInteractionListener,CommentListFragment.OnFragmentInteractionListener {
-
-    private List<Album> albums;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+    /*
+        Album album= new Album();
+        album.setLocation("Brazil");
+        album.setName("Edan");
+        album.setDate("30.3.18");
+        album.setSerialNumber("-L6pJC5npal1cbekV32m");
 
-         super.onCreate(savedInstanceState);
+            Model.instance().addAlbumToFirebase(album,"-L6pJC5npal1cbekV32m");
+*/
+    /*
+Comment comment= new Comment();
+comment.setUserId("Adi");
+comment.setAlbumId("-L6qPSRjtlvsIpxwffsp");
+comment.setText("I want to sleep");
+
+Model.instance().addComment("-L6qPSRjtlvsIpxwffsp",comment);
+*/
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*DELETE
+
+
+        SharedPreferences ref =
+                getSharedPreferences("familyInfo",MODE_PRIVATE);
+
+        SharedPreferences.Editor ed = ref.edit();
+        ed.putString("FAMILY_SERIAL", "-L6pJ7h5JSIjz-WQctTl");
+        ed.commit();
+        */
         showLoginFragment();
 
     }
@@ -39,13 +62,13 @@ public class MainActivity extends AppCompatActivity implements AlbumsFragment.On
     public void showAlbumsFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, AlbumsFragment.newInstance(albums))
+                .replace(R.id.container, AlbumsFragment.newInstance())
                 .commit();
     }
 
     public void showCreateAlbumFragment() {
         getSupportFragmentManager()
-                .beginTransaction()
+                .beginTransaction()//.remove(getFragmentManager().getFragments())
                 .replace(R.id.container, new CreateAlbumFragment())
                 .commit();
     }

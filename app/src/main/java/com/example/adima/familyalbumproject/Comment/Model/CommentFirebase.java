@@ -133,7 +133,38 @@ public class CommentFirebase {
         //DatabaseReference ref = database.getReference("albums").child(albumId).
         DatabaseReference ref = database.getReference("comments").child(albumId).child(comment.getCommentId());
 
-        ref.setValue(json);
+        ref.setValue(json, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e("TAG", "Error: Comment could not be saved "
+                            + databaseError.getMessage());
+                } else {
+                    Log.e("TAG", "Success : Comment saved successfully.");
+
+                }
+            }
+        });
+
+        //ref.setValue(json);
         //myRef.child(employee.id).setValue(json);
+    }
+    public static void removeComment(String albumId,String commentId) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("comments").child(albumId).child(commentId);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    snap.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("TAG", "onCancelled", databaseError.toException());
+            }
+        });
     }
 }

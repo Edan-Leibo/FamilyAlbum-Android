@@ -3,14 +3,20 @@ package com.example.adima.familyalbumproject.Controller.Albums;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,12 +31,15 @@ import com.example.adima.familyalbumproject.R;
 import java.util.LinkedList;
 import java.util.List;
 
-import static android.content.Context.MODE_PRIVATE;
+import Model.Firebase.FirebaseAuthentication;
+import Model.Model;
 
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class AlbumsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+    ListView albumsListView;
 
     private static List<Album> albumList = new LinkedList<>();
     AlbumListAdapter adapter;
@@ -54,7 +63,7 @@ public class AlbumsFragment extends Fragment {
         AlbumsFragment fragment = new AlbumsFragment();
         //getFamilyID
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
-        familySerial = ref.getString(FAMILY_SERIAL,"NONE");
+        familySerial = ref.getString(FAMILY_SERIAL, "NONE");
         Bundle args = new Bundle();
         args.putString(FAMILY_SERIAL, familySerial);
         fragment.setArguments(args);
@@ -73,33 +82,140 @@ public class AlbumsFragment extends Fragment {
         ListView list = view.findViewById(R.id.albums_list);
         adapter = new AlbumListAdapter();
         list.setAdapter(adapter);
-        view.findViewById(R.id.btn_exit).setOnClickListener(new View.OnClickListener() {
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).showLoginFragment();
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(MyApplication.getMyContext(), i, Toast.LENGTH_SHORT).show();
             }
         });
 
-        view.findViewById(R.id.btn_add).setOnClickListener(new View.OnClickListener() {
+
+        Button buttonAdd = (Button) view.findViewById(R.id.btn_add_album);
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //((MainActivity) getActivity()).showCreateAlbumFragment();
-                //((MainActivity) getActivity()).showCommentsFragment("-L6lY_t5pKGBZTTzoeJ0");
-                ((MainActivity) getActivity()).showAlbumFragment();
+                ((MainActivity) getActivity()).showCreateAlbumFragment();
+            }
+        });
+
+
+        Button buttonGetSerial = (Button) view.findViewById(R.id.btn_get_family_serial);
+        buttonGetSerial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder.setMessage("This is your family serial\nShare it with your other family members:\n" + familySerial);
+                alertDialogBuilder.setNeutralButton("Got it!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+            }
+        });
+
+        if (familySerial == "NONE") {
+            buttonAdd.setEnabled(false);
+            buttonGetSerial.setEnabled(false);
+            Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_SHORT).show();
+        } else {
+            buttonAdd.setEnabled(true);
+            buttonGetSerial.setEnabled(true);
+        }
+
+        view.findViewById(R.id.btn_join_family).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder.setMessage("Please enter the family's serial number\n");
+                final EditText input = new EditText(getContext());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                alertDialogBuilder.setView(input);
+                alertDialogBuilder.setNeutralButton("Connect me", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        final String serial = input.getText().toString();
+                        Model.instance().isFamilyExist(serial, new Model.IsFamilyExistCallback() {
+                            @Override
+                            public void onComplete(boolean exist) {
+                                if (exist == true) {
+                                    //albumListViewModel.init(familySerial);
+                                    //adapter.notifyDataSetChanged();
+                                    //albumListViewModel.getAlbumList().removeObserver(getLifecycle().getCurrentState());
+                                    Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, serial);
+                                    ((MainActivity) getActivity()).showAlbumsFragment();
+
+                                } else {
+                                    Toast.makeText(MyApplication.getMyContext(), "Serial does not exist", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            @Override
+                            public void onCancel () {
+
+                            }
+                        });
+
+                        }
+                    });
+
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                //Toast.makeText(MyApplication.getMyContext(), "You are not connected to a family", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        view.findViewById(R.id.btn_create_family).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //((MainActivity) getActivity()).showLoginFragment();
+               // ((MainActivity) getActivity()).showCommentsFragment("-L6qPSRjtlvsIpxwffsp");
+                Model.instance().addNewFamily(new Model.GetKeyListener() {
+                    @Override
+                    public void onCompletion(String success) {
+                        if(success==null){
+                            Toast.makeText(MyApplication.getMyContext(), "Creation of family album failed", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            familySerial=success;
+                            Toast.makeText(MyApplication.getMyContext(), "New family album created", Toast.LENGTH_SHORT).show();
+                            Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL,success);
+                            ((MainActivity) getActivity()).showAlbumsFragment();
+                        }
+                    }
+                });
+            }
+        });
+
+        view.findViewById(R.id.btn_albums_exit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+                FirebaseAuthentication.signOut();
+                progressBar.setVisibility(View.GONE);
+                ((MainActivity) getActivity()).showLoginFragment();
             }
         });
 
         progressBar = view.findViewById(R.id.album_list_progressbar);
         progressBar.setVisibility(View.GONE);
 
-        if (familySerial.equals("NONE")){
+        /*if (familySerial.equals("NONE")){
             Toast.makeText(MyApplication.getMyContext(), "You are not connected to a family", Toast.LENGTH_SHORT).show();
-        }
+        }*/
         return view;
     }
 
     @Override
     public void onAttach(Context context) {
+
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -111,15 +227,17 @@ public class AlbumsFragment extends Fragment {
         familySerial = args.getString(FAMILY_SERIAL, "NONE");
 
         this.albumListViewModel = ViewModelProviders.of(this).get(AlbumsListViewModel.class);
-
-        albumListViewModel.init("");
+        //familySerial="-L6pJ7h5JSIjz-WQctTl";
+        this.albumListViewModel.init(familySerial);
         albumListViewModel.getAlbumList().observe(this, new Observer<List<Album>>() {
             @Override
             public void onChanged(@Nullable List<Album> albums) {
-                if (albumList.size()>0) {
+                //if (albums.size() > 0) {
                     albumList = albums;
                     if (adapter != null) adapter.notifyDataSetChanged();
-                }
+                //} else {
+                  //
+                //}
             }
         });
     }
@@ -127,6 +245,8 @@ public class AlbumsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
+
         mListener = null;
     }
 
@@ -143,6 +263,7 @@ public class AlbumsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onItemSelected(Album album);
     }
+
 
     class AlbumListAdapter extends BaseAdapter {
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -164,8 +285,8 @@ public class AlbumsFragment extends Fragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null){   //On creation
-                convertView = inflater.inflate(R.layout.album_list_row,null);
+            if (convertView == null) {   //On creation
+                convertView = inflater.inflate(R.layout.album_list_row, null);
             }
 
             TextView albumName = (TextView) convertView.findViewById(R.id.album_list_row_name);
@@ -180,4 +301,5 @@ public class AlbumsFragment extends Fragment {
             return convertView;
         }
     }
+
 }

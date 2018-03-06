@@ -16,5 +16,6 @@
     <string name="btn_add_album">Add Album</string>
     <string name="btn_get_family_serial">Get Serial</string>
     <string name="btn_create_family">Create Family</string>
+    <string name="btn_join_family">Join</string>
 
 </resources>

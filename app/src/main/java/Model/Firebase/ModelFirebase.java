@@ -6,6 +6,12 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.adima.familyalbumproject.Album.Model.Album;
+import com.example.adima.familyalbumproject.Album.Model.AlbumFirebase;
+import com.example.adima.familyalbumproject.Comment.Model.Comment;
+import com.example.adima.familyalbumproject.Comment.Model.CommentFirebase;
+import com.example.adima.familyalbumproject.Entities.Image;
+import com.example.adima.familyalbumproject.FamiliesModel.FamiliesFirebase;
+import com.example.adima.familyalbumproject.ImageUrl.Model.ImageFirebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -36,16 +42,33 @@ public class ModelFirebase {
 
     }
 
-    public void addAlbum(Album album){
-        this.databaseFirebase.addAlbum(album);
+    public void addAlbum(Album album,String serialNumber){
+        //this.databaseFirebase.addAlbum(album);
+        AlbumFirebase.addAlbum(album,serialNumber);
 
 
     }
 
+    public void addComment(String albumId,Comment comment){
+        CommentFirebase.addComment(albumId,comment);
+
+    }
+
+    public void addImage(String albumId,Image image){
+        ImageFirebase.addImage(albumId,image);
+    }
     public interface GetAllAlbumsAndObserveCallback {
         void onComplete(List<Album> list);
         void onCancel();
     }
+    public interface GetKeyListener{
+        public void onCompletion(String success);
+    }
+
+
+
+
+
 
     /*
     public interface GetAllImageUrlsAndObserveCallback{
@@ -63,6 +86,17 @@ public class ModelFirebase {
         void onComplete(boolean exist);
         void onCancel();
     }
+
+        public void addNewFamily(final Model.GetKeyListener listener) {
+
+           FamiliesFirebase.addFamily(new FamiliesFirebase.GetKeyListener() {
+                @Override
+                public void onCompletion(String success) {
+                    listener.onCompletion(success);
+                }
+            });
+        }
+
 
 
     public void isFamilyExist(final String serialNumber,final IsFamilyExistCallback callback){
@@ -174,7 +208,24 @@ public class ModelFirebase {
     }
 
 
+    public void removeAlbum(String albumId,String serialNumber){
+        AlbumFirebase.removeAlbum(albumId,serialNumber);
+    }
+
+    public  void removeComment(String albumId,String commentId) {
+        CommentFirebase.removeComment(albumId,commentId);
+    }
+
+    public  void removeFamily(String serialNumber) {
+        FamiliesFirebase.removeFamily(serialNumber);
+    }
+    public  void removeImage(String albumId,String imageId) {
+        ImageFirebase.removeImage(albumId,imageId);
+    }
 
 
 
-}
+
+
+
+    }
