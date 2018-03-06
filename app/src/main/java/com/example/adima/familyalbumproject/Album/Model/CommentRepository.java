@@ -28,7 +28,7 @@ public class CommentRepository {
 
     public LiveData<List<Comment>> getCommentsList(String albumId) {
         synchronized (this) {
-            if (commentsListliveData == null) {
+          //  if (commentsListliveData == null) {
                 Log.d("TAG", "comment live data is null");
 
                 commentsListliveData = new MutableLiveData<List<Comment>>();
@@ -45,13 +45,13 @@ public class CommentRepository {
 
 
             }
-        }
+       // }
         return commentsListliveData;
     }
 
     public LiveData<List<Comment>> getAllComments(final String albumId) {
         synchronized (this) {
-            if (commentsListliveData == null) {
+           // if (commentsListliveData == null) {
                 Log.d("TAG","Live data is null");
                 commentsListliveData = new MutableLiveData<List<Comment>>();
 
@@ -75,7 +75,7 @@ public class CommentRepository {
 
 
             }
-        }
+       // }
         return commentsListliveData;
     }
 

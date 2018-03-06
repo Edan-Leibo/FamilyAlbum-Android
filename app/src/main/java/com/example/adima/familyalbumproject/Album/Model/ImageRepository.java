@@ -28,7 +28,7 @@ public class ImageRepository {
 
     public LiveData<List<Image>> getImagesList(String albumId) {
         synchronized (this) {
-            if (imagesListliveData == null) {
+            //if (imagesListliveData == null) {
                 Log.d("TAG", "images live data is null");
 
                 imagesListliveData = new MutableLiveData<List<Image>>();
@@ -44,14 +44,14 @@ public class ImageRepository {
                 });
 
 
-            }
+            //}
         }
         return imagesListliveData;
     }
 
         public LiveData<List<Image>> getAllImages(final String albumId) {
             synchronized (this) {
-                if (imagesListliveData == null) {
+               // if (imagesListliveData == null) {
                     Log.d("TAG", "Live data is null");
                     imagesListliveData = new MutableLiveData<List<Image>>();
 
@@ -74,7 +74,7 @@ public class ImageRepository {
                 }
                 return imagesListliveData;
             }
-        }
+       // }
 
     private void updateImageDataInLocalStorage(List<Image> data,String albumId) {
         Log.d("TAG", "got items from firebase: " + data.size());

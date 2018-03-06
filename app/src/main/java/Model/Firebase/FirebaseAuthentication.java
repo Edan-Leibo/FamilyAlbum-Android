@@ -27,7 +27,6 @@ public class FirebaseAuthentication {
                     // Sign in success
                     user = mAuth.getCurrentUser();
                     userEmail = user.getEmail(); //set the User's Email
-
                     callback.onLogin(true);
 
                 } else {

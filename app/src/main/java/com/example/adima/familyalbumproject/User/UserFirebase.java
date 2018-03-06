@@ -10,6 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
+import Model.Firebase.FirebaseAuthentication;
 import Model.Firebase.ModelFirebase;
 
 /**
@@ -26,16 +27,17 @@ public class UserFirebase {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        //String emailUser = FirebaseAuthentication.getUserEmail();
+        String emailUser = FirebaseAuthentication.getUserEmail().replaceAll("[^A-Za-z]+", "");;
 
 
-        DatabaseReference ref= database.getReference("usersProfiles").child("adi");
+        DatabaseReference ref= database.getReference("usersProfiles").child(emailUser);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    String url = snap.getValue(String.class);
+                    //String url = snap.getValue(String.class);
+                   String url = snap.getValue(String.class);
                     listener.onCompletion(url);
                 }
             }
@@ -51,15 +53,18 @@ public class UserFirebase {
 
     }
 
+    public interface OnCreationUser{
+        public void onCompletion(boolean success);
+    }
 
-    public static void addUserProfilePicture(User user){
+    public static void addUserProfilePicture(User user, final OnCreationUser listener){
         Log.d("TAG", "add user profile picture to firebase");
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        //String userName = FirebaseAuthentication.getUserEmail();
-        DatabaseReference ref = database.getReference("usersProfiles").child("adi");
+        String emailUser = FirebaseAuthentication.getUserEmail().  replaceAll("[^A-Za-z]+", "");;
+        DatabaseReference ref = database.getReference("usersProfiles").child(emailUser);
 
 
 
@@ -73,8 +78,10 @@ public class UserFirebase {
                 if (databaseError != null) {
                     Log.e("TAG", "Error: user could not be saved "
                             + databaseError.getMessage());
+                    listener.onCompletion(false);
                 } else {
                     Log.e("TAG", "Success : user saved successfully.");
+                    listener.onCompletion(true);
 
                 }
             }
@@ -84,8 +91,8 @@ public class UserFirebase {
 
     public static void removeUserImage() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //String userName = FirebaseAuthentication.getUserEmail();
-        DatabaseReference ref = database.getReference("usersProfiles").child("adi");
+        String userEmail = FirebaseAuthentication.getUserEmail().  replaceAll("[^A-Za-z]+", "");;
+        DatabaseReference ref = database.getReference("usersProfiles").child(userEmail);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

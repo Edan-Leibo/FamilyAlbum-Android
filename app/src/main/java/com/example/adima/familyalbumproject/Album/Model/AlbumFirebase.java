@@ -172,7 +172,11 @@ public class AlbumFirebase {
     }
 
 
-    public static void addAlbum(Album album,String serialNumber){
+    public interface OnCreationAlbum{
+        public void onCompletion(boolean success);
+    }
+
+    public static void addAlbum(Album album, String serialNumber, final OnCreationAlbum listener){
 
         Log.d("TAG", "add album to firebase");
 
@@ -199,7 +203,9 @@ public class AlbumFirebase {
                 if (databaseError != null) {
                     Log.e("TAG", "Error: Album could not be saved "
                             + databaseError.getMessage());
+                    listener.onCompletion(false);
                 } else {
+                    listener.onCompletion(true);
                     Log.e("TAG", "Success : Album saved successfully.");
 
                 }

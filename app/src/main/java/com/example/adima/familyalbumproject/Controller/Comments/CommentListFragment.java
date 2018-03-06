@@ -110,7 +110,12 @@ public class CommentListFragment extends Fragment {
                                     comment.setImageUrl(userUrl);
                                 }
 
-                                Model.instance().addComment(albumId,comment);
+                                Model.instance().addComment(albumId, comment, new Model.OnCreation() {
+                                    @Override
+                                    public void onCompletion(boolean success) {
+                                        Log.d("TAG",""+success);
+                                    }
+                                });
                             }
                         });
 

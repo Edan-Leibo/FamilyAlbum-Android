@@ -38,6 +38,7 @@ public class Model {
 
     private static Model instance = new Model();
 
+    private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
 
     ModelFirebase modelFirebase;
     ModelSql modelSql;
@@ -72,8 +73,19 @@ public class Model {
 
     }
 
-    public void addUserProfilePicture(User user){
-        this.modelFirebase.addUserProfilePicture(user);
+    public String getFamilySerialFromSharedPrefrences(String familyInfo, String familySerial) {
+        SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
+        familySerial = ref.getString(FAMILY_SERIAL, "NONE");
+        return familySerial;
+    }
+
+    public void addUserProfilePicture(User user, final OnCreation listener){
+        this.modelFirebase.addUserProfilePicture(user, new ModelFirebase.OnCreation() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
     }
     public void writeToSharedPreferences(String name, String key, String value) {
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences(name,MODE_PRIVATE);
@@ -243,16 +255,23 @@ public class Model {
 
 
 
-    public void addAlbumToFirebase(Album album,String serialNumber){
-        this.modelFirebase.addAlbum(album,serialNumber);
+
+    public void addComment(String albumId, Comment comment, final OnCreation listener){
+        this.modelFirebase.addComment(albumId, comment, new ModelFirebase.OnCreation() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
     }
 
-    public void addComment(String albumId,Comment comment){
-        this.modelFirebase.addComment(albumId,comment);
-    }
-
-    public void addImage(String albumId,Image image){
-        this.modelFirebase.addImage(albumId,image);
+    public void addImage(String albumId, Image image, final OnCreation listener){
+        this.modelFirebase.addImage(albumId, image, new ModelFirebase.OnCreation() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
 
     }
 
@@ -264,6 +283,22 @@ public class Model {
         modelFirebase.addNewFamily(new GetKeyListener() {
             @Override
             public void onCompletion(String success) {
+                listener.onCompletion(success);
+            }
+        });
+
+
+    }
+
+    public interface OnCreation{
+        public void onCompletion(boolean success);
+    }
+
+    public void addAlbum(Album album, String serialNumber, final OnCreation listener) {
+        //this.databaseFirebase.addAlbum(album);
+        modelFirebase.addAlbum(album, serialNumber, new ModelFirebase.OnCreation() {
+            @Override
+            public void onCompletion(boolean success) {
                 listener.onCompletion(success);
             }
         });

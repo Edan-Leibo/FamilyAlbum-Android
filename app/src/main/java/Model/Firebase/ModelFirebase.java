@@ -44,20 +44,25 @@ public class ModelFirebase {
 
     }
 
-    public void addAlbum(Album album,String serialNumber){
-        //this.databaseFirebase.addAlbum(album);
-        AlbumFirebase.addAlbum(album,serialNumber);
 
+
+    public void addComment(String albumId, Comment comment, final OnCreation listener){
+        CommentFirebase.addComment(albumId, comment, new CommentFirebase.OnCreationComment() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
 
     }
 
-    public void addComment(String albumId,Comment comment){
-        CommentFirebase.addComment(albumId,comment);
-
-    }
-
-    public void addImage(String albumId,Image image){
-        ImageFirebase.addImage(albumId,image);
+    public void addImage(String albumId, Image image, final OnCreation listener){
+        ImageFirebase.addImage(albumId, image, new ImageFirebase.OnCreationImage() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
     }
     public interface GetAllAlbumsAndObserveCallback {
         void onComplete(List<Album> list);
@@ -96,6 +101,22 @@ public class ModelFirebase {
     public interface IsFamilyExistCallback{
         void onComplete(boolean exist);
         void onCancel();
+    }
+
+    public interface OnCreation{
+        public void onCompletion(boolean success);
+    }
+
+    public void addAlbum(Album album, String serialNumber, final OnCreation listener){
+        //this.databaseFirebase.addAlbum(album);
+        AlbumFirebase.addAlbum(album, serialNumber, new AlbumFirebase.OnCreationAlbum() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
+
+
     }
 
         public void addNewFamily(final Model.GetKeyListener listener) {
@@ -201,6 +222,7 @@ public class ModelFirebase {
 
     public void getImage(String url, final Model.GetImageListener listener){
         FirebaseStorage storage = FirebaseStorage.getInstance();
+        Log.d("TAGGGGG","the url is"+url);
         StorageReference httpsReference = storage.getReferenceFromUrl(url);
         final long ONE_MEGABYTE = 1024 * 1024;
         httpsReference.getBytes(3* ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -233,8 +255,13 @@ public class ModelFirebase {
     public  void removeImage(String albumId,String imageId) {
         ImageFirebase.removeImage(albumId,imageId);
     }
-    public void addUserProfilePicture(User user){
-        UserFirebase.addUserProfilePicture(user);
+    public void addUserProfilePicture(User user, final OnCreation listener){
+        UserFirebase.addUserProfilePicture(user, new UserFirebase.OnCreationUser() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
     }
 
 

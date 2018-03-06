@@ -60,7 +60,7 @@ public class User {
         HashMap<String, Object> result = new HashMap<>();
 
         result.put("imageUrl", imageUrl);
-        result.put("emailUser", emailUser);
+       // result.put("emailUser", emailUser);
 
 
         return result;

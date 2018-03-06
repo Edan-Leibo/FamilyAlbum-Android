@@ -108,8 +108,11 @@ public class ImageFirebase {
         });
     }
 
+    public interface OnCreationImage{
+        public void onCompletion(boolean success);
+    }
 
-    public static void addImage(String albumId,Image image){
+    public static void addImage(String albumId, Image image, final OnCreationImage listener){
         Log.d("TAG", "add image to firebase");
 
 
@@ -138,8 +141,10 @@ public class ImageFirebase {
                 if (databaseError != null) {
                     Log.e("TAG", "Error: Image could not be saved "
                             + databaseError.getMessage());
+                    listener.onCompletion(false);
                 } else {
                     Log.e("TAG", "Success : Image saved successfully.");
+                    listener.onCompletion(true);
 
                 }
             }
