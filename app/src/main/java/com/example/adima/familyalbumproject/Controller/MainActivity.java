@@ -16,6 +16,15 @@ public class MainActivity extends AppCompatActivity implements AlbumsFragment.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+/*
+
+        Image image = new Image();
+        image.setAlbumId("-L6qPSRjtlvsIpxwffsp");
+        image.setName("Adi");
+        image.setImageUrl("gs://androidfamilyproject.appspot.com/harley_quinn.jpg");
+
+
+        ImageFirebase.addImage("-L6qPSRjtlvsIpxwffsp",image);
     /*
         Album album= new Album();
         album.setLocation("Brazil");

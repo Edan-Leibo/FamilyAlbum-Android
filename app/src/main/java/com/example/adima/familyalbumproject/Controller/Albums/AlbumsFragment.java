@@ -89,6 +89,8 @@ public class AlbumsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                Album album = albumList.get(i);
                 Log.d("TAG","got item number:"+i);
+                ((MainActivity) getActivity()).showAlbumFragment(album.getAlbumId());
+
             }
         });
 
