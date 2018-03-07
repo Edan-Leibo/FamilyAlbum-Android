@@ -65,11 +65,10 @@ public class AlbumFragment extends Fragment {
     public interface OnFragmentAlbumInteractionListener {
 
         void showAlbumsFragment();
+
         void showCommentsFragment(String albumId);
 
     }
-
-
 
 
     /**
@@ -107,7 +106,7 @@ public class AlbumFragment extends Fragment {
                 mListener.showAlbumsFragment();
                 return true;
             case R.id.btn_comments:
-               mListener.showCommentsFragment(albumId);
+                mListener.showCommentsFragment(albumId);
                 return true;
             case R.id.fragment_album_btn_add:
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
@@ -116,12 +115,14 @@ public class AlbumFragment extends Fragment {
                 alertDialogBuilder.setPositiveButton("From camera", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        progressBar.setVisibility(View.VISIBLE);
                         dispatchTakePictureIntent();
                     }
                 });
                 alertDialogBuilder.setNegativeButton("From Gallery", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        progressBar.setVisibility(View.VISIBLE);
                         dispatchGetPictureFromGalleryIntent();
                     }
                 });
@@ -158,17 +159,16 @@ public class AlbumFragment extends Fragment {
                 alertDialogBuilder.setMessage("Delete the photo?").setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
+                                progressBar.setVisibility(View.VISIBLE);
                                 Model.instance().removeImage(image, new Model.OnRemove() {
                                     @Override
                                     public void onCompletion(boolean success) {
-                                        if (success==true){
+                                        if (success == true) {
                                             Toast.makeText(MyApplication.getMyContext(), "Successfully deleted", Toast.LENGTH_SHORT).show();
-                                        }
-                                        else{
+                                        } else {
                                             Toast.makeText(MyApplication.getMyContext(), "could not delete the image", Toast.LENGTH_SHORT).show();
                                         }
-
+                                        progressBar.setVisibility(View.GONE);
                                     }
                                 });
                             }
@@ -278,6 +278,7 @@ public class AlbumFragment extends Fragment {
                             } else {
                                 Toast.makeText(MyApplication.getMyContext(), "Failed to add photo to album", Toast.LENGTH_SHORT).show();
                             }
+                            progressBar.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -285,10 +286,11 @@ public class AlbumFragment extends Fragment {
                 @Override
                 public void fail() {
                     Toast.makeText(MyApplication.getMyContext(), "Failed to add the photo", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         } else {
-            Toast.makeText(MyApplication.getMyContext(), "Failed to save the photo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApplication.getMyContext(), "Photo was not added", Toast.LENGTH_SHORT).show();
         }
     }
 
