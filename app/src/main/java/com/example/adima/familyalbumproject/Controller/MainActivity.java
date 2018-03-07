@@ -66,10 +66,7 @@ Model.instance().addComment("-L6qPSRjtlvsIpxwffsp",comment);
         ed.commit();
         */
         showLoginFragment();
-
     }
-
-
 
     public void showLoginFragment() {
         getSupportFragmentManager()
@@ -112,12 +109,6 @@ Model.instance().addComment("-L6qPSRjtlvsIpxwffsp",comment);
                 .commit();
     }
 
-
-
-    @Override
-    public void onItemSelected(Album album) {
-
-    }
 
     @Override
     public void onItemSelected(Comment comment) {

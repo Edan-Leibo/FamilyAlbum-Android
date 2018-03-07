@@ -46,6 +46,7 @@ import Model.Firebase.FirebaseAuthentication;
 import Model.Model;
 
 import static android.app.Activity.RESULT_OK;
+import static java.lang.Thread.sleep;
 
 /**
  * Created by adima on 03/03/2018.
@@ -139,7 +140,8 @@ public class AlbumFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_album, container, false);
-
+        progressBar = view.findViewById(R.id.album_progressbar);
+        progressBar.setVisibility(View.VISIBLE);
         GridView grid = view.findViewById(R.id.gridview);
         adapter = new ImageGridViewAdapter();
         grid.setAdapter(adapter);
@@ -178,10 +180,7 @@ public class AlbumFragment extends Fragment {
             }
         });
 
-        //TODO: add page progress bar
-        //progressBar = view.findViewById(R.id.image_cell_progressBar);
-        //progressBar.setVisibility(View.GONE);
-
+        progressBar.setVisibility(View.GONE);
         return view;
     }
 
@@ -280,7 +279,6 @@ public class AlbumFragment extends Fragment {
                             }
                         }
                     });
-
                 }
 
                 @Override
@@ -327,24 +325,24 @@ public class AlbumFragment extends Fragment {
             }
 
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.cell_image);
-            final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.image_cell_progressBar);
+            final ProgressBar smallProgressBar = (ProgressBar) convertView.findViewById(R.id.image_cell_progressBar);
             final Image img = imageList.get(position);
             imageView.setTag(img.getImageUrl());
             if (img.getImageUrl() != null && !img.getImageUrl().isEmpty() && !img.getImageUrl().equals("")) {
-                progressBar.setVisibility(View.VISIBLE);
+                smallProgressBar.setVisibility(View.VISIBLE);
                 Model.instance().getImage(img.getImageUrl(), new Model.GetImageListener() {
                     @Override
                     public void onSuccess(Bitmap image) {
                         String tagUrl = imageView.getTag().toString();
                         if (tagUrl.equals(img.getImageUrl())) {
                             imageView.setImageBitmap(image);
-                            progressBar.setVisibility(View.GONE);
+                            smallProgressBar.setVisibility(View.GONE);
                         }
                     }
 
                     @Override
                     public void onFail() {
-                        progressBar.setVisibility(View.GONE);
+                        smallProgressBar.setVisibility(View.GONE);
                     }
                 });
             }

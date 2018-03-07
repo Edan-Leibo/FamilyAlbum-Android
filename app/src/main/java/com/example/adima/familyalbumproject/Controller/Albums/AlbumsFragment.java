@@ -68,13 +68,10 @@ public class AlbumsFragment extends Fragment {
     }
 
     public interface OnFragmentAlbumsInteractionListener {
-        void onItemSelected(Album album);
         void showAlbumsFragment();
         void showLoginFragment();
         void showAlbumFragment(String albumId);
         void showCreateAlbumFragment();
-
-
     }
 
     /**
