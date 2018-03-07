@@ -60,6 +60,7 @@ public class AlbumsFragment extends Fragment {
     private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
     public static final int REQUEST_IMAGE_CAPTURE = 0;
     public static final int PICK_IMAGE = 1;
+    MenuItem  addAlbumItem;
 
     private AlbumsListViewModel albumListViewModel;
 
@@ -89,12 +90,26 @@ public class AlbumsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.albums_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+     addAlbumItem = menu.findItem(R.id.btn_add_album);
+        if (familySerial == "NONE") {
+            addAlbumItem.setVisible(false);
+
+            Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_SHORT).show();
+        } else {
+
+            addAlbumItem.setVisible(true);
+
+            //buttonGetSerial.setEnabled(false);
+
+        }
     }
 
     @Override
@@ -182,6 +197,7 @@ public class AlbumsFragment extends Fragment {
                             Toast.makeText(MyApplication.getMyContext(), "Creation of family album failed", Toast.LENGTH_SHORT).show();
                         } else {
                             familySerial = success;
+                            //addAlbumItem.setVisible(false);
                             Toast.makeText(MyApplication.getMyContext(), "New family album created", Toast.LENGTH_SHORT).show();
                             Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
                             ((MainActivity) getActivity()).showAlbumsFragment();
@@ -319,16 +335,11 @@ public class AlbumsFragment extends Fragment {
             }
         });
 
-/*important!!
-        if (familySerial == "NONE") {
-            buttonAdd.setEnabled(false);
-            buttonGetSerial.setEnabled(false);
-            Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_SHORT).show();
-        } else {
-            buttonAdd.setEnabled(true);
-            buttonGetSerial.setEnabled(true);
-        }
-*///////////////////////////////////
+//important!!
+
+
+
+///////////////////////////////////
 
         progressBar = view.findViewById(R.id.album_list_progressbar);
         progressBar.setVisibility(View.GONE);
