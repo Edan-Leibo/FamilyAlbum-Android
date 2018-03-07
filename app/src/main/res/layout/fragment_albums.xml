@@ -3,53 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_add_album"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/btn_add_album" />
-
-        <Button
-            android:id="@+id/btn_get_family_serial"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/btn_get_family_serial" />
-        <Button
-            android:id="@+id/btn_join_family"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/btn_join_family" />
-
-        <Button
-            android:id="@+id/btn_create_family"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/btn_create_family" />
-
-
-        <Button
-            android:id="@+id/btn_albums_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/btn_exit" />
-    </LinearLayout>
-
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">

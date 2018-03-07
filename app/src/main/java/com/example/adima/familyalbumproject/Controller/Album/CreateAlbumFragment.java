@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.adima.familyalbumproject.Album.Model.Album;
+import Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;

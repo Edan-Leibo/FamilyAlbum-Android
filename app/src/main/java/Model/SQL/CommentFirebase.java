@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Comment.Model;
+package Model.SQL;
 
 import android.util.Log;
 
@@ -13,6 +13,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import Model.Entities.Comment.Comment;
+import Model.Firebase.ModelFirebase;
 
 /**
  * Created by adima on 04/03/2018.
@@ -154,6 +157,39 @@ public class CommentFirebase {
         //ref.setValue(json);
         //myRef.child(employee.id).setValue(json);
     }
+
+    public static void removeComment(Comment comment, final ModelFirebase.OnRemove listener){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("comments").child(comment.getAlbumId()).child(comment.getCommentId());
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                    snap.getRef().removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if(databaseError!=null){
+                                listener.onCompletion(false);
+                            }
+                            else{
+                                listener.onCompletion(true);
+                            }
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("TAG", "onCancelled", databaseError.toException());
+            }
+        });
+
+
+    }
+    /*
     public static void removeComment(String albumId,String commentId) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("comments").child(albumId).child(commentId);
@@ -172,4 +208,6 @@ public class CommentFirebase {
             }
         });
     }
+
+    */
 }

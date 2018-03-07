@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.User;
+package Model.Entities.User;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -21,7 +21,10 @@ public class User {
     private String imageUrl;
 
 
+
+
     public User() {
+
 
     }
 
@@ -60,7 +63,7 @@ public class User {
         HashMap<String, Object> result = new HashMap<>();
 
         result.put("imageUrl", imageUrl);
-       // result.put("emailUser", emailUser);
+        result.put("emailUser", emailUser);
 
 
         return result;

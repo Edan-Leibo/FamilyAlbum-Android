@@ -1,12 +1,10 @@
-package com.example.adima.familyalbumproject.ImageUrl.Model;
+package Model.Entities.Image;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
-
-import com.example.adima.familyalbumproject.Entities.Image;
 
 import java.util.List;
 

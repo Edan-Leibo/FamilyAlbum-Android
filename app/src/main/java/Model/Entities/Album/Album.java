@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Album.Model;
+package Model.Entities.Album;
 
 
 import android.arch.persistence.room.Entity;

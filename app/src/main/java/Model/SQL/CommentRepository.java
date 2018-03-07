@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Album.Model;
+package Model.SQL;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -7,11 +7,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.Comment.Model.Comment;
-import com.example.adima.familyalbumproject.Comment.Model.CommentFirebase;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;
+
+import Model.Entities.Comment.Comment;
 
 /**
  * Created by adima on 04/03/2018.
@@ -48,6 +48,41 @@ public class CommentRepository {
        // }
         return commentsListliveData;
     }
+    class MyDelete extends AsyncTask<Comment,String,Boolean> {
+
+
+        @Override
+        protected Boolean doInBackground(Comment... comments) {
+            Log.d("TAG","starting delte from local storage in thread");
+            if (comments!=null) {
+
+                //3. update the local DB
+
+                for (Comment comment : comments) {
+
+                    Log.d("TAG","the text of the comment is:"+comment.getText());
+
+
+
+
+                    AppLocalStore.db.commentDao().delete(comment);
+
+                }
+
+            }
+            return true;
+
+        }
+    }
+
+    public void removeFromLocalDb(Comment comment){
+        CommentRepository.MyDelete delete= new CommentRepository.MyDelete();
+        delete.execute(comment);
+
+    }
+
+
+
 
     public LiveData<List<Comment>> getAllComments(final String albumId) {
         synchronized (this) {
@@ -59,7 +94,7 @@ public class CommentRepository {
                 long lastUpdateDate = 0;
                 try {
                     lastUpdateDate = MyApplication.getMyContext()
-                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDate", 0);
+                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments"+albumId, 0);
                 }catch (Exception e){
 
                 }
@@ -102,7 +137,7 @@ public class CommentRepository {
                 long lastUpdateDate = 0;
                 try {
                     lastUpdateDate = MyApplication.getMyContext()
-                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDate", 0);
+                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments"+albumId, 0);
 
                     Log.d("Tag","got the last update date");
                 }catch (Exception e){
@@ -115,18 +150,19 @@ public class CommentRepository {
                     long reacentUpdate = lastUpdateDate;
 
                     for (Comment comment : data) {
+                        if (comment.getCommentId() != null) {
 
+                            AppLocalStore.db.commentDao().insertAll(comment);
+                            Log.d("Tag", "after insert all");
 
-                        AppLocalStore.db.commentDao().insertAll(comment);
-                        Log.d("Tag","after insert all");
-
-                        if (comment.getLastUpdated() > reacentUpdate) {
-                            reacentUpdate = comment.getLastUpdated();
+                            if (comment.getLastUpdated() > reacentUpdate) {
+                                reacentUpdate = comment.getLastUpdated();
+                            }
+                            Log.d("TAG", "updating: " + comment.toString());
                         }
-                        Log.d("TAG", "updating: " + comment.toString());
                     }
                     SharedPreferences.Editor editor = MyApplication.getMyContext().getSharedPreferences("TAG", Context.MODE_PRIVATE).edit();
-                    editor.putLong("lastUpdateDate", reacentUpdate);
+                    editor.putLong("lastUpdateDateComments"+albumId, reacentUpdate);
                     editor.commit();
                 }
                 //return the complete student list to the caller

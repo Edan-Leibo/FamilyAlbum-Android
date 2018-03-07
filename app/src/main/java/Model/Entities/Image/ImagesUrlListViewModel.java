@@ -1,10 +1,9 @@
-package com.example.adima.familyalbumproject.ImageUrl.Model;
+package Model.Entities.Image;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.example.adima.familyalbumproject.Album.Model.ImageRepository;
-import com.example.adima.familyalbumproject.Entities.Image;
+import Model.SQL.ImageRepository;
 
 import java.util.List;
 

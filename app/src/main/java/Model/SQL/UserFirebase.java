@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.User;
+package Model.SQL;
 
 import android.util.Log;
 
@@ -10,6 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
+import Model.Entities.User.User;
 import Model.Firebase.FirebaseAuthentication;
 import Model.Firebase.ModelFirebase;
 
@@ -35,11 +36,11 @@ public class UserFirebase {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                //for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     //String url = snap.getValue(String.class);
-                   String url = snap.getValue(String.class);
-                    listener.onCompletion(url);
-                }
+                   User user = dataSnapshot.getValue(User.class);
+                    listener.onCompletion(user.getImageUrl());
+                //}
             }
 
             @Override
@@ -47,8 +48,6 @@ public class UserFirebase {
                 Log.e("TAG", "onCancelled", databaseError.toException());
             }
         });
-
-
 
 
     }
@@ -97,9 +96,9 @@ public class UserFirebase {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    snap.getRef().removeValue();
-                }
+                //for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    dataSnapshot.getRef().removeValue();
+                //}
             }
 
             @Override

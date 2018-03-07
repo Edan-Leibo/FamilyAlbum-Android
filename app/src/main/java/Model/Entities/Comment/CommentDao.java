@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Comment.Model;
+package Model.Entities.Comment;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;

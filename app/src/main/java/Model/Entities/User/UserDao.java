@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.User;
+package Model.Entities.User;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;

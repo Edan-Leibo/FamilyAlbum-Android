@@ -3,14 +3,17 @@ package com.example.adima.familyalbumproject.Controller.Comments;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,25 +21,21 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.adima.familyalbumproject.Comment.Model.Comment;
-import com.example.adima.familyalbumproject.Comment.Model.CommentListViewModel;
 import com.example.adima.familyalbumproject.Controller.MainActivity;
+import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import Model.Entities.Comment.Comment;
+import Model.Entities.Comment.CommentListViewModel;
+import Model.Firebase.FirebaseAuthentication;
 import Model.Model;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CommentListFragemnt.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CommentListFragemnt#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CommentListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private String albumId;
@@ -103,11 +102,10 @@ public class CommentListFragment extends Fragment {
                                 Comment comment =new Comment();
                                 comment.setText(text);
                                 comment.setAlbumId(albumId);
-                                comment.setUserId("Adi");
+                                comment.setUserId(FirebaseAuthentication.getUserEmail());
 
                                 if(success!=null) {
-                                    String userUrl = success;
-                                    comment.setImageUrl(userUrl);
+                                    comment.setImageUrl(success);
                                 }
 
                                 Model.instance().addComment(albumId, comment, new Model.OnCreation() {
@@ -123,6 +121,43 @@ public class CommentListFragment extends Fragment {
                 });
 
         ListView list = view.findViewById(R.id.comment_listView);
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Comment comment = commentList.get(i);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder.setMessage("Delete the comment?").setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                Model.instance().removeComment(comment, new Model.OnRemove() {
+                                    @Override
+                                    public void onCompletion(boolean success) {
+                                        if (success==true){
+                                            Toast.makeText(MyApplication.getMyContext(), "Successfully deleted", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else{
+                                            Toast.makeText(MyApplication.getMyContext(), "could not delete the image", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                return  true;
+            }
+        });
         adapter = new CommentListAdapter();
         list.setAdapter(adapter);
         progressBar = view.findViewById(R.id.commentList_progressbar);

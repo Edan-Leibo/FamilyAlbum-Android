@@ -1,14 +1,17 @@
-package com.example.adima.familyalbumproject.Album.Model;
+package Model.SQL;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 
-import com.example.adima.familyalbumproject.Comment.Model.Comment;
-import com.example.adima.familyalbumproject.Comment.Model.CommentDao;
-import com.example.adima.familyalbumproject.Entities.Image;
-import com.example.adima.familyalbumproject.ImageUrl.Model.ImageDao;
 import com.example.adima.familyalbumproject.MyApplication;
+
+import Model.Entities.Album.Album;
+import Model.Entities.Album.AlbumDao;
+import Model.Entities.Comment.Comment;
+import Model.Entities.Comment.CommentDao;
+import Model.Entities.Image.Image;
+import Model.Entities.Image.ImageDao;
 
 /**
  * Created by adima on 04/03/2018.

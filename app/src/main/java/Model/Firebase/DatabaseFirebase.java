@@ -2,7 +2,7 @@ package Model.Firebase;
 
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.Album.Model.Album;
+import Model.Entities.Album.Album;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

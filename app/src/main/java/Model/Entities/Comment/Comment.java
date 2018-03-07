@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Comment.Model;
+package Model.Entities.Comment;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

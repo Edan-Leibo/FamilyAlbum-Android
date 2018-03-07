@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Album.Model;
+package Model.SQL;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -7,11 +7,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.Entities.Image;
-import com.example.adima.familyalbumproject.ImageUrl.Model.ImageFirebase;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;
+
+import Model.Entities.Image.Image;
 
 /**
  * Created by adima on 05/03/2018.
@@ -59,7 +59,7 @@ public class ImageRepository {
                     long lastUpdateDate = 0;
                     try {
                         lastUpdateDate = MyApplication.getMyContext()
-                                .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDate", 0);
+                                .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateImages"+albumId, 0);
                     } catch (Exception e) {
 
                     }
@@ -84,6 +84,40 @@ public class ImageRepository {
 
         task.execute(data);
     }
+    class MyDelete extends AsyncTask<Image,String,Boolean> {
+
+
+        @Override
+        protected Boolean doInBackground(Image... images) {
+            Log.d("TAG","starting delete from local storage in thread");
+            if (images!=null) {
+
+                //3. update the local DB
+
+                for (Image image : images) {
+
+                    Log.d("TAG","the name of the album is:"+image.getName());
+                    Log.d("TAG","the id of the album is:"+image.getImageUrl());
+
+
+
+                    AppLocalStore.db.imageDao().delete(image);
+
+                }
+
+            }
+            return true;
+
+        }
+    }
+
+    public void removeFromLocalDb(Image image){
+        ImageRepository.MyDelete delete= new ImageRepository.MyDelete();
+        delete.execute(image);
+
+    }
+
+
 
     class MyTask extends AsyncTask<List<Image>,String,List<Image>> {
         private String albumId;
@@ -99,7 +133,7 @@ public class ImageRepository {
                 long lastUpdateDate = 0;
                 try {
                     lastUpdateDate = MyApplication.getMyContext()
-                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDate", 0);
+                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateImages"+albumId, 0);
 
                     Log.d("Tag","got the last update date");
                 }catch (Exception e){
@@ -113,18 +147,19 @@ public class ImageRepository {
 
                     for (Image image : data) {
 
+                        if (image.getImageId() != null) {
+                            AppLocalStore.db.imageDao().insertAll(image);
+                            Log.d("Tag", "after insert all");
 
-                        AppLocalStore.db.imageDao().insertAll(image);
-                        Log.d("Tag","after insert all");
-
-                        if (image.getLastUpdated() > reacentUpdate) {
-                            reacentUpdate = image.getLastUpdated();
+                            if (image.getLastUpdated() > reacentUpdate) {
+                                reacentUpdate = image.getLastUpdated();
+                            }
+                            Log.d("TAG", "updating: " + image.toString());
                         }
-                        Log.d("TAG", "updating: " + image.toString());
+                        SharedPreferences.Editor editor = MyApplication.getMyContext().getSharedPreferences("TAG", Context.MODE_PRIVATE).edit();
+                        editor.putLong("lastUpdateDateImages" + albumId, reacentUpdate);
+                        editor.commit();
                     }
-                    SharedPreferences.Editor editor = MyApplication.getMyContext().getSharedPreferences("TAG", Context.MODE_PRIVATE).edit();
-                    editor.putLong("lastUpdateDate", reacentUpdate);
-                    editor.commit();
                 }
                 //return the complete student list to the caller
                 List<Image> imagesList = AppLocalStore.db.imageDao().loadAllByIds(albumId);

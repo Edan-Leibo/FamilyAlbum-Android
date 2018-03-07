@@ -3,27 +3,44 @@ package com.example.adima.familyalbumproject.Controller.Album;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Controller.MainActivity;
-import com.example.adima.familyalbumproject.Entities.Image;
-import com.example.adima.familyalbumproject.ImageUrl.Model.ImagesUrlListViewModel;
+import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import Model.Entities.Image.Image;
+import Model.Entities.Image.ImagesUrlListViewModel;
+import Model.Firebase.FirebaseAuthentication;
 import Model.Model;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by adima on 03/03/2018.
@@ -37,6 +54,9 @@ public class AlbumFragment extends Fragment {
     ImageGridViewAdapter adapter;
     ProgressBar progressBar;
     private ImagesUrlListViewModel imagesListViewModel;
+
+    public static final int REQUEST_IMAGE_CAPTURE = 0;
+    public static final int PICK_IMAGE = 1;
 
     public AlbumFragment() {
     }
@@ -74,9 +94,77 @@ public class AlbumFragment extends Fragment {
                 ((MainActivity) getActivity()).showAlbumFragment(albumId);
             }
         });
+        Button addAlbumButton = view.findViewById(R.id.fragment_album_btn_add);
+        addAlbumButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder.setTitle("Add A photo to an album");
+                alertDialogBuilder.setMessage("Where do you want to take the photo from?\n");
+                alertDialogBuilder.setPositiveButton("From camera", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dispatchTakePictureIntent();
+                    }
+                });
+                alertDialogBuilder.setNegativeButton("From Gallery", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dispatchGetPictureFromGalleryIntent();
+                    }
+                });
+                alertDialogBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
+        });
+
         GridView grid = view.findViewById(R.id.gridview);
         adapter = new ImageGridViewAdapter();
         grid.setAdapter(adapter);
+
+        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Image image = imageList.get(i);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder.setMessage("Delete the photo?").setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                Model.instance().removeImage(image, new Model.OnRemove() {
+                                    @Override
+                                    public void onCompletion(boolean success) {
+                                        if (success==true){
+                                            Toast.makeText(MyApplication.getMyContext(), "Successfully deleted", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else{
+                                            Toast.makeText(MyApplication.getMyContext(), "could not delete the image", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                return  true;
+            }
+        });
+
         //TODO: add page progress bar
         //progressBar = view.findViewById(R.id.image_cell_progressBar);
         //progressBar.setVisibility(View.GONE);
@@ -90,14 +178,13 @@ public class AlbumFragment extends Fragment {
         view.findViewById(R.id.btn_comments).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               ((MainActivity) getActivity()).showCommentsFragment(albumId);
+                ((MainActivity) getActivity()).showCommentsFragment(albumId);
             }
         });
 
 
         return view;
     }
-
 
 
     @Override
@@ -143,6 +230,78 @@ public class AlbumFragment extends Fragment {
         void onItemSelected(Image image);
     }
 
+    private void dispatchGetPictureFromGalleryIntent() {
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (pickPhoto.resolveActivity(getContext().getPackageManager()) != null) {
+            this.startActivityForResult(pickPhoto, PICK_IMAGE);
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            this.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bitmap imageBitmap = null;
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            imageBitmap = BitmapFactory.decodeFile(picturePath);
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+        }
+        if (imageBitmap != null) {
+            final String uniqueName = FirebaseAuthentication.getUserEmail() + getUniqueId();
+            Model.instance().saveImage(imageBitmap, uniqueName, new Model.SaveImageListener() {
+                @Override
+                public void complete(String url) {
+                    Image image = new Image();
+                    image.setImageUrl(url);
+                    image.setName(uniqueName);
+                    image.setAlbumId(albumId);
+
+                    Model.instance().addImage(albumId, image, new Model.OnCreation() {
+                        @Override
+                        public void onCompletion(boolean success) {
+                            if (success) {
+                                Toast.makeText(MyApplication.getMyContext(), "Photo was added successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MyApplication.getMyContext(), "Failed to add photo to album", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                }
+
+                @Override
+                public void fail() {
+                    Toast.makeText(MyApplication.getMyContext(), "Failed to add the photo", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(MyApplication.getMyContext(), "Failed to save the photo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String getUniqueId() {
+        Calendar cc = Calendar.getInstance();
+        Date date = cc.getTime();
+        // SimpleDateFormat format1 = new SimpleDateFormat("dd MMM");
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        return format2.format(date);
+    }
+
     class ImageGridViewAdapter extends BaseAdapter {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -160,7 +319,6 @@ public class AlbumFragment extends Fragment {
         public long getItemId(int position) {
             return 0;
         }
-
 
 
         @Override

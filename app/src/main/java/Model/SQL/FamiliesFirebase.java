@@ -1,14 +1,14 @@
-package com.example.adima.familyalbumproject.FamiliesModel;
+package Model.SQL;
 
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.User.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import Model.Entities.User.User;
 import Model.Firebase.FirebaseAuthentication;
 
 /**

@@ -5,15 +5,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.Album.Model.Album;
-import com.example.adima.familyalbumproject.Album.Model.AlbumFirebase;
-import com.example.adima.familyalbumproject.Comment.Model.Comment;
-import com.example.adima.familyalbumproject.Comment.Model.CommentFirebase;
-import com.example.adima.familyalbumproject.Entities.Image;
-import com.example.adima.familyalbumproject.FamiliesModel.FamiliesFirebase;
-import com.example.adima.familyalbumproject.ImageUrl.Model.ImageFirebase;
-import com.example.adima.familyalbumproject.User.User;
-import com.example.adima.familyalbumproject.User.UserFirebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +20,16 @@ import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import Model.Entities.Album.Album;
+import Model.Entities.Comment.Comment;
+import Model.Entities.Image.Image;
+import Model.Entities.User.User;
 import Model.Model;
+import Model.SQL.AlbumFirebase;
+import Model.SQL.CommentFirebase;
+import Model.SQL.FamiliesFirebase;
+import Model.SQL.ImageFirebase;
+import Model.SQL.UserFirebase;
 
 /**
  * Created by adima on 01/03/2018.
@@ -239,21 +239,42 @@ public class ModelFirebase {
             }
         });
     }
-
-
-    public void removeAlbum(String albumId,String serialNumber){
-        AlbumFirebase.removeAlbum(albumId,serialNumber);
+    public interface OnRemove{
+        public void onCompletion(boolean success);
     }
 
-    public  void removeComment(String albumId,String commentId) {
-        CommentFirebase.removeComment(albumId,commentId);
+    public void removeAlbum(Album album, final OnRemove listener){
+
+        AlbumFirebase.removeAlbum(album, new OnRemove() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
+
+    }
+
+    public  void removeComment(Comment comment, final OnRemove listener) {
+        CommentFirebase.removeComment(comment, new OnRemove() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success );
+
+            }
+        });
     }
 
     public  void removeFamily(String serialNumber) {
         FamiliesFirebase.removeFamily(serialNumber);
     }
-    public  void removeImage(String albumId,String imageId) {
-        ImageFirebase.removeImage(albumId,imageId);
+    public  void removeImage(Image image, final OnRemove listener) {
+
+        ImageFirebase.removeImage(image, new OnRemove() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+            }
+        });
     }
     public void addUserProfilePicture(User user, final OnCreation listener){
         UserFirebase.addUserProfilePicture(user, new UserFirebase.OnCreationUser() {

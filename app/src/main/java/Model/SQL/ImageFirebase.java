@@ -1,8 +1,7 @@
-package com.example.adima.familyalbumproject.ImageUrl.Model;
+package Model.SQL;
 
 import android.util.Log;
 
-import com.example.adima.familyalbumproject.Entities.Image;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,6 +13,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import Model.Entities.Image.Image;
+import Model.Firebase.ModelFirebase;
 
 /**
  * Created by adima on 05/03/2018.
@@ -152,15 +154,30 @@ public class ImageFirebase {
         //myRef.child(employee.id).setValue(json);
     }
 
-    public static void removeImage(String albumId,String imageId) {
+
+    public interface onRemove{
+        public void onCompletion(boolean success);
+    }
+
+    public static void removeImage(Image image, final ModelFirebase.OnRemove listener) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("images").child(albumId).child(imageId);
+        DatabaseReference ref = database.getReference("images").child(image.getAlbumId()).child(image.getImageId());
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    snap.getRef().removeValue();
+                    snap.getRef().removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if(databaseError!=null){
+                                listener.onCompletion(false);
+                            }
+                            else{
+                                listener.onCompletion(true);
+                            }
+                        }
+                    });
                 }
             }
 

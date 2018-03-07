@@ -3,8 +3,6 @@ package com.example.adima.familyalbumproject.Controller;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.adima.familyalbumproject.Album.Model.Album;
-import com.example.adima.familyalbumproject.Comment.Model.Comment;
 import com.example.adima.familyalbumproject.Controller.Album.AlbumFragment;
 import com.example.adima.familyalbumproject.Controller.Album.CreateAlbumFragment;
 import com.example.adima.familyalbumproject.Controller.Albums.AlbumsFragment;
@@ -12,10 +10,15 @@ import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragm
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
 import com.example.adima.familyalbumproject.R;
 
+import Model.Entities.Album.Album;
+import Model.Entities.Comment.Comment;
+
 public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentInteractionListener,CommentListFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
 
 
 /*

@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Album.Model;
+package Model.Entities.Album;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

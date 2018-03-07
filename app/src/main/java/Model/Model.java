@@ -9,11 +9,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.webkit.URLUtil;
 
-import com.example.adima.familyalbumproject.Album.Model.Album;
-import com.example.adima.familyalbumproject.Comment.Model.Comment;
-import com.example.adima.familyalbumproject.Entities.Image;
 import com.example.adima.familyalbumproject.MyApplication;
-import com.example.adima.familyalbumproject.User.User;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,9 +20,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import Model.Entities.Album.Album;
+import Model.Entities.Comment.Comment;
+import Model.Entities.Image.Image;
+import Model.Entities.User.User;
 import Model.Firebase.DatabaseFirebase;
 import Model.Firebase.ModelFirebase;
-import Model.SQL.ModelSql;
+import Model.SQL.AlbumRepository;
+import Model.SQL.CommentRepository;
+import Model.SQL.ImageRepository;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -41,12 +43,12 @@ public class Model {
     private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
 
     ModelFirebase modelFirebase;
-    ModelSql modelSql;
+    //ModelSql modelSql;
 
 
     private Model() {
         this.modelFirebase  = new ModelFirebase();
-        this.modelSql = new ModelSql(MyApplication.getMyContext());
+        //this.modelSql = new ModelSql(MyApplication.getMyContext());
 
 
 
@@ -315,27 +317,87 @@ public class Model {
             }
         });
     }
-
+/*
     public void removeAlbum(String albumId,String serialNumber){
         this.modelFirebase.removeAlbum(albumId,serialNumber);
+        AppLocalStore.db.albumDao().delete();
+
 
 
     }
+*/
+public interface OnRemove{
+    public void onCompletion(boolean success);
+}
 
+public void removeComment(final Comment comment,final OnRemove listener){
+    CommentRepository.instance.removeFromLocalDb(comment);
+
+    modelFirebase.removeComment(comment, new ModelFirebase.OnRemove() {
+        @Override
+        public void onCompletion(boolean success) {
+            listener.onCompletion(success);
+        }
+    });
+
+
+}
+
+    public void removeAlbum(final Album album, final OnRemove listener) {
+        AlbumRepository.instance.removeFromLocalDb(album);
+
+        modelFirebase.removeAlbum(album, new ModelFirebase.OnRemove() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+
+            }
+        });
+    }
+
+    public void removeImage(final Image image, final OnRemove listener){
+        ImageRepository.instance.removeFromLocalDb(image);
+
+        modelFirebase.removeImage(image, new ModelFirebase.OnRemove() {
+            @Override
+            public void onCompletion(boolean success) {
+                listener.onCompletion(success);
+
+            }
+        });
+
+
+
+/*
+    modelFirebase.removeAlbum(album, new ModelFirebase.OnRemove() {
+        @Override
+        public void onCompletion(boolean success) {
+            listener.onCompletion(success);
+            MyDelete delete= new MyDelete();
+            delete.execute(album);
+
+        }
+    });
+
+*/
+
+
+    }
+/*
     public  void removeComment(String albumId,String commentId) {
         this.modelFirebase.removeComment(albumId,commentId);
     }
-
+*/
 
     public  void removeFamily(String serialNumber) {
         this.modelFirebase.removeFamily(serialNumber);
     }
-
+/*
     public  void removeImage(String albumId,String imageId) {
         this.modelFirebase.removeImage(albumId,imageId);
     }
 
-
+*/
 
 
     }

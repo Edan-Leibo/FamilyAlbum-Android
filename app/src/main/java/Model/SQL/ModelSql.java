@@ -1,17 +1,9 @@
 package Model.SQL;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-import com.example.adima.familyalbumproject.Album.Model.Album;
-
-import java.util.List;
-
 /**
  * Created by adima on 02/03/2018.
  */
-
+/*
 public class ModelSql  {
     private MyOpenHelper helper;
 
@@ -56,3 +48,4 @@ public class ModelSql  {
 
 }
 
+*/
