@@ -12,8 +12,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import Model.Entities.Album.Album;
-import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
@@ -21,13 +19,22 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import Model.Entities.Album.Album;
 import Model.Model;
 
 
 public class CreateAlbumFragment extends Fragment {
+    private OnFragmentCreateAlbumInteractionListener mListener;
+
     private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
     private EditText albumDate;
     private Calendar myCalendar;
+
+    public interface OnFragmentCreateAlbumInteractionListener{
+        void showAlbumsFragment();
+        void showAlbumFragment();
+    }
+
 
     @Nullable
     @Override
@@ -52,7 +59,7 @@ public class CreateAlbumFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                ((MainActivity) getActivity()).showAlbumsFragment();
+                mListener.showAlbumsFragment();
             }
         });
 
@@ -74,7 +81,7 @@ public class CreateAlbumFragment extends Fragment {
                             Toast.makeText(MyApplication.getMyContext(), "Could not add album", Toast.LENGTH_SHORT).show();
                         }
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).showAlbumFragment();
+                        mListener.showAlbumFragment();
                     }
                 });
             }

@@ -26,7 +26,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
@@ -40,7 +39,7 @@ import Model.Model;
 
 
 public class CommentListFragment extends Fragment {
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentCommentInteractionListener mListener;
     private String albumId;
     List<Comment> commentList = new LinkedList<>();
     CommentListAdapter adapter;
@@ -48,6 +47,10 @@ public class CommentListFragment extends Fragment {
     private CommentListViewModel commentsListViewModel;
 
     public CommentListFragment() {
+    }
+
+    public interface OnFragmentCommentInteractionListener {
+        void showAlbumFragment(String albumId);
     }
 
     /**
@@ -81,7 +84,7 @@ public class CommentListFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.btn_back_to_album:
-                ((MainActivity) getActivity()).showAlbumFragment(albumId);
+               mListener.showAlbumFragment(albumId);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -116,6 +119,9 @@ public class CommentListFragment extends Fragment {
 
                                 if(success!=null) {
                                     comment.setImageUrl(success);
+                                }
+                                else{
+                                    comment.setImageUrl("gs://androidfamilyproject.appspot.com/avatar/avatar.png");
                                 }
 
                                 Model.instance().addComment(albumId, comment, new Model.OnCreation() {
@@ -178,8 +184,8 @@ public class CommentListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentCommentInteractionListener) {
+            mListener = (OnFragmentCommentInteractionListener) context;
         } else {
             //throw new RuntimeException(context.toString()
             //        + " must implement OnFragmentInteractionListener");
@@ -214,9 +220,7 @@ public class CommentListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        void onItemSelected(Comment comment);
-    }
+
 
     class CommentListAdapter extends BaseAdapter {
         LayoutInflater inflater = getActivity().getLayoutInflater();

@@ -10,61 +10,13 @@ import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragm
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
 import com.example.adima.familyalbumproject.R;
 
-import Model.Entities.Album.Album;
-import Model.Entities.Comment.Comment;
-
-public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentAlbumsInteractionListener,CommentListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements CommentListFragment.OnFragmentCommentInteractionListener,CreateAlbumFragment.OnFragmentCreateAlbumInteractionListener,AlbumsFragment.OnFragmentAlbumsInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
-
-
-/*
-
-        Image image = new Image();
-        image.setAlbumId("-L6qPSRjtlvsIpxwffsp");
-        image.setName("Adi");
-        image.setImageUrl("gs://androidfamilyproject.appspot.com/harley_quinn.jpg");
-Model.instance().addImage("-L6qPSRjtlvsIpxwffsp",image, new Model.OnCreation() {
-    @Override
-    public void onCompletion(boolean success) {
-
-    }
-
-});
-
-    /*
-        Album album= new Album();
-        album.setLocation("Brazil");
-        album.setName("Edan");
-        album.setDate("30.3.18");
-        album.setSerialNumber("-L6pJC5npal1cbekV32m");
-
-            Model.instance().addAlbumToFirebase(album,"-L6pJC5npal1cbekV32m");
-*/
-    /*
-Comment comment= new Comment();
-comment.setUserId("Adi");
-comment.setAlbumId("-L6qPSRjtlvsIpxwffsp");
-comment.setText("I want to sleep");
-
-Model.instance().addComment("-L6qPSRjtlvsIpxwffsp",comment);
-*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        /*DELETE
-
-
-        SharedPreferences ref =
-                getSharedPreferences("familyInfo",MODE_PRIVATE);
-
-        SharedPreferences.Editor ed = ref.edit();
-        ed.putString("FAMILY_SERIAL", "-L6pJ7h5JSIjz-WQctTl");
-        ed.commit();
-        */
         showLoginFragment();
 
     }
@@ -114,13 +66,4 @@ Model.instance().addComment("-L6qPSRjtlvsIpxwffsp",comment);
 
 
 
-    @Override
-    public void onItemSelected(Album album) {
-
-    }
-
-    @Override
-    public void onItemSelected(Comment comment) {
-
-    }
 }
