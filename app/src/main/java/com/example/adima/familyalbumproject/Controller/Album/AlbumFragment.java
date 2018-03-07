@@ -15,13 +15,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -80,24 +85,26 @@ public class AlbumFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.album_actionbar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_album, container, false);
-        view.findViewById(R.id.btn_exit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).showAlbumFragment(albumId);
-            }
-        });
-        Button addAlbumButton = view.findViewById(R.id.fragment_album_btn_add);
-        addAlbumButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.btn_back_to_albums:
+                ((MainActivity) getActivity()).showAlbumsFragment();
+                return true;
+            case R.id.btn_comments:
+                ((MainActivity) getActivity()).showCommentsFragment(albumId);
+                return true;
+            case R.id.fragment_album_btn_add:
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
                 alertDialogBuilder.setTitle("Add A photo to an album");
                 alertDialogBuilder.setMessage("Where do you want to take the photo from?\n");
@@ -120,8 +127,18 @@ public class AlbumFragment extends Fragment {
                 });
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
-            }
-        });
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_album, container, false);
 
         GridView grid = view.findViewById(R.id.gridview);
         adapter = new ImageGridViewAdapter();
@@ -148,8 +165,6 @@ public class AlbumFragment extends Fragment {
 
                                     }
                                 });
-
-
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -157,31 +172,15 @@ public class AlbumFragment extends Fragment {
                                 dialog.cancel();
                             }
                         });
-
-
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
-                return  true;
+                return true;
             }
         });
 
         //TODO: add page progress bar
         //progressBar = view.findViewById(R.id.image_cell_progressBar);
         //progressBar.setVisibility(View.GONE);
-        view.findViewById(R.id.btn_exit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).showAlbumsFragment();
-            }
-        });
-
-        view.findViewById(R.id.btn_comments).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).showCommentsFragment(albumId);
-            }
-        });
-
 
         return view;
     }

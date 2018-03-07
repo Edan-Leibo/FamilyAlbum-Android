@@ -5,38 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/btn_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="@string/btn_exit"
-            android:padding="16dp"/>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-        <Button
-            android:id="@+id/btn_comments"
-            android:text="@string/btn_go_to_comments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-        <Button
-            android:id="@+id/fragment_album_btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/btn_add_photo"
-            android:padding="16dp" />
-    </LinearLayout>
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview"
@@ -47,7 +15,6 @@
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:gravity="center"
-        />
+        android:gravity="center" />
 
 </LinearLayout>

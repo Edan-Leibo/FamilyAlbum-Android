@@ -11,7 +11,7 @@
     <string name="hint_album_name">Album\'s name</string>
     <string name="hint_date">Event\'s date</string>
     <string name="hint_location">Event\'s location</string>
-    <string name="btn_go_to_comments">Go to\ncomments</string>
+    <string name="btn_go_to_comments">Go to comments</string>
     <string name="btn_send">Send</string>
     <string name="btn_add_album">Add Album</string>
     <string name="btn_get_family_serial">Get Serial</string>
@@ -19,5 +19,7 @@
     <string name="btn_join_family">Join</string>
     <string name="btn_add_user_photo">Edit your photo</string>
     <string name="btn_add_photo">Add a photo</string>
+    <string name="btn_back_albums">Back to albums</string>
+
 
 </resources>
