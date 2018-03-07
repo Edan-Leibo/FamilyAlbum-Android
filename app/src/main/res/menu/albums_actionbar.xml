@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/btn_get_family_serial"
+        android:title="@string/btn_get_family_serial"
+        app:showAsAction="always" />
     <item android:id="@+id/btn_add_album"
         android:title="@string/btn_add_album"
         app:showAsAction="always" />
     <item android:id="@+id/btn_albums_exit"
         android:title="@string/btn_exit"
         app:showAsAction="always" />
-    <item android:id="@+id/btn_get_family_serial"
-        android:title="@string/btn_get_family_serial"
-        app:showAsAction="never" />
     <item android:id="@+id/btn_join_family"
         android:title="@string/btn_join_family"
         app:showAsAction="never" />
