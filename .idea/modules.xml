@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Idan\Desktop\FamilyAlbumNew\FamilyAlbumProjectAndroid\FamilyAlbumProject.iml" filepath="C:\Users\Idan\Desktop\FamilyAlbumNew\FamilyAlbumProjectAndroid\FamilyAlbumProject.iml" />
-      <module fileurl="file://$PROJECT_DIR$/FamilyAlbumProjectAndroid.iml" filepath="$PROJECT_DIR$/FamilyAlbumProjectAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FamilyAlbumProject.iml" filepath="$PROJECT_DIR$/FamilyAlbumProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Idan\Desktop\FamilyAlbumNew\FamilyAlbumProjectAndroid\app\app.iml" filepath="C:\Users\Idan\Desktop\FamilyAlbumNew\FamilyAlbumProjectAndroid\app\app.iml" />
     </modules>
   </component>
 </project>

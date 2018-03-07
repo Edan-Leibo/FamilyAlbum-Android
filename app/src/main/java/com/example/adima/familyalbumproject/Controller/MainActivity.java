@@ -13,7 +13,7 @@ import com.example.adima.familyalbumproject.R;
 import Model.Entities.Album.Album;
 import Model.Entities.Comment.Comment;
 
-public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentInteractionListener,CommentListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements AlbumsFragment.OnFragmentAlbumsInteractionListener,CommentListFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

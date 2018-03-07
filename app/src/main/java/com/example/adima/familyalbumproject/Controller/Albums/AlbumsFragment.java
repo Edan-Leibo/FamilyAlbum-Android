@@ -31,7 +31,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
@@ -50,7 +49,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 
 public class AlbumsFragment extends Fragment {
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentAlbumsInteractionListener mListener;
     ListView albumsListView;
 
     private static List<Album> albumList = new LinkedList<>();
@@ -65,6 +64,16 @@ public class AlbumsFragment extends Fragment {
     private AlbumsListViewModel albumListViewModel;
 
     public AlbumsFragment() {
+
+    }
+
+    public interface OnFragmentAlbumsInteractionListener {
+        void onItemSelected(Album album);
+        void showAlbumsFragment();
+        void showLoginFragment();
+        void showAlbumFragment(String albumId);
+        void showCreateAlbumFragment();
+
 
     }
 
@@ -117,7 +126,7 @@ public class AlbumsFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.btn_add_album:
-                ((MainActivity) getActivity()).showCreateAlbumFragment();
+               mListener.showCreateAlbumFragment();
                 return true;
             case R.id.btn_get_family_serial:
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
@@ -171,7 +180,7 @@ public class AlbumsFragment extends Fragment {
                             public void onComplete(boolean exist) {
                                 if (exist) {
                                     Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, serial);
-                                    ((MainActivity) getActivity()).showAlbumsFragment();
+                                    mListener.showAlbumsFragment();
 
                                 } else {
                                     Toast.makeText(MyApplication.getMyContext(), "Serial does not exist", Toast.LENGTH_SHORT).show();
@@ -200,7 +209,7 @@ public class AlbumsFragment extends Fragment {
                             //addAlbumItem.setVisible(false);
                             Toast.makeText(MyApplication.getMyContext(), "New family album created", Toast.LENGTH_SHORT).show();
                             Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
-                            ((MainActivity) getActivity()).showAlbumsFragment();
+                            mListener.showAlbumsFragment();
                         }
                     }
                 });
@@ -209,7 +218,7 @@ public class AlbumsFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuthentication.signOut();
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).showLoginFragment();
+               mListener.showLoginFragment();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -293,7 +302,7 @@ public class AlbumsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Album album = albumList.get(i);
                 Log.d("TAG", "got item number:" + i);
-                ((MainActivity) getActivity()).showAlbumFragment(album.getAlbumId());
+                mListener.showAlbumFragment(album.getAlbumId());
 
             }
         });
@@ -350,8 +359,8 @@ public class AlbumsFragment extends Fragment {
     public void onAttach(Context context) {
 
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentAlbumsInteractionListener) {
+            mListener = (OnFragmentAlbumsInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -393,9 +402,7 @@ public class AlbumsFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        void onItemSelected(Album album);
-    }
+
 
 
     class AlbumListAdapter extends BaseAdapter {
