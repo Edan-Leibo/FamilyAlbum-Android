@@ -118,6 +118,8 @@ public class CommentListFragment extends Fragment {
                                 comment.setUserId(FirebaseAuthentication.getUserEmail());
 
                                 if(success!=null) {
+                                    Log.d("TAG","suc not null");
+                                    Log.d("TAG","suc"+success);
                                     comment.setImageUrl(success);
                                 }
                                 else{

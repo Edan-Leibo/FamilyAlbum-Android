@@ -195,8 +195,8 @@ public class AlbumFragment extends Fragment {
         if (context instanceof OnFragmentAlbumInteractionListener) {
             mListener = (OnFragmentAlbumInteractionListener) context;
         } else {
-            //throw new RuntimeException(context.toString()
-            //        + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
         Bundle args = getArguments();
         albumId = args.getString("albumIdAlbumFragment", "");
@@ -326,6 +326,9 @@ public class AlbumFragment extends Fragment {
             }
 
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.cell_image);
+            Bitmap photoAvatar = BitmapFactory.decodeResource(getContext().getResources(),
+                    R.drawable.photo_avatar);
+            imageView.setImageBitmap(photoAvatar);
             final ProgressBar smallProgressBar = (ProgressBar) convertView.findViewById(R.id.image_cell_progressBar);
             final Image img = imageList.get(position);
             imageView.setTag(img.getImageUrl());

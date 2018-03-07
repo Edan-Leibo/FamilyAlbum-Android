@@ -10,7 +10,7 @@
             android:id="@+id/cell_image"
             android:layout_width="75dp"
             android:layout_height="75dp"
-            android:src="@drawable/avatar" />
+            android:src="@drawable/photo_avatar" />
 
         <ProgressBar
             android:id="@+id/image_cell_progressBar"
