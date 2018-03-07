@@ -67,6 +67,10 @@ public class CreateAlbumFragment extends Fragment {
         view.findViewById(R.id.btn_create_album).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (((albumName.getText().toString().equals("")) || (albumDate.getText().toString().equals("")) || albumLocation.getText().toString().equals(""))){
+                    Toast.makeText(MyApplication.getMyContext(), "You must fill all the fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 progressBar.setVisibility(View.VISIBLE);
                 final Album album = new Album();
                 album.setSerialNumber(familySerial);
