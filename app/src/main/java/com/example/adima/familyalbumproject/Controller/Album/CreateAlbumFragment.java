@@ -1,6 +1,7 @@
 package com.example.adima.familyalbumproject.Controller.Album;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -67,7 +68,7 @@ public class CreateAlbumFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                Album album = new Album();
+                final Album album = new Album();
                 album.setSerialNumber(familySerial);
                 album.setName(albumName.getText().toString());
                 album.setDate(albumDate.getText().toString());
@@ -81,7 +82,7 @@ public class CreateAlbumFragment extends Fragment {
                             Toast.makeText(MyApplication.getMyContext(), "Could not add album", Toast.LENGTH_SHORT).show();
                         }
                         progressBar.setVisibility(View.GONE);
-                        mListener.showAlbumFragment();
+                        mListener.showAlbumsFragment();
                     }
                 });
             }
@@ -115,6 +116,23 @@ public class CreateAlbumFragment extends Fragment {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentCreateAlbumInteractionListener) {
+            mListener = (OnFragmentCreateAlbumInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     private void updateLabel() {
