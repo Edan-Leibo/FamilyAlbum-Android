@@ -20,6 +20,7 @@
     <string name="btn_add_user_photo">Edit your photo</string>
     <string name="btn_add_photo">Add a photo</string>
     <string name="btn_back_albums">Back to albums</string>
+    <string name="btn_back_album">Back to album</string>
 
 
 </resources>
