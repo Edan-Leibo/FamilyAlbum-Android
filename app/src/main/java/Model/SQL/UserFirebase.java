@@ -36,10 +36,24 @@ public class UserFirebase {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot==null) {
+                    Log.d("TAG","data snap is null");
+                    listener.onCompletion(null);
+
+                }
                 //for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    //String url = snap.getValue(String.class);
-                   User user = dataSnapshot.getValue(User.class);
-                    listener.onCompletion(user.getImageUrl());
+                //String url = snap.getValue(String.class);
+                else {
+                    User user = dataSnapshot.getValue(User.class);
+                    if(user==null){
+                        listener.onCompletion(null);
+                    }
+                    else {
+                        Log.d("TAG", "the user url is:" + user.getImageUrl());
+                        //if (user.getImageUrl()==null)
+                        listener.onCompletion(user.getImageUrl());
+                    }
+                }
                 //}
             }
 

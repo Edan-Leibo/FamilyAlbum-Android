@@ -87,7 +87,7 @@ public class LoginFragment extends Fragment {
                             ((MainActivity) getActivity()).showAlbumsFragment();
                         }
                         else{
-                            Toast.makeText(MyApplication.getMyContext(), "Registration failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyApplication.getMyContext(), "Registration failed\nPlease try different Email or password", Toast.LENGTH_SHORT).show();
                         }
                         progressBar.setVisibility(View.GONE);
                     }

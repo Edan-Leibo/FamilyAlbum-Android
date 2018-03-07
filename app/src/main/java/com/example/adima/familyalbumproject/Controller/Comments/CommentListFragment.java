@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -34,6 +36,7 @@ import java.util.List;
 
 import Model.Entities.Comment.Comment;
 import Model.Entities.Comment.CommentListViewModel;
+import Model.Entities.User.User;
 import Model.Firebase.FirebaseAuthentication;
 import Model.Model;
 
@@ -107,15 +110,20 @@ public class CommentListFragment extends Fragment {
                     {
                         final String text= commentEditText.getText().toString();
                         Log.v("EditText value=", text);
+                        if (text.equals("")){
+                            Toast.makeText(MyApplication.getMyContext(), "Empty message", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         commentEditText.setText("");
 
                         Model.instance().getUserProfilePicture(new Model.GetKeyListener() {
                             @Override
                             public void onCompletion(String success) {
-                                Comment comment =new Comment();
+                               final Comment comment =new Comment();
                                 comment.setText(text);
                                 comment.setAlbumId(albumId);
                                 comment.setUserId(FirebaseAuthentication.getUserEmail());
+
 
                                 if(success!=null) {
                                     Log.d("TAG","suc not null");
@@ -123,7 +131,44 @@ public class CommentListFragment extends Fragment {
                                     comment.setImageUrl(success);
                                 }
                                 else{
-                                    comment.setImageUrl("gs://androidfamilyproject.appspot.com/avatar/avatar.png");
+                                    //Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.avatar);
+                                   // notBuilder.setLargeIcon(largeIcon);
+                                    Drawable myDrawable = getResources().getDrawable(R.drawable.avatar);
+                                    Bitmap imageBitmap = ((BitmapDrawable) myDrawable).getBitmap();
+
+                                    if (imageBitmap != null) {
+                                        Model.instance().saveImage(imageBitmap, FirebaseAuthentication.getUserEmail(), new Model.SaveImageListener() {
+                                            @Override
+                                            public void complete(String url) {
+
+                                                User user = new User();
+                                                user.setEmailUser(FirebaseAuthentication.getUserEmail());
+                                                user.setImageUrl(url);
+                                                comment.setImageUrl(url);
+                                                Log.d("TAG","THE URL OF THE USER "+user.getImageUrl());
+                                                Model.instance().addUserProfilePicture(user, new Model.OnCreation() {
+                                                    @Override
+                                                    public void onCompletion(boolean success) {
+                                                        if (success) {
+                                                            Toast.makeText(MyApplication.getMyContext(), "Photo was saved successfully", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void fail() {
+                                                Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    } else {
+                                        Toast.makeText(MyApplication.getMyContext(), "Error", Toast.LENGTH_SHORT).show();
+                                    }
+
+
+
                                 }
 
                                 Model.instance().addComment(albumId, comment, new Model.OnCreation() {

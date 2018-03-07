@@ -68,12 +68,18 @@ public class AlbumRepository {
                             Log.d("TAG","the album name:"+album.getName());
 
 
+                        }/*
+                        if (data.size()==0&& )/*Check size in local db >0*//*){
+                            //flush the local DB
+                            //getall
+                            //insert to db
+                            //livedata=all
+/*
                         }
-
-
-
-                                updateAlbumDataInLocalStorage(data, serialNumber);
-
+                        else {
+                            updateAlbumDataInLocalStorage(data, serialNumber);
+                        }*/
+                        updateAlbumDataInLocalStorage(data, serialNumber);
 
 
                     }

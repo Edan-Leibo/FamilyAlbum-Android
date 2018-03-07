@@ -60,6 +60,7 @@ public class AlbumsFragment extends Fragment {
     public static final int REQUEST_IMAGE_CAPTURE = 0;
     public static final int PICK_IMAGE = 1;
     MenuItem  addAlbumItem;
+    MenuItem getSerialItem;
 
     private AlbumsListViewModel albumListViewModel;
 
@@ -102,14 +103,18 @@ public class AlbumsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.albums_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        getSerialItem=menu.findItem(R.id.btn_get_family_serial);
 
      addAlbumItem = menu.findItem(R.id.btn_add_album);
         if (familySerial == "NONE") {
             addAlbumItem.setVisible(false);
+            getSerialItem.setVisible(false);
+
 
             Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_SHORT).show();
         } else {
             addAlbumItem.setVisible(true);
+            getSerialItem.setVisible(true);
         }
     }
 

@@ -29,6 +29,7 @@ public class FirebaseAuthentication {
                     userEmail = user.getEmail(); //set the User's Email
                     callback.onLogin(true);
 
+
                 } else {
                     // If sign in fails
                     callback.onLogin(false);
@@ -52,6 +53,7 @@ public class FirebaseAuthentication {
                     // Sign in success
                     user = mAuth.getCurrentUser();
                     userEmail = user.getEmail(); //Set the users Email Address
+
                     callback.onRegistration(true);
 
                 } else {
