@@ -90,7 +90,6 @@ public class AlbumsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -104,11 +103,7 @@ public class AlbumsFragment extends Fragment {
 
             Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_SHORT).show();
         } else {
-
             addAlbumItem.setVisible(true);
-
-            //buttonGetSerial.setEnabled(false);
-
         }
     }
 
