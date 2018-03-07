@@ -10,7 +10,7 @@ import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragm
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
 import com.example.adima.familyalbumproject.R;
 
-public class MainActivity extends AppCompatActivity implements CommentListFragment.OnFragmentCommentInteractionListener,CreateAlbumFragment.OnFragmentCreateAlbumInteractionListener,AlbumsFragment.OnFragmentAlbumsInteractionListener {
+public class MainActivity extends AppCompatActivity implements AlbumFragment.OnFragmentAlbumInteractionListener, CommentListFragment.OnFragmentCommentInteractionListener,CreateAlbumFragment.OnFragmentCreateAlbumInteractionListener,AlbumsFragment.OnFragmentAlbumsInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements CommentListFragme
                 .replace(R.id.container, new LoginFragment())
                 .commit();
     }
+
 
     public void showAlbumsFragment() {
         getSupportFragmentManager()
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements CommentListFragme
                 .replace(R.id.container, CommentListFragment.newInstance(albumId))
                 .commit();
     }
-
 
 
 }

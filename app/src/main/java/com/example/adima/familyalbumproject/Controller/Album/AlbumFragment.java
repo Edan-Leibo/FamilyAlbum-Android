@@ -22,15 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
@@ -46,7 +42,6 @@ import Model.Firebase.FirebaseAuthentication;
 import Model.Model;
 
 import static android.app.Activity.RESULT_OK;
-import static java.lang.Thread.sleep;
 
 /**
  * Created by adima on 03/03/2018.
@@ -54,7 +49,7 @@ import static java.lang.Thread.sleep;
 
 public class AlbumFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentAlbumInteractionListener mListener;
     private String albumId;
     List<Image> imageList = new LinkedList<>();
     ImageGridViewAdapter adapter;
@@ -66,6 +61,15 @@ public class AlbumFragment extends Fragment {
 
     public AlbumFragment() {
     }
+
+    public interface OnFragmentAlbumInteractionListener {
+
+        void showAlbumsFragment();
+        void showCommentsFragment(String albumId);
+
+    }
+
+
 
 
     /**
@@ -100,10 +104,10 @@ public class AlbumFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.btn_back_to_albums:
-                ((MainActivity) getActivity()).showAlbumsFragment();
+                mListener.showAlbumsFragment();
                 return true;
             case R.id.btn_comments:
-                ((MainActivity) getActivity()).showCommentsFragment(albumId);
+               mListener.showCommentsFragment(albumId);
                 return true;
             case R.id.fragment_album_btn_add:
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
@@ -188,8 +192,8 @@ public class AlbumFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentAlbumInteractionListener) {
+            mListener = (OnFragmentAlbumInteractionListener) context;
         } else {
             //throw new RuntimeException(context.toString()
             //        + " must implement OnFragmentInteractionListener");
@@ -224,9 +228,6 @@ public class AlbumFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        void onItemSelected(Image image);
-    }
 
     private void dispatchGetPictureFromGalleryIntent() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
