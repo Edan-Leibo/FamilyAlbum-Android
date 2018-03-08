@@ -277,6 +277,9 @@ public class CommentListFragment extends Fragment {
             return null;
         }
 
+        
+
+
         @Override
         public long getItemId(int position) {
             return 0;
@@ -289,6 +292,7 @@ public class CommentListFragment extends Fragment {
             }
             TextView commentText = (TextView) convertView.findViewById(R.id.cell_comment_text);
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.cell_comment_user_image);
+            imageView.setImageResource(R.drawable.avatar);
             final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.comment_cell_progressBar);
             final Comment cmt = commentList.get(position);
             commentText.setText(cmt.getText());
