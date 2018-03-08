@@ -81,6 +81,8 @@ public class AlbumRepository {
                     @Override
                     public void OnCompletion(Album album,String event) {
                         if(event.equals("del")){
+                            //List<Album> list = new LinkedList<>();
+                            //list.add(album);
                             removeFromLocalDb(album,serialNumber);
                         }
                         else {
@@ -231,7 +233,7 @@ class MyDelete extends AsyncTask<Album, String, List<Album>> {
 
 
                 }
-/*
+
                 if (data != null && data.size() > 0) {
                     //3. update the local DB
                     long reacentUpdate = lastUpdateDate;
@@ -240,7 +242,7 @@ class MyDelete extends AsyncTask<Album, String, List<Album>> {
                         if (album.getAlbumId() != null) {
 
 
-                            AppLocalStore.db.albumDao().insertAll(album);
+                            //AppLocalStore.db.albumDao().insertAll(album);
                             Log.d("Tag", "after insert all");
 
 
@@ -255,7 +257,7 @@ class MyDelete extends AsyncTask<Album, String, List<Album>> {
                     editor.putLong("lastUpdateDateAlbums" + serialNumber, reacentUpdate);
                     editor.commit();
                 }
-                */
+
                 Album album =data.get(0);
                 Log.d("TAG","the album is:"+album.getAlbumId());
                 //return the complete student list to the caller
