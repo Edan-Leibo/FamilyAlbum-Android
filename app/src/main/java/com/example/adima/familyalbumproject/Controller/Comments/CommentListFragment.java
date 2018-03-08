@@ -46,7 +46,7 @@ public class CommentListFragment extends Fragment {
     private String albumId;
     List<Comment> commentList = new LinkedList<>();
     CommentListAdapter adapter;
-    ProgressBar progressBar;
+    ProgressBar commentsProgressBar;
     private CommentListViewModel commentsListViewModel;
 
     public CommentListFragment() {
@@ -87,7 +87,7 @@ public class CommentListFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.btn_back_to_album:
-               mListener.showAlbumFragment(albumId);
+                mListener.showAlbumFragment(albumId);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -99,6 +99,8 @@ public class CommentListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
+        commentsProgressBar = view.findViewById(R.id.commentList_progressbar);
+        commentsProgressBar.setVisibility(View.VISIBLE);
 
         Button  commentBtn = view.findViewById(R.id.comment_btn);
         final EditText commentEditText   = view.findViewById(R.id.editText_comment);
@@ -114,16 +116,16 @@ public class CommentListFragment extends Fragment {
                             Toast.makeText(MyApplication.getMyContext(), "Empty message", Toast.LENGTH_SHORT).show();
                             return;
                         }
+                        commentsProgressBar.setVisibility(View.VISIBLE);
                         commentEditText.setText("");
 
                         Model.instance().getUserProfilePicture(new Model.GetKeyListener() {
                             @Override
                             public void onCompletion(String success) {
-                               final Comment comment =new Comment();
+                                final Comment comment =new Comment();
                                 comment.setText(text);
                                 comment.setAlbumId(albumId);
                                 comment.setUserId(FirebaseAuthentication.getUserEmail());
-
 
                                 if(success!=null) {
                                     Log.d("TAG","suc not null");
@@ -131,8 +133,6 @@ public class CommentListFragment extends Fragment {
                                     comment.setImageUrl(success);
                                 }
                                 else{
-                                    //Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.avatar);
-                                   // notBuilder.setLargeIcon(largeIcon);
                                     Drawable myDrawable = getResources().getDrawable(R.drawable.avatar);
                                     Bitmap imageBitmap = ((BitmapDrawable) myDrawable).getBitmap();
 
@@ -150,31 +150,27 @@ public class CommentListFragment extends Fragment {
                                                     @Override
                                                     public void onCompletion(boolean success) {
                                                         if (success) {
-                                                            Toast.makeText(MyApplication.getMyContext(), "Photo was saved successfully", Toast.LENGTH_SHORT).show();
                                                         } else {
-                                                            Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
                                                         }
+                                                        commentsProgressBar.setVisibility(View.GONE);
                                                     }
                                                 });
                                             }
-
                                             @Override
                                             public void fail() {
-                                                Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
+                                                commentsProgressBar.setVisibility(View.GONE);
                                             }
                                         });
                                     } else {
                                         Toast.makeText(MyApplication.getMyContext(), "Error", Toast.LENGTH_SHORT).show();
                                     }
-
-
-
                                 }
 
                                 Model.instance().addComment(albumId, comment, new Model.OnCreation() {
                                     @Override
                                     public void onCompletion(boolean success) {
                                         Log.d("TAG",""+success);
+                                        commentsProgressBar.setVisibility(View.GONE);
                                     }
                                 });
                             }
@@ -192,17 +188,17 @@ public class CommentListFragment extends Fragment {
                 alertDialogBuilder.setMessage("Delete the comment?").setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
+                                commentsProgressBar.setVisibility(View.VISIBLE);
                                 Model.instance().removeComment(comment, new Model.OnRemove() {
                                     @Override
                                     public void onCompletion(boolean success) {
                                         if (success==true){
-                                            Toast.makeText(MyApplication.getMyContext(), "Successfully deleted", Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(MyApplication.getMyContext(), "Successfully deleted", Toast.LENGTH_SHORT).show();
                                         }
                                         else{
-                                            Toast.makeText(MyApplication.getMyContext(), "could not delete the image", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MyApplication.getMyContext(), "Could not delete the message", Toast.LENGTH_SHORT).show();
                                         }
-
+                                        commentsProgressBar.setVisibility(View.GONE);
                                     }
                                 });
 
@@ -223,8 +219,7 @@ public class CommentListFragment extends Fragment {
         });
         adapter = new CommentListAdapter();
         list.setAdapter(adapter);
-        progressBar = view.findViewById(R.id.commentList_progressbar);
-        progressBar.setVisibility(View.GONE);
+        commentsProgressBar.setVisibility(View.GONE);
         return view;
     }
 

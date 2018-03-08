@@ -343,8 +343,8 @@ public void removeComment(final Comment comment,final OnRemove listener){
 
 }
 
-    public void removeAlbum(final Album album, final OnRemove listener) {
-        AlbumRepository.instance.removeFromLocalDb(album);
+    public void removeAlbum(final Album album,String serialNumber, final OnRemove listener) {
+        AlbumRepository.instance.removeFromLocalDb(album,serialNumber);
 
         modelFirebase.removeAlbum(album, new ModelFirebase.OnRemove() {
             @Override

@@ -92,7 +92,6 @@ public class CreateAlbumFragment extends Fragment {
             }
         });
 
-        progressBar.setVisibility(View.GONE);
 
         myCalendar = Calendar.getInstance();
 
@@ -120,6 +119,7 @@ public class CreateAlbumFragment extends Fragment {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

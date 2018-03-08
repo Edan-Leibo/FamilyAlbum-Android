@@ -105,7 +105,7 @@ public class AlbumsFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         getSerialItem=menu.findItem(R.id.btn_get_family_serial);
 
-     addAlbumItem = menu.findItem(R.id.btn_add_album);
+        addAlbumItem = menu.findItem(R.id.btn_add_album);
         if (familySerial == "NONE") {
             addAlbumItem.setVisible(false);
             getSerialItem.setVisible(false);
@@ -123,7 +123,7 @@ public class AlbumsFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.btn_add_album:
-               mListener.showCreateAlbumFragment();
+                mListener.showCreateAlbumFragment();
                 return true;
             case R.id.btn_get_family_serial:
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
@@ -143,12 +143,14 @@ public class AlbumsFragment extends Fragment {
                 alertDialogBuilderGetSerial.setPositiveButton("From camera", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        progressBar.setVisibility(View.VISIBLE);
                         dispatchTakePictureIntent();
                     }
                 });
                 alertDialogBuilderGetSerial.setNegativeButton("From Gallery", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        progressBar.setVisibility(View.VISIBLE);
                         dispatchGetPictureFromGalleryIntent();
                     }
                 });
@@ -172,6 +174,7 @@ public class AlbumsFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         final String serial = input.getText().toString();
+                        progressBar.setVisibility(View.VISIBLE);
                         Model.instance().isFamilyExist(serial, new Model.IsFamilyExistCallback() {
                             @Override
                             public void onComplete(boolean exist) {
@@ -182,11 +185,12 @@ public class AlbumsFragment extends Fragment {
                                 } else {
                                     Toast.makeText(MyApplication.getMyContext(), "Serial does not exist", Toast.LENGTH_SHORT).show();
                                 }
+                                progressBar.setVisibility(View.GONE);
                             }
 
                             @Override
                             public void onCancel() {
-
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
 
@@ -196,6 +200,7 @@ public class AlbumsFragment extends Fragment {
                 alertDialogJoin.show();
                 return true;
             case R.id.btn_create_family:
+                progressBar.setVisibility(View.VISIBLE);
                 Model.instance().addNewFamily(new Model.GetKeyListener() {
                     @Override
                     public void onCompletion(String success) {
@@ -208,6 +213,7 @@ public class AlbumsFragment extends Fragment {
                             Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
                             mListener.showAlbumsFragment();
                         }
+                        progressBar.setVisibility(View.GONE);
                     }
                 });
                 return true;
@@ -215,7 +221,7 @@ public class AlbumsFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuthentication.signOut();
                 progressBar.setVisibility(View.GONE);
-               mListener.showLoginFragment();
+                mListener.showLoginFragment();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -254,6 +260,7 @@ public class AlbumsFragment extends Fragment {
                             } else {
                                 Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
                             }
+                            progressBar.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -261,10 +268,12 @@ public class AlbumsFragment extends Fragment {
                 @Override
                 public void fail() {
                     Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         } else {
-            Toast.makeText(MyApplication.getMyContext(), "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApplication.getMyContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -290,6 +299,8 @@ public class AlbumsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_albums, container, false);
+        progressBar = view.findViewById(R.id.album_list_progressbar);
+        progressBar.setVisibility(View.VISIBLE);
         ListView list = view.findViewById(R.id.albums_list);
         adapter = new AlbumListAdapter();
         list.setAdapter(adapter);
@@ -312,7 +323,7 @@ public class AlbumsFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-                                Model.instance().removeAlbum(album, new Model.OnRemove() {
+                                Model.instance().removeAlbum(album,familySerial, new Model.OnRemove() {
                                     @Override
                                     public void onCompletion(boolean success) {
                                         if (success==true){
@@ -347,7 +358,6 @@ public class AlbumsFragment extends Fragment {
 
 ///////////////////////////////////
 
-        progressBar = view.findViewById(R.id.album_list_progressbar);
         progressBar.setVisibility(View.GONE);
         return view;
     }
