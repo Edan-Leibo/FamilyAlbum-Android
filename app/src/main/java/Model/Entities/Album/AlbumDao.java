@@ -20,7 +20,6 @@ public interface AlbumDao {
     List<Album> loadAllByIds(int[] albumId);
 
 
-
     @Query("SELECT * FROM Album WHERE serialNumber IN (:serialNumber)")
     List<Album> loadAllByIds(String serialNumber);
 
@@ -29,6 +28,9 @@ public interface AlbumDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Album... albums);
+
+    @Query("DELETE FROM Album WHERE albumId = :albumId")
+        abstract void deleteByAlbumId(long albumId);
 
     @Delete
     void delete(Album album);

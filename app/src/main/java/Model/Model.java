@@ -36,6 +36,8 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by adima on 01/03/2018.
  */
 
+
+
 public class Model {
 
     private static Model instance = new Model();

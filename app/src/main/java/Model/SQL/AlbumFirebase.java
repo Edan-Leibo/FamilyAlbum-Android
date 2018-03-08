@@ -8,7 +8,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
@@ -118,9 +117,12 @@ public class AlbumFirebase {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d("TAG", "child was changed");
-                Album album = dataSnapshot.getValue(Album.class);
-                Log.d("TAG", "the name of the child is:" + album.getAlbumId());
-                listener.OnCompletion(album,"del");
+                //Album album = dataSnapshot.getValue(Album.class);
+                String value = dataSnapshot.getValue().toString();
+                Log.d("TAG", "value");
+                //String val = dataSnapshot.get
+                // Log.d("TAG", "the name of the child is:" + album.getAlbumId());
+                // listener.OnCompletion(album,"del");
 
             }
 
@@ -129,7 +131,7 @@ public class AlbumFirebase {
                 Log.d("TAG", "child was added");
                 Album album = dataSnapshot.getValue(Album.class);
                 Log.d("TAG", "the name of the child is:" + album.getAlbumId());
-                listener.OnCompletion(album,"del");
+                //listener.OnCompletion(album,"del",albu);
 
             }
 
@@ -188,15 +190,16 @@ public class AlbumFirebase {
         Log.d("TAG", "getAllAlbumsAndObserve");
 
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("albums").child(serialNumber);
-
-        Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
+/*
+       myRef.orderByChild("lastUpdated").startAt(lastUpdate);
         Log.d("TAG", "the query is ok");
 
         //query.removeEventListener();
 
         //listenToDel(myRef);
+        */
         ChildEventListener childListener = myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -210,14 +213,27 @@ public class AlbumFirebase {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Album album = dataSnapshot.getValue(Album.class);
+                Log.d("TAG", "THE child changed:" + album.getAlbumId());
+
 
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                // if(dataSnapshot==null){
+                // Log.d("TAG", "the snapshot is null");
+                //  }
+                // Log.d("TAG", "child was deleted");
+                //Log.d("tag","the key"+dataSnapshot.getKey());
+
+                String val = dataSnapshot.getKey();
                 Log.d("TAG", "child was deleted");
-                Album album = dataSnapshot.getValue(Album.class);
-                Log.d("TAG", "the name of the child is:" + album.getAlbumId());
+                //String vali =dataSnapshot.
+                Album album=new Album();
+                album.setAlbumId(val);
+                // Album album = dataSnapshot.getValue(Album.class);
+                // Log.d("TAG", "the name of the child is:" + album.getAlbumId());
                 listener.OnCompletion(album,"del");
 
 
@@ -225,6 +241,9 @@ public class AlbumFirebase {
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Album album = dataSnapshot.getValue(Album.class);
+                Log.d("TAG", "THE child moved:" + album.getAlbumId());
+
 
             }
 

@@ -85,6 +85,9 @@ public class CommentFirebase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("TAG","the data changed");
+                String key = dataSnapshot.getKey();
+                String value = dataSnapshot.getValue().toString();
+                Object valO= dataSnapshot.getValue();
 
                 List<Comment> list = new LinkedList<Comment>();
                 if(dataSnapshot ==null){
