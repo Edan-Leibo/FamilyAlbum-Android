@@ -30,7 +30,7 @@ public class AlbumRepository {
 
     public LiveData<List<Album>> getAlbumsList(String serialNumber) {
         synchronized (this) {
-            if (albumsListliveData == null) {
+            //if (albumsListliveData == null) {
                 Log.d("TAG", "album live data is null");
 
                 albumsListliveData = new MutableLiveData<List<Album>>();
@@ -46,7 +46,7 @@ public class AlbumRepository {
 
                     }
                 });
-            }
+            //}
         }
         return albumsListliveData;
     }

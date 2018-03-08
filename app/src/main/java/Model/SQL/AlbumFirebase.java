@@ -159,8 +159,6 @@ public class AlbumFirebase {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Album album = dataSnapshot.getValue(Album.class);
                 Log.d("TAG", "THE child changed:" + album.getAlbumId());
-
-
             }
 
             @Override
@@ -170,20 +168,16 @@ public class AlbumFirebase {
                 Album album=new Album();
                 album.setAlbumId(val);
                 listener.OnCompletion(album,"del");
-
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                 Album album = dataSnapshot.getValue(Album.class);
                 Log.d("TAG", "THE child moved:" + album.getAlbumId());
-
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
@@ -208,6 +202,8 @@ public class AlbumFirebase {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
+                    Log.e("TAG", "Error: Album could not be saved "
+                            + databaseError.getMessage());
                     listener.onCompletion(false);
                 } else {
                     listener.onCompletion(true);
