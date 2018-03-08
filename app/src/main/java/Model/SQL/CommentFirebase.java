@@ -22,14 +22,9 @@ import Model.Firebase.ModelFirebase;
  */
 
 public class CommentFirebase {
-
-    //public static  String albumId;
-
     CommentFirebase(){
-        //this.albumId=albumId;
 
     }
-
 
 
     public interface Callback<T>{
@@ -44,11 +39,8 @@ public class CommentFirebase {
         ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //List<Album> list = new LinkedList<Album>();
 
                     List<Comment> list = new LinkedList<Comment>();
-
-
 
                 for(DataSnapshot snap:dataSnapshot.getChildren()){
 
@@ -85,8 +77,6 @@ public class CommentFirebase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("TAG","the data changed");
-
-
                 List<Comment> list = new LinkedList<Comment>();
 
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
@@ -117,26 +107,15 @@ public class CommentFirebase {
 
     public static void addComment(String albumId, Comment comment, final OnCreationComment listener){
         Log.d("TAG", "add comment to firebase");
-
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         String key = database.getReference("comments").child(albumId).push().getKey();
-
-
        comment.setCommentId(key);
 
         HashMap<String, Object> json = comment.toJson();
         json.put("lastUpdated", ServerValue.TIMESTAMP);
 
-        //DatabaseReference myRef = database.getReference("albums");
-
-
         Log.d("TAG","the command id is:"+comment.getCommentId());
-
-        //DatabaseReference ref = database.getReference("albums").child(albumId).
         DatabaseReference ref = database.getReference("comments").child(albumId).child(comment.getCommentId());
-
         ref.setValue(json, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -152,8 +131,6 @@ public class CommentFirebase {
             }
         });
 
-        //ref.setValue(json);
-        //myRef.child(employee.id).setValue(json);
     }
 
     public static void removeComment(Comment comment, final ModelFirebase.OnRemove listener){
@@ -187,25 +164,5 @@ public class CommentFirebase {
 
 
     }
-    /*
-    public static void removeComment(String albumId,String commentId) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("comments").child(albumId).child(commentId);
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    snap.getRef().removeValue();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("TAG", "onCancelled", databaseError.toException());
-            }
-        });
-    }
-
-    */
 }

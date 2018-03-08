@@ -23,15 +23,8 @@ import Model.Firebase.ModelFirebase;
 
 public class ImageFirebase {
 
-
-    //public static  String albumId;
-
     ImageFirebase(){
-        //this.albumId=albumId;
-
     }
-
-
 
     public interface Callback<T>{
         void onComplete(T data);
@@ -40,19 +33,11 @@ public class ImageFirebase {
     public static void getAllImagesAndObserve(String albumId,final ImageFirebase.Callback<List<Image>> callback){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("images").child(albumId);
-
-
         ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //List<Album> list = new LinkedList<Album>();
-
                 List<Image> list = new LinkedList<Image>();
-
-
-
                 for(DataSnapshot snap:dataSnapshot.getChildren()){
-
                     Image image = snap.getValue(Image.class);
                     Log.d("TAG",image.getImageUrl());
                     list.add(image);
@@ -116,27 +101,12 @@ public class ImageFirebase {
 
     public static void addImage(String albumId, Image image, final OnCreationImage listener){
         Log.d("TAG", "add image to firebase");
-
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         String key = database.getReference("images").child(albumId).push().getKey();
-
-
         image.setImageId(key);
-
         HashMap<String, Object> json = image.toJson();
         json.put("lastUpdated", ServerValue.TIMESTAMP);
-
-
-        //DatabaseReference myRef = database.getReference("albums");
-
-
-       // Log.d("TAG","the command id is:"+comment.getCommentId());
-
-        //DatabaseReference ref = database.getReference("albums").child(albumId).
         DatabaseReference ref = database.getReference("images").child(albumId).child(image.getImageId());
-
         ref.setValue(json, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -151,13 +121,8 @@ public class ImageFirebase {
                 }
             }
         });
-        //myRef.child(employee.id).setValue(json);
     }
 
-
-    public interface onRemove{
-        public void onCompletion(boolean success);
-    }
 
     public static void removeImage(Image image, final ModelFirebase.OnRemove listener) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();

@@ -95,10 +95,6 @@ public class FirebaseAuthentication {
         return userEmail;
     }
 
-
-    /*
-    Set the User Name
-     */
     public void setUserEmail(String user) {
         userEmail = user;
     }

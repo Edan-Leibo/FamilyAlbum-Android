@@ -20,9 +20,6 @@ public class User {
     private String emailUser;
     private String imageUrl;
 
-
-
-
     public User() {
 
 

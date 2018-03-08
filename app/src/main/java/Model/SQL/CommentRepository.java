@@ -28,7 +28,6 @@ public class CommentRepository {
 
     public LiveData<List<Comment>> getCommentsList(String albumId) {
         synchronized (this) {
-          //  if (commentsListliveData == null) {
                 Log.d("TAG", "comment live data is null");
 
                 commentsListliveData = new MutableLiveData<List<Comment>>();
@@ -45,9 +44,12 @@ public class CommentRepository {
 
 
             }
-       // }
         return commentsListliveData;
     }
+
+    /*
+    delete comment from cache
+     */
     class MyDelete extends AsyncTask<Comment,String,Boolean> {
 
 
@@ -56,15 +58,9 @@ public class CommentRepository {
             Log.d("TAG","starting delte from local storage in thread");
             if (comments!=null) {
 
-                //3. update the local DB
-
                 for (Comment comment : comments) {
 
                     Log.d("TAG","the text of the comment is:"+comment.getText());
-
-
-
-
                     AppLocalStore.db.commentDao().delete(comment);
 
                 }
@@ -80,9 +76,6 @@ public class CommentRepository {
         delete.execute(comment);
 
     }
-
-
-
 
     public LiveData<List<Comment>> getAllComments(final String albumId) {
         synchronized (this) {
@@ -110,7 +103,7 @@ public class CommentRepository {
 
 
             }
-       // }
+
         return commentsListliveData;
     }
 
@@ -183,8 +176,5 @@ public class CommentRepository {
 
         }
     }
-
-
-
 
 }

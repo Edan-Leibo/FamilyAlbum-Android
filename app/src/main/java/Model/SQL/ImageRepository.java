@@ -19,7 +19,6 @@ import Model.Entities.Image.Image;
 
 public class ImageRepository {
 
-
     public static final ImageRepository instance = new ImageRepository();
 
     ImageRepository() {
@@ -28,7 +27,6 @@ public class ImageRepository {
 
     public LiveData<List<Image>> getImagesList(String albumId) {
         synchronized (this) {
-            //if (imagesListliveData == null) {
                 Log.d("TAG", "images live data is null");
 
                 imagesListliveData = new MutableLiveData<List<Image>>();
@@ -43,20 +41,15 @@ public class ImageRepository {
                     }
                 });
 
-
-            //}
         }
         return imagesListliveData;
     }
 
         public LiveData<List<Image>> getAllImages(final String albumId) {
             synchronized (this) {
-               // if (imagesListliveData == null) {
                     Log.d("TAG", "Live data is null");
                     imagesListliveData = new MutableLiveData<List<Image>>();
-
-                    //1. get the last update date
-                    long lastUpdateDate = 0;
+                 long lastUpdateDate = 0;
                     try {
                         lastUpdateDate = MyApplication.getMyContext()
                                 .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateImages"+albumId, 0);
@@ -74,7 +67,7 @@ public class ImageRepository {
                 }
                 return imagesListliveData;
             }
-       // }
+
 
     private void updateImageDataInLocalStorage(List<Image> data,String albumId) {
         Log.d("TAG", "got items from firebase: " + data.size());
@@ -84,6 +77,9 @@ public class ImageRepository {
 
         task.execute(data);
     }
+    /*
+    delete images from cache
+     */
     class MyDelete extends AsyncTask<Image,String,Boolean> {
 
 
@@ -92,15 +88,10 @@ public class ImageRepository {
             Log.d("TAG","starting delete from local storage in thread");
             if (images!=null) {
 
-                //3. update the local DB
-
                 for (Image image : images) {
 
                     Log.d("TAG","the name of the album is:"+image.getName());
                     Log.d("TAG","the id of the album is:"+image.getImageUrl());
-
-
-
                     AppLocalStore.db.imageDao().delete(image);
 
                 }
@@ -161,7 +152,6 @@ public class ImageRepository {
                         editor.commit();
                     }
                 }
-                //return the complete student list to the caller
                 List<Image> imagesList = AppLocalStore.db.imageDao().loadAllByIds(albumId);
                 Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
 

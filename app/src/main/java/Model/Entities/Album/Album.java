@@ -14,6 +14,7 @@ import java.util.Map;
 
 @Entity
 public class Album {
+
     @PrimaryKey
     @NonNull
     public String albumId;
@@ -23,9 +24,6 @@ public class Album {
     public String location;
     public String serialNumber;
     public long lastUpdated;
-
-
-
     public Album (){
 
     }
@@ -38,8 +36,6 @@ public class Album {
         this.serialNumber=serialNumber;
 
     }
-
-
 
     public String getName() {
         return name;
@@ -84,13 +80,10 @@ public class Album {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
-
-
-
-
     public void setLastUpdated(long lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+
 
     public Album (Map<String,Object> albumFromFirebase){
         this.albumId = (String)albumFromFirebase.get("albumId");
@@ -102,10 +95,7 @@ public class Album {
     }
 
 
-
-
     public HashMap<String,Object> toJson(){
-
         HashMap<String,Object> result = new HashMap<>();
         result.put("albumId",albumId);
         result.put("name",name);

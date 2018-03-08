@@ -24,7 +24,6 @@ import Model.Entities.Album.Album;
 import Model.Entities.Comment.Comment;
 import Model.Entities.Image.Image;
 import Model.Entities.User.User;
-import Model.Firebase.DatabaseFirebase;
 import Model.Firebase.ModelFirebase;
 import Model.SQL.AlbumRepository;
 import Model.SQL.CommentRepository;
@@ -45,37 +44,17 @@ public class Model {
     private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
 
     ModelFirebase modelFirebase;
-    //ModelSql modelSql;
 
 
     private Model() {
         this.modelFirebase  = new ModelFirebase();
-        //this.modelSql = new ModelSql(MyApplication.getMyContext());
-
-
 
     }
 
     public static Model instance() {
         return instance;
     }
-/*
-    public void addAlbum(Album album) {
-        modelFirebase.addAlbum(album);
 
-    }
-*/
-    public void getAlbums() {
-       this.modelFirebase.databaseFirebase.getAlbums(new DatabaseFirebase.GetAlbumsListener() {
-            @Override
-            public void onComplete(List<Album> albums) {
-                    Log.d("TAG", "got all the albums in the model");
-            }
-        });
-
-
-
-    }
 
     public String getFamilySerialFromSharedPrefrences(String familyInfo, String familySerial) {
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
@@ -112,7 +91,9 @@ public class Model {
     }
 
 
-
+/*
+checks if family exist in firebase
+ */
     public void isFamilyExist(final String serialNumber,final IsFamilyExistCallback callback){
        modelFirebase.isFamilyExist(serialNumber,new ModelFirebase.IsFamilyExistCallback() {
            @Override
@@ -126,28 +107,9 @@ public class Model {
            }
        });
 
-
-
-
-
     }
 
 
-    public void getAllAlbumsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
-        //return StudentSql.getAllStudents(modelSql.getReadableDatabase());
-        modelFirebase.getAllAlbumsAndObserve(new ModelFirebase.GetAllAlbumsAndObserveCallback() {
-            @Override
-            public void onComplete(List<Album> list) {
-                callback.onComplete(list);
-            }
-
-            @Override
-            public void onCancel() {
-                callback.onCancel();
-            }
-        });
-
-    }
     public interface SaveImageListener {
         void complete(String url);
         void fail();
@@ -170,8 +132,6 @@ public class Model {
 
 
     }
-
-
 
 
 
@@ -319,15 +279,7 @@ public class Model {
             }
         });
     }
-/*
-    public void removeAlbum(String albumId,String serialNumber){
-        this.modelFirebase.removeAlbum(albumId,serialNumber);
-        AppLocalStore.db.albumDao().delete();
 
-
-
-    }
-*/
 public interface OnRemove{
     public void onCompletion(boolean success);
 }
@@ -368,38 +320,7 @@ public void removeComment(final Comment comment,final OnRemove listener){
             }
         });
 
-
-
-/*
-    modelFirebase.removeAlbum(album, new ModelFirebase.OnRemove() {
-        @Override
-        public void onCompletion(boolean success) {
-            listener.onCompletion(success);
-            MyDelete delete= new MyDelete();
-            delete.execute(album);
-
-        }
-    });
-
-*/
-
-
     }
-/*
-    public  void removeComment(String albumId,String commentId) {
-        this.modelFirebase.removeComment(albumId,commentId);
-    }
-*/
-
-    public  void removeFamily(String serialNumber) {
-        this.modelFirebase.removeFamily(serialNumber);
-    }
-/*
-    public  void removeImage(String albumId,String imageId) {
-        this.modelFirebase.removeImage(albumId,imageId);
-    }
-
-*/
 
 
     }

@@ -29,7 +29,7 @@ import Model.SQL.AlbumFirebase;
 import Model.SQL.CommentFirebase;
 import Model.SQL.FamiliesFirebase;
 import Model.SQL.ImageFirebase;
-import Model.SQL.UserFirebase;
+import Model.SQL.UserModel;
 
 /**
  * Created by adima on 01/03/2018.
@@ -43,7 +43,6 @@ public class ModelFirebase {
     this.databaseFirebase = new DatabaseFirebase();
 
     }
-
 
 
     public void addComment(String albumId, Comment comment, final OnCreation listener){
@@ -72,26 +71,8 @@ public class ModelFirebase {
         public void onCompletion(String success);
     }
 
-
-
-
-
-
-    /*
-    public interface GetAllImageUrlsAndObserveCallback{
-        void onComplete(List<String> list);
-        void onCancel();
-    }
-
-    public void getAllImageUrlsAndObserve(final GetAllImageUrlsAndObserveCallback){
-
-    }
-
-    */
-
-
     public void getUserImageUrl(final Model.GetKeyListener listener){
-        UserFirebase.getUserImageUrl(new GetKeyListener() {
+        UserModel.getUserImageUrl(new GetKeyListener() {
             @Override
             public void onCompletion(String success) {
                 listener.onCompletion(success);
@@ -115,8 +96,6 @@ public class ModelFirebase {
                 listener.onCompletion(success);
             }
         });
-
-
     }
 
         public void addNewFamily(final Model.GetKeyListener listener) {
@@ -129,8 +108,10 @@ public class ModelFirebase {
             });
         }
 
+        /*
 
-
+        checks if the serial number of the family exist
+       */
     public void isFamilyExist(final String serialNumber,final IsFamilyExistCallback callback){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("families").child(serialNumber);
@@ -155,7 +136,6 @@ public class ModelFirebase {
         });
 
     }
-
 
     public void getAllAlbumsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -185,16 +165,7 @@ public class ModelFirebase {
 
 
 
-    public void getAlbums(DatabaseFirebase.GetAlbumsListener tag) {
-        this.databaseFirebase.getAlbums(new DatabaseFirebase.GetAlbumsListener() {
-            @Override
-            public void onComplete(List<Album> studentList) {
-                Log.d("TAG", "all the albums are in model fire base" );
-
-            }
-        });
-    }
-
+//save image in firebase storage
     public void saveImage(Bitmap imageBmp, String name, final Model.SaveImageListener listener){
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -277,17 +248,12 @@ public class ModelFirebase {
         });
     }
     public void addUserProfilePicture(User user, final OnCreation listener){
-        UserFirebase.addUserProfilePicture(user, new UserFirebase.OnCreationUser() {
+        UserModel.addUserProfilePicture(user, new UserModel.OnCreationUser() {
             @Override
             public void onCompletion(boolean success) {
                 listener.onCompletion(success);
             }
         });
     }
-
-
-
-
-
 
     }

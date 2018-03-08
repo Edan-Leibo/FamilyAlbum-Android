@@ -24,9 +24,6 @@ public class CommentListViewModel extends ViewModel {
         return comments;
     }
 
-
-
-
 }
 
 

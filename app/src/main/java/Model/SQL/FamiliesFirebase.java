@@ -16,21 +16,13 @@ import Model.Firebase.FirebaseAuthentication;
  */
 
 public class FamiliesFirebase {
-
-
     public interface GetKeyListener{
         public void onCompletion(String success);
     }
 
-
-
     public static void getUserImageUrl(final GetKeyListener listener){
-
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         String emailUser = FirebaseAuthentication.getUserEmail();
-
-
         DatabaseReference ref= database.getReference("usersProfiles").child(emailUser);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -48,25 +40,12 @@ public class FamiliesFirebase {
             }
         });
 
-
-
-
     }
 
     public static void addFamily(final GetKeyListener listener){
         Log.d("TAG", "add family to firebase");
-
-
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         final String key = database.getReference("Families").push().getKey();
-
-
-        //HashMap<String, Object> json = album.toJson();
-        //json.put("lastUpdated", ServerValue.TIMESTAMP);
-
-        //DatabaseReference myRef = database.getReference("albums");
-
         DatabaseReference ref = database.getReference("families").child(key);
 
         ref.setValue(key, new DatabaseReference.CompletionListener() {
@@ -81,8 +60,7 @@ public class FamiliesFirebase {
 
             }
         });
-        //return key;
-        //myRef.child(employee.id).setValue(json);
+
     }
 
     public static void removeFamily(String serialNumber) {
@@ -103,11 +81,5 @@ public class FamiliesFirebase {
             }
         });
     }
-
-
-
-
-
-
 
 }

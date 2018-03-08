@@ -13,10 +13,10 @@ import java.util.Map;
 
 @Entity
 public class Comment {
+
     @PrimaryKey
     @NonNull
     private String commentId;
-
 
     private String userId;
     private String albumId;

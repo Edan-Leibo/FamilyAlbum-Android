@@ -51,18 +51,7 @@ public class AlbumRepository {
         return albumsListliveData;
     }
 
-    /*
-                        @Override
-                        public void onComplete(List<Album> data) {
-                            if (data != null) albumsListliveData.setValue(data);
-                            Log.d("TAG", "got albums data");
-                        }
-                    });
-                }
-            }
-            return albumsListliveData;
-        }
-*/
+
     public LiveData<List<Album>> getAllAlbums(final String serialNumber) {
         synchronized (this) {
             albumsListliveData = new MutableLiveData<List<Album>>();
@@ -81,8 +70,7 @@ public class AlbumRepository {
                 @Override
                 public void OnCompletion(Album album,String event) {
                     if(event.equals("del")){
-                        //List<Album> list = new LinkedList<>();
-                        //list.add(album);
+
                         removeFromLocalDb(album,serialNumber);
                     }
                     else {
@@ -97,47 +85,10 @@ public class AlbumRepository {
         }
         return albumsListliveData;
     }
-    /*
- }
 
- }
-
- });
- /*
-} {
- @Override
- public void onComplete(List<Album> data) {
-     for(Album album:data){
-         Log.d("TAG","got new data from firebase in the observer **");
-         Log.d("TAG","the album name:"+album.getName());
-
-
-     }/*
-     if (data.size()==0&& )/*Check size in local db >0*//*){
-                            //flush the local DB
-                            //getall
-                            //insert to db
-                            //livedata=all
 /*
-                        }
-                        else {
-                            updateAlbumDataInLocalStorage(data, serialNumber);
-                        }*//*
-    updateAlbumDataInLocalStorage(data, serialNumber);
-
-
-}
-                });
-                        }
-                        return albumsListliveData;
-                        }
-
-
-                        */
-    private void removeAlbumDataFromLocalStorage(Album album){
-
-    }
-
+update the cache
+ */
     public  void updateAlbumDataInLocalStorage(List<Album> data,String serialNumber){
         Log.d("TAG","got items from firebase: "+data.size());
         MyTask task=new MyTask();
@@ -146,69 +97,8 @@ public class AlbumRepository {
     }
 
 /*
-class MyDelete extends AsyncTask<Album,String,Boolean>{
-
-
-    @Override
-    protected Boolean doInBackground(Album... albums) {
-        Log.d("TAG","starting updateAlbumDataInLocalStorage in thread");
-        if (albums!=null) {
-
-            //3. update the local DB
-
-            for (Album album : albums) {
-
-                Log.d("Tag","in the for");
-
-                AppLocalStore.db.albumDao().delete(album);
-
-            }
-
-        }
-        return true;
-
-    }
-}
-*//*
-*
-class MyDelete extends AsyncTask<Album, String, List<Album>> {
-
-    private String serialNumber;
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-
-    @Override
-    protected List<Album> doInBackground(Album... albums) {
-        Log.d("TAG", "starting delte from local storage in thread");
-        if (albums != null) {
-
-            //3. update the local DB
-
-            for (Album album : albums) {
-
-                Log.d("TAG", "the name of the album is:" + album.getName());
-                Log.d("TAG", "the id of the album is:" + album.getAlbumId());
-
-
-                AppLocalStore.db.albumDao().delete(album);
-                List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
-                Log.d("TAG", "finish updateEmployeeDataInLocalStorage in thread");
-
-
-                return albumsList;
-
-            }
-
-        }
-        return null;
-
-    }
-}
+delete albums from cache
 */
-
     class MyDelete extends AsyncTask<List<Album>, String, List<Album>> {
         private String serialNumber;
 
@@ -216,7 +106,6 @@ class MyDelete extends AsyncTask<Album, String, List<Album>> {
             this.serialNumber = serialNumber;
         }
 
-        //
         @Override
         protected List<Album> doInBackground(List<Album>[] lists) {
             Log.d("TAG", "starting updateAlbumDataInLocalStorage in thread");
@@ -230,8 +119,6 @@ class MyDelete extends AsyncTask<Album, String, List<Album>> {
                     Log.d("Tag", "got the last update date");
                 } catch (Exception e) {
                     Log.d("Tag", "in the exception");
-
-
                 }
 
                 if (data != null && data.size() > 0) {
@@ -240,11 +127,7 @@ class MyDelete extends AsyncTask<Album, String, List<Album>> {
 
                     for (Album album : data) {
                         if (album.getAlbumId() != null) {
-
-
-                            //AppLocalStore.db.albumDao().insertAll(album);
                             Log.d("Tag", "after insert all");
-
 
                             if (album.lastUpdated > reacentUpdate) {
                                 reacentUpdate = album.lastUpdated;
@@ -279,6 +162,7 @@ class MyDelete extends AsyncTask<Album, String, List<Album>> {
 
         }
     }
+
 
     public void removeFromLocalDb(Album album,String serialNumber) {
         MyDelete delete = new MyDelete();

@@ -18,21 +18,13 @@ import Model.Firebase.ModelFirebase;
  * Created by adima on 06/03/2018.
  */
 
-public class UserFirebase {
+public class UserModel {
 
-    public interface GetKeyListener{
-        public void onCompletion(String success);
-    }
 
     public static void getUserImageUrl(final ModelFirebase.GetKeyListener listener){
-
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         String emailUser = FirebaseAuthentication.getUserEmail().replaceAll("[^A-Za-z]+", "");;
-
-
         DatabaseReference ref= database.getReference("usersProfiles").child(emailUser);
-
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -41,8 +33,7 @@ public class UserFirebase {
                     listener.onCompletion(null);
 
                 }
-                //for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                //String url = snap.getValue(String.class);
+
                 else {
                     User user = dataSnapshot.getValue(User.class);
                     if(user==null){
@@ -50,11 +41,10 @@ public class UserFirebase {
                     }
                     else {
                         Log.d("TAG", "the user url is:" + user.getImageUrl());
-                        //if (user.getImageUrl()==null)
                         listener.onCompletion(user.getImageUrl());
                     }
                 }
-                //}
+
             }
 
             @Override
@@ -72,19 +62,10 @@ public class UserFirebase {
 
     public static void addUserProfilePicture(User user, final OnCreationUser listener){
         Log.d("TAG", "add user profile picture to firebase");
-
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         String emailUser = FirebaseAuthentication.getUserEmail().  replaceAll("[^A-Za-z]+", "");;
         DatabaseReference ref = database.getReference("usersProfiles").child(emailUser);
-
-
-
         HashMap<String, Object> json = user.toJson();
-
-        //DatabaseReference ref = database.getReference("albums").child(albumId).
-
         ref.setValue(json, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -99,14 +80,12 @@ public class UserFirebase {
                 }
             }
         });
-        //myRef.child(employee.id).setValue(json);
     }
 
     public static void removeUserImage() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String userEmail = FirebaseAuthentication.getUserEmail().  replaceAll("[^A-Za-z]+", "");;
         DatabaseReference ref = database.getReference("usersProfiles").child(userEmail);
-
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
