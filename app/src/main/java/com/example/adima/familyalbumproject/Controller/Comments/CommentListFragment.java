@@ -312,7 +312,9 @@ public class CommentListFragment extends Fragment {
 
                     @Override
                     public void onFail() {
+                        imageView.setImageResource(R.drawable.avatar);
                         progressBar.setVisibility(View.GONE);
+
                     }
                 });
             }
