@@ -86,7 +86,6 @@ public class AlbumsFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static AlbumsFragment newInstance() {
         AlbumsFragment fragment = new AlbumsFragment();
-        //getFamilyID
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
         familySerial = ref.getString(FAMILY_SERIAL, "NONE");
         Bundle args = new Bundle();
@@ -230,8 +229,7 @@ public class AlbumsFragment extends Fragment {
             case R.id.btn_albums_exit:
                 progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuthentication.signOut();
-                SharedPreferences preferences = MyApplication.getMyContext().getSharedPreferences("familyInfo", 0);
-                preferences.edit().remove(FAMILY_SERIAL).commit();
+                Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, "NONE");
                 progressBar.setVisibility(View.GONE);
                 mListener.showLoginFragment();
                 return true;
