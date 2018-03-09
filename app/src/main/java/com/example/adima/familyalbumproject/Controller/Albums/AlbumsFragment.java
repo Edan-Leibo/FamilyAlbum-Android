@@ -216,7 +216,7 @@ public class AlbumsFragment extends Fragment {
                     @Override
                     public void onCompletion(String success) {
                         if (success == null) {
-                            Toast.makeText(MyApplication.getMyContext(), "Creation of family album failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyApplication.getMyContext(), "Creation of a family failed", Toast.LENGTH_SHORT).show();
                         } else {
                             familySerial = success;
                             //addAlbumItem.setVisible(false);
