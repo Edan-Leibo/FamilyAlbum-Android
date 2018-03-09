@@ -98,6 +98,9 @@ public class AlbumsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        Bundle args = getArguments();
+        familySerial = args.getString(FAMILY_SERIAL, "NONE");
+
     }
 
     @Override
@@ -186,6 +189,7 @@ public class AlbumsFragment extends Fragment {
                                 if (exist) {
                                     Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, serial);
                                     mListener.showAlbumsFragment();
+
                                    // getJoinItem.setVisible(false);
                                    // createItem.setVisible(false);
 
@@ -216,7 +220,7 @@ public class AlbumsFragment extends Fragment {
                         } else {
                             familySerial = success;
                             //addAlbumItem.setVisible(false);
-                            Toast.makeText(MyApplication.getMyContext(), "New family album created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyApplication.getMyContext(), "New family was created", Toast.LENGTH_SHORT).show();
                             Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
                             mListener.showAlbumsFragment();
                            // getJoinItem.setVisible(false);
@@ -348,8 +352,6 @@ public class AlbumsFragment extends Fragment {
 
                                     }
                                 });
-
-
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -357,19 +359,11 @@ public class AlbumsFragment extends Fragment {
                                 dialog.cancel();
                             }
                         });
-
-
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
                 return  true;
             }
         });
-
-//important!!
-
-
-
-///////////////////////////////////
 
         progressBar.setVisibility(View.GONE);
         return view;
@@ -377,7 +371,6 @@ public class AlbumsFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-
         super.onAttach(context);
         if (context instanceof OnFragmentAlbumsInteractionListener) {
             mListener = (OnFragmentAlbumsInteractionListener) context;
@@ -385,8 +378,6 @@ public class AlbumsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        Bundle args = getArguments();
-        familySerial = args.getString(FAMILY_SERIAL, "NONE");
 
         this.albumListViewModel = ViewModelProviders.of(this).get(AlbumsListViewModel.class);
         //familySerial="-L6pJ7h5JSIjz-WQctTl";
@@ -407,8 +398,6 @@ public class AlbumsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
-
         mListener = null;
     }
 

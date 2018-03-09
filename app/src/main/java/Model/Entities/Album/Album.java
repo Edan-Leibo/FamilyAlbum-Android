@@ -34,7 +34,15 @@ public class Album {
         this.date = date;
         this.location=location;
         this.serialNumber=serialNumber;
+    }
 
+    public Album(@NonNull String albumId, String name, String date, String location, String serialNumber, long lastUpdated) {
+        this.albumId = albumId;
+        this.name = name;
+        this.date = date;
+        this.location = location;
+        this.serialNumber = serialNumber;
+        this.lastUpdated = lastUpdated;
     }
 
     public String getName() {

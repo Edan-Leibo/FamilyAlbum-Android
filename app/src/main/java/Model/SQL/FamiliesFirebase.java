@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import Model.Entities.Album.Album;
 import Model.Entities.User.User;
 import Model.Firebase.FirebaseAuthentication;
 
@@ -46,11 +47,11 @@ public class FamiliesFirebase {
         Log.d("TAG", "add family to firebase");
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final String key = database.getReference("Families").push().getKey();
-        //final String ke2y = database.getReference("albums").push().getKey();
 
         DatabaseReference ref = database.getReference("families").child(key);
-        DatabaseReference ref2 = database.getReference("albums").child(key);
-        ref2.setValue(key,null);
+        DatabaseReference ref2 = database.getReference("albums").child(key).child("Dummy AlbumId");
+        Album album = new Album("Dummy AlbumId" ,"Dummy name", "Dummy date","Dummy location","Dummy serial",-1);
+        ref2.setValue(album.toJson(),null);
 
         ref.setValue(key, new DatabaseReference.CompletionListener() {
             @Override
