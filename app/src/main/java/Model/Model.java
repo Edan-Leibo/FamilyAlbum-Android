@@ -322,5 +322,12 @@ public void removeComment(final Comment comment,final OnRemove listener){
 
     }
 
+    public void clearCache(List<Album> list,String serial){
+        for(Album album:list) {
+            AlbumRepository.instance.removeFromLocalDb(album,serial);
+        }
+
+    }
+
 
     }
