@@ -131,6 +131,13 @@ public class CommentListFragment extends Fragment {
                                     Log.d("TAG","suc not null");
                                     Log.d("TAG","suc"+success);
                                     comment.setImageUrl(success);
+                                    Model.instance().addComment(albumId, comment, new Model.OnCreation() {
+                                        @Override
+                                        public void onCompletion(boolean success) {
+                                            Log.d("TAG","creat comment"+success);
+                                            commentsProgressBar.setVisibility(View.GONE);
+                                        }
+                                    });
                                 }
                                 else{
                                     Drawable myDrawable = getResources().getDrawable(R.drawable.avatar);
@@ -150,7 +157,16 @@ public class CommentListFragment extends Fragment {
                                                     @Override
                                                     public void onCompletion(boolean success) {
                                                         if (success) {
+                                                            Log.d("TAG","the saving is ok");
+                                                            Model.instance().addComment(albumId, comment, new Model.OnCreation() {
+                                                                @Override
+                                                                public void onCompletion(boolean success) {
+                                                                    Log.d("TAG","creat comment"+success);
+                                                                    commentsProgressBar.setVisibility(View.GONE);
+                                                                }
+                                                            });
                                                         } else {
+                                                            Log.d("TAG","the saving is not ok");
                                                         }
                                                         commentsProgressBar.setVisibility(View.GONE);
                                                     }
@@ -166,13 +182,7 @@ public class CommentListFragment extends Fragment {
                                     }
                                 }
 
-                                Model.instance().addComment(albumId, comment, new Model.OnCreation() {
-                                    @Override
-                                    public void onCompletion(boolean success) {
-                                        Log.d("TAG",""+success);
-                                        commentsProgressBar.setVisibility(View.GONE);
-                                    }
-                                });
+
                             }
                         });
 
