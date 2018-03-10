@@ -43,10 +43,6 @@ public class MainActivity extends AppCompatActivity implements AlbumFragment.OnF
     }
 
 
-    public void showAlbumFragment() {
-        showAlbumFragment("-L6lY_t5pKGBZTTzoeJ0");
-    }
-
     public void showAlbumFragment(String albumID) {
         getSupportFragmentManager()
                 .beginTransaction()
