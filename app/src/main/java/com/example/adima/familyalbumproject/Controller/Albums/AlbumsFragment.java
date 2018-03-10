@@ -235,6 +235,7 @@ public class AlbumsFragment extends Fragment {
                 FirebaseAuthentication.signOut();
                 Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, "NONE");
                 progressBar.setVisibility(View.GONE);
+               // FileUtils.deleteQuietly(context.getCacheDir());
                 //Model.instance().clearCache(albumList,familySerial);
                 mListener.showLoginFragment();
                 return true;
@@ -242,6 +243,8 @@ public class AlbumsFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 
 
     @Override

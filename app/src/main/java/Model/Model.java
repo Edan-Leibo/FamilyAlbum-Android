@@ -120,6 +120,7 @@ checks if family exist in firebase
             @Override
             public void complete(String url) {
                 String fileName = URLUtil.guessFileName(url, null, null);
+                Log.d("TAG","the file name in saveImage model"+fileName);
                 saveImageToFile(imageBmp,fileName);
                 listener.complete(url);
             }
@@ -141,10 +142,12 @@ checks if family exist in firebase
     }
     public void getImage(final String url, final GetImageListener listener) {
         //check if image exsist localy
+        Log.d("TAG","LOOK FOR IMAGEURL"+url);
         String fileName = URLUtil.guessFileName(url, null, null);
         Bitmap image = loadImageFromFile(fileName);
 
         if (image != null){
+            Log.d("TAG","the image already exist in local so i dont look in firebase");
             Log.d("TAG","getImage from local success " + fileName);
             listener.onSuccess(image);
         }else {
@@ -172,6 +175,7 @@ checks if family exist in firebase
 
     private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
         try {
+            Log.d("TAG","THE IMAGE FILE NAME IN SAVE IMAGE TO FILE FUNC IS:"+imageFileName);
             File dir = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES);
             if (!dir.exists()) {

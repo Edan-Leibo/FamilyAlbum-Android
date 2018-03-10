@@ -314,7 +314,9 @@ public class CommentListFragment extends Fragment {
                     @Override
                     public void onSuccess(Bitmap image) {
                         String tagUrl = imageView.getTag().toString();
+                        Log.d("TAG","THE TAGURL IS:"+tagUrl);
                         if (tagUrl.equals(cmt.getImageUrl())) {
+                            Log.d("TAG","they equal");
                             imageView.setImageBitmap(image);
                             progressBar.setVisibility(View.GONE);
                         }
@@ -322,6 +324,7 @@ public class CommentListFragment extends Fragment {
 
                     @Override
                     public void onFail() {
+                        Log.d("TAG","not equal");
                         imageView.setImageResource(R.drawable.avatar);
                         progressBar.setVisibility(View.GONE);
 
