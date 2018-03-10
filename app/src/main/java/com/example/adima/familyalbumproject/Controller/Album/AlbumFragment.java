@@ -285,11 +285,12 @@ public class AlbumFragment extends Fragment {
 
                 @Override
                 public void fail() {
-                    Toast.makeText(MyApplication.getMyContext(), "Failed to add the photo", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
+                    Toast.makeText(MyApplication.getMyContext(), "Failed to add the photo", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
+            progressBar.setVisibility(View.GONE);
             Toast.makeText(MyApplication.getMyContext(), "Photo was not added", Toast.LENGTH_SHORT).show();
         }
     }
@@ -297,7 +298,6 @@ public class AlbumFragment extends Fragment {
     private String getUniqueId() {
         Calendar cc = Calendar.getInstance();
         Date date = cc.getTime();
-        // SimpleDateFormat format1 = new SimpleDateFormat("dd MMM");
         SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         return format2.format(date);
     }

@@ -33,7 +33,6 @@ public class CreateAlbumFragment extends Fragment {
 
     public interface OnFragmentCreateAlbumInteractionListener{
         void showAlbumsFragment();
-        void showAlbumFragment();
     }
 
 
@@ -59,7 +58,6 @@ public class CreateAlbumFragment extends Fragment {
         view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
                 mListener.showAlbumsFragment();
             }
         });

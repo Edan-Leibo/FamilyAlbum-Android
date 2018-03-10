@@ -59,8 +59,8 @@ public class AlbumsFragment extends Fragment {
     private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
     public static final int REQUEST_IMAGE_CAPTURE = 0;
     public static final int PICK_IMAGE = 1;
-    //MenuItem  addAlbumItem;
-    //MenuItem getSerialItem;
+    MenuItem  addAlbumItem;
+    MenuItem getSerialItem;
     //MenuItem getJoinItem;
     //MenuItem createItem;
 
@@ -107,22 +107,16 @@ public class AlbumsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.albums_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        //getJoinItem=menu.findItem(R.id.btn_join_family);
-        //createItem=menu.findItem(R.id.btn_create_family);
-        //getSerialItem=menu.findItem(R.id.btn_get_family_serial);
-        //addAlbumItem = menu.findItem(R.id.btn_add_album);
+        getSerialItem=menu.findItem(R.id.btn_get_family_serial);
+        addAlbumItem = menu.findItem(R.id.btn_add_album);
 
         if (familySerial == "NONE") {
-            //addAlbumItem.setVisible(false);
-            //getSerialItem.setVisible(false);
-            //getJoinItem.setVisible(true);
-            //createItem.setVisible(true);
+            addAlbumItem.setVisible(false);
+            getSerialItem.setVisible(false);
             Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_SHORT).show();
         } else {
-            //addAlbumItem.setVisible(true);
-            //getSerialItem.setVisible(true);
-            //getJoinItem.setVisible(false);
-            //createItem.setVisible(false);
+            addAlbumItem.setVisible(true);
+            getSerialItem.setVisible(true);
         }
     }
 
@@ -189,9 +183,8 @@ public class AlbumsFragment extends Fragment {
                                 if (exist) {
                                     Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, serial);
                                     mListener.showAlbumsFragment();
-
-                                   // getJoinItem.setVisible(false);
-                                   // createItem.setVisible(false);
+                                    addAlbumItem.setVisible(true);
+                                    getSerialItem.setVisible(true);
 
                                 } else {
                                     Toast.makeText(MyApplication.getMyContext(), "Serial does not exist", Toast.LENGTH_SHORT).show();
@@ -202,6 +195,7 @@ public class AlbumsFragment extends Fragment {
                             @Override
                             public void onCancel() {
                                 progressBar.setVisibility(View.GONE);
+                                Toast.makeText(MyApplication.getMyContext(), "Can't create a new family", Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -219,12 +213,9 @@ public class AlbumsFragment extends Fragment {
                             Toast.makeText(MyApplication.getMyContext(), "Creation of a family failed", Toast.LENGTH_SHORT).show();
                         } else {
                             familySerial = success;
-                            //addAlbumItem.setVisible(false);
                             Toast.makeText(MyApplication.getMyContext(), "New family was created", Toast.LENGTH_SHORT).show();
                             Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
                             mListener.showAlbumsFragment();
-                           // getJoinItem.setVisible(false);
-                            //createItem.setVisible(false);
                         }
                         progressBar.setVisibility(View.GONE);
                     }
@@ -235,7 +226,6 @@ public class AlbumsFragment extends Fragment {
                 FirebaseAuthentication.signOut();
                 Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, "NONE");
                 progressBar.setVisibility(View.GONE);
-                //Model.instance().clearCache(albumList,familySerial);
                 mListener.showLoginFragment();
                 return true;
             default:
@@ -328,7 +318,6 @@ public class AlbumsFragment extends Fragment {
                 Album album = albumList.get(i);
                 Log.d("TAG", "got item number:" + i);
                 mListener.showAlbumFragment(album.getAlbumId());
-
             }
         });
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
