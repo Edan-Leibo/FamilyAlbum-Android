@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -47,7 +48,6 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 
-
 public class AlbumsFragment extends Fragment {
     private OnFragmentAlbumsInteractionListener mListener;
     ListView albumsListView;
@@ -59,10 +59,10 @@ public class AlbumsFragment extends Fragment {
     private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
     public static final int REQUEST_IMAGE_CAPTURE = 0;
     public static final int PICK_IMAGE = 1;
-    MenuItem  addAlbumItem;
+    MenuItem addAlbumItem;
     MenuItem getSerialItem;
-    //MenuItem getJoinItem;
-    //MenuItem createItem;
+    MenuItem getJoinItem;
+    MenuItem createItem;
 
     private AlbumsListViewModel albumListViewModel;
 
@@ -72,8 +72,11 @@ public class AlbumsFragment extends Fragment {
 
     public interface OnFragmentAlbumsInteractionListener {
         void showAlbumsFragment();
+
         void showLoginFragment();
+
         void showAlbumFragment(String albumId);
+
         void showCreateAlbumFragment();
     }
 
@@ -100,20 +103,20 @@ public class AlbumsFragment extends Fragment {
         setHasOptionsMenu(true);
         Bundle args = getArguments();
         familySerial = args.getString(FAMILY_SERIAL, "NONE");
-
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.albums_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        getSerialItem=menu.findItem(R.id.btn_get_family_serial);
+        getSerialItem = menu.findItem(R.id.btn_get_family_serial);
         addAlbumItem = menu.findItem(R.id.btn_add_album);
 
         if (familySerial == "NONE") {
             addAlbumItem.setVisible(false);
             getSerialItem.setVisible(false);
-            Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_LONG).show();
+            Toast.makeText(MyApplication.getMyContext(), "You can join one family or create a new one", Toast.LENGTH_LONG).show();
         } else {
             addAlbumItem.setVisible(true);
             getSerialItem.setVisible(true);
@@ -165,62 +168,22 @@ public class AlbumsFragment extends Fragment {
                 alertDialogGetSerial.show();
                 return true;
             case R.id.btn_join_family:
-                final AlertDialog.Builder alertDialogBuilderJoin = new AlertDialog.Builder(getContext());
-                alertDialogBuilderJoin.setMessage("Please enter the family's serial number\n");
-                final EditText input = new EditText(getContext());
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                alertDialogBuilderJoin.setView(input);
-                alertDialogBuilderJoin.setNeutralButton("Connect me", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        final String serial = input.getText().toString();
-                        progressBar.setVisibility(View.VISIBLE);
-                        Model.instance().isFamilyExist(serial, new Model.IsFamilyExistCallback() {
-                            @Override
-                            public void onComplete(boolean exist) {
-                                if (exist) {
-                                    Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, serial);
-                                    mListener.showAlbumsFragment();
-                                    addAlbumItem.setVisible(true);
-                                    getSerialItem.setVisible(true);
 
-                                } else {
-                                    Toast.makeText(MyApplication.getMyContext(), "Serial does not exist", Toast.LENGTH_SHORT).show();
-                                }
-                                progressBar.setVisibility(View.GONE);
-                            }
+                AlertDialog alertDialogWarning = createJoinDialog();
+                AlertDialog alertDialogBuilderJoinWarning = getAlertDialogWarning(alertDialogWarning);
 
-                            @Override
-                            public void onCancel() {
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(MyApplication.getMyContext(), "Can't create a new family", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                    }
-                });
-                AlertDialog alertDialogJoin = alertDialogBuilderJoin.create();
-                alertDialogJoin.show();
+                if (familySerial == "NONE") {
+                    alertDialogWarning.show();
+                } else {
+                    alertDialogBuilderJoinWarning.show();
+                }
                 return true;
+
             case R.id.btn_create_family:
-                progressBar.setVisibility(View.VISIBLE);
-                Model.instance().addNewFamily(new Model.GetKeyListener() {
-                    @Override
-                    public void onCompletion(String success) {
-                        if (success == null) {
-                            Toast.makeText(MyApplication.getMyContext(), "Creation of a family failed", Toast.LENGTH_SHORT).show();
-                        } else {
-                            familySerial = success;
-                            Toast.makeText(MyApplication.getMyContext(), "New family was created", Toast.LENGTH_SHORT).show();
-                            Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
-                            mListener.showAlbumsFragment();
-                        }
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+                AlertDialog createDialog = getAlertDialogCreate();
+                createDialog.show();
                 return true;
+
             case R.id.btn_albums_exit:
                 progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuthentication.signOut();
@@ -231,6 +194,93 @@ public class AlbumsFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private AlertDialog getAlertDialogCreate() {
+        return new AlertDialog.Builder(getContext())
+                .setMessage("Please notice that currently you're connected to a family.\n" +
+                        "Creating a new family will disconnect you from your current family.").setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .setPositiveButton("Approve", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        Model.instance().addNewFamily(new Model.GetKeyListener() {
+                            @Override
+                            public void onCompletion(String success) {
+                                if (success == null) {
+                                    Toast.makeText(MyApplication.getMyContext(), "Creation of a family failed", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    familySerial = success;
+                                    Toast.makeText(MyApplication.getMyContext(), "New family was created", Toast.LENGTH_SHORT).show();
+                                    Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
+                                    mListener.showAlbumsFragment();
+                                }
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+                }).create();
+    }
+
+    private AlertDialog getAlertDialogWarning(final AlertDialog alertDialogWarning) {
+        return new AlertDialog.Builder(getContext())
+                .setMessage("Please notice that currently you're connected to a family.\n" +
+                        "Joining a different family will disconnect you from your current family.").setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .setPositiveButton("Approve", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        alertDialogWarning.show();
+                    }
+                }).create();
+    }
+
+    @NonNull
+    private AlertDialog createJoinDialog() {
+        final AlertDialog.Builder alertDialogBuilderJoin = new AlertDialog.Builder(getContext());
+        alertDialogBuilderJoin.setMessage("Please enter the family's serial number\n");
+        final EditText input = new EditText(getContext());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        alertDialogBuilderJoin.setView(input);
+        alertDialogBuilderJoin.setNeutralButton("Connect me", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                final String serial = input.getText().toString();
+                progressBar.setVisibility(View.VISIBLE);
+                Model.instance().isFamilyExist(serial, new Model.IsFamilyExistCallback() {
+                    @Override
+                    public void onComplete(boolean exist) {
+                        if (exist) {
+                            Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, serial);
+                            mListener.showAlbumsFragment();
+                            addAlbumItem.setVisible(true);
+                            getSerialItem.setVisible(true);
+
+                        } else {
+                            Toast.makeText(MyApplication.getMyContext(), "Serial does not exist", Toast.LENGTH_SHORT).show();
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(MyApplication.getMyContext(), "Can't create a new family", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+        return alertDialogBuilderJoin.create();
     }
 
 
@@ -283,8 +333,6 @@ public class AlbumsFragment extends Fragment {
     }
 
 
-
-
     private void dispatchGetPictureFromGalleryIntent() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         if (pickPhoto.resolveActivity(getContext().getPackageManager()) != null) {
@@ -329,13 +377,12 @@ public class AlbumsFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-                                Model.instance().removeAlbum(album,familySerial, new Model.OnRemove() {
+                                Model.instance().removeAlbum(album, familySerial, new Model.OnRemove() {
                                     @Override
                                     public void onCompletion(boolean success) {
-                                        if (success==true){
+                                        if (success == true) {
                                             Toast.makeText(MyApplication.getMyContext(), "Successfully deleted", Toast.LENGTH_SHORT).show();
-                                        }
-                                        else{
+                                        } else {
                                             Toast.makeText(MyApplication.getMyContext(), "could not delete the image", Toast.LENGTH_SHORT).show();
                                         }
 
@@ -350,7 +397,7 @@ public class AlbumsFragment extends Fragment {
                         });
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
-                return  true;
+                return true;
             }
         });
 
@@ -369,7 +416,7 @@ public class AlbumsFragment extends Fragment {
         }
 
         this.albumListViewModel = ViewModelProviders.of(this).get(AlbumsListViewModel.class);
-        //familySerial="-L6pJ7h5JSIjz-WQctTl";
+
         this.albumListViewModel.init(familySerial);
         albumListViewModel.getAlbumList().observe(this, new Observer<List<Album>>() {
             @Override
@@ -400,7 +447,6 @@ public class AlbumsFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-
 
 
     class AlbumListAdapter extends BaseAdapter {
