@@ -104,20 +104,20 @@ public class AlbumRepository {
         return albumsListliveData;
     }
 
-    private void updateCommentDataInLocalStorage(List<Album> data,String albumId) {
+    private void updateCommentDataInLocalStorage(List<Album> data,String serialNumber) {
         Log.d("TAG", "got items from firebase: " + data.size());
         AlbumRepository.MyTask task = new AlbumRepository.MyTask();
 
-        task.setAlbumId(albumId);
+        task.setSerialNumber(serialNumber);
 
         task.execute(data);
     }
 
     class MyTask extends AsyncTask<List<Album>,String,List<Album>> {
-        private String albumId;
+        private String serialNumber;
 
-        public void setAlbumId(String albumId) {
-            this.albumId = albumId;
+        public void setSerialNumber(String albumId) {
+            this.serialNumber = serialNumber;
         }
         @Override
         protected List<Album> doInBackground(List<Album>[] lists) {
@@ -127,7 +127,7 @@ public class AlbumRepository {
                 long lastUpdateDate = 0;
                 try {
                     lastUpdateDate = MyApplication.getMyContext()
-                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments"+albumId, 0);
+                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments"+serialNumber, 0);
 
                     Log.d("Tag","got the last update date");
                 }catch (Exception e){
@@ -152,11 +152,11 @@ public class AlbumRepository {
                         }
                     }
                     SharedPreferences.Editor editor = MyApplication.getMyContext().getSharedPreferences("TAG", Context.MODE_PRIVATE).edit();
-                    editor.putLong("lastUpdateDateComments"+albumId, reacentUpdate);
+                    editor.putLong("lastUpdateDateComments"+serialNumber, reacentUpdate);
                     editor.commit();
                 }
                 //return the complete student list to the caller
-                List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(albumId);
+                List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
                 Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
 
                 return albumsList;
