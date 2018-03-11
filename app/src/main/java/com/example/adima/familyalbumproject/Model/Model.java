@@ -9,6 +9,13 @@ import android.os.Environment;
 import android.util.Log;
 import android.webkit.URLUtil;
 
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
+import com.example.adima.familyalbumproject.Model.SQL.AlbumRepository;
+import com.example.adima.familyalbumproject.Model.SQL.CommentRepository;
+import com.example.adima.familyalbumproject.Model.SQL.ImageRepository;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.io.File;
@@ -19,14 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-
-import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
-import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
-import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
-import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
-import com.example.adima.familyalbumproject.Model.SQL.AlbumRepository;
-import com.example.adima.familyalbumproject.Model.SQL.CommentRepository;
-import com.example.adima.familyalbumproject.Model.SQL.ImageRepository;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -286,7 +285,7 @@ public void removeComment(final Comment comment,final OnRemove listener){
 }
 
     public void removeAlbum(final Album album,String serialNumber, final OnRemove listener) {
-        AlbumRepository.instance.removeFromLocalDb(album,serialNumber);
+        AlbumRepository.instance.removeFromLocalDb(album);
 
         modelFirebase.removeAlbum(album, new ModelFirebase.OnRemove() {
             @Override
@@ -310,12 +309,7 @@ public void removeComment(final Comment comment,final OnRemove listener){
 
     }
 
-    public void clearCache(List<Album> list,String serial){
-        for(Album album:list) {
-            AlbumRepository.instance.removeFromLocalDb(album,serial);
-        }
 
-    }
 
 
     }
