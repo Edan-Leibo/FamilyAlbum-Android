@@ -1,4 +1,4 @@
-package Model.SQL;
+package com.example.adima.familyalbumproject.Model.SQL;
 
 import android.util.Log;
 
@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import Model.Entities.Image.Image;
-import Model.Firebase.ModelFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
 
 /**
  * Created by adima on 05/03/2018.

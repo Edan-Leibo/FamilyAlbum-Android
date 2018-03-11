@@ -1,7 +1,8 @@
-package Model.Firebase;
+package com.example.adima.familyalbumproject.Model.Firebase;
 
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -11,8 +12,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import Model.Entities.Album.Album;
 
 
 /**

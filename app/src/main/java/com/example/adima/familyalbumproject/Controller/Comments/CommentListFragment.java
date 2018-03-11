@@ -30,10 +30,10 @@ import com.example.adima.familyalbumproject.R;
 import java.util.LinkedList;
 import java.util.List;
 
-import Model.Entities.Comment.Comment;
-import Model.Entities.Comment.CommentListViewModel;
-import Model.Firebase.FirebaseAuthentication;
-import Model.Model;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentListViewModel;
+import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Model;
 
 
 public class CommentListFragment extends Fragment {

@@ -1,7 +1,9 @@
-package Model.SQL;
+package com.example.adima.familyalbumproject.Model.SQL;
 
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
+import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -13,9 +15,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import Model.Entities.Comment.Comment;
-import Model.Firebase.ModelFirebase;
 
 /**
  * Created by adima on 04/03/2018.

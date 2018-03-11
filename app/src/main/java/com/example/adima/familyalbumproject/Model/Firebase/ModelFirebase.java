@@ -1,4 +1,4 @@
-package Model.Firebase;
+package com.example.adima.familyalbumproject.Model.Firebase;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,14 +20,14 @@ import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import Model.Entities.Album.Album;
-import Model.Entities.Comment.Comment;
-import Model.Entities.Image.Image;
-import Model.Model;
-import Model.SQL.AlbumFirebase;
-import Model.SQL.CommentFirebase;
-import Model.SQL.FamiliesFirebase;
-import Model.SQL.ImageFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Model;
+import com.example.adima.familyalbumproject.Model.SQL.AlbumFirebase;
+import com.example.adima.familyalbumproject.Model.SQL.CommentFirebase;
+import com.example.adima.familyalbumproject.Model.SQL.FamiliesFirebase;
+import com.example.adima.familyalbumproject.Model.SQL.ImageFirebase;
 
 /**
  * Created by adima on 01/03/2018.

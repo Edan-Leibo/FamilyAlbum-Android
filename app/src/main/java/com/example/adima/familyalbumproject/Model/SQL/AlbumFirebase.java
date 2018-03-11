@@ -1,20 +1,22 @@
-package Model.SQL;
+package com.example.adima.familyalbumproject.Model.SQL;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
+import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
-
-import Model.Entities.Album.Album;
-import Model.Firebase.ModelFirebase;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by adima on 02/03/2018.
@@ -90,53 +92,40 @@ public class AlbumFirebase {
     }
 
 
-    public static void getAllAlbumsAndObserve(String serialNumber, final OnAlbumEvent listener) {
+    public static void getAllAlbumsAndObserve(String serialNumber,final Callback<List<Album>> callback) {
         Log.d("TAG", "on get all albums and observe func in album firebase");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("albums").child(serialNumber);
 
-        ChildEventListener childListener = myRef.addChildEventListener(new ChildEventListener() {
+        ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("TAG", "child was added");
-                Album album = dataSnapshot.getValue(Album.class);
-                Log.d("TAG", "the name of the child is:" + album.getAlbumId());
-                listener.OnCompletion(album,"add");
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
+                List<Album> list = new LinkedList<Album>();
 
-            }
+                for(DataSnapshot snap:dataSnapshot.getChildren()){
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d("TAG", "child was changed");
-                String value = dataSnapshot.getValue().toString();
-                Log.d("TAG", "value");
+                    Album album = snap.getValue(Album.class);
 
+                    list.add(album);
+                }
 
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d("TAG", "child was added");
-                Album album = dataSnapshot.getValue(Album.class);
-                Log.d("TAG", "the name of the child is:" + album.getAlbumId());
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                callback.onComplete(list);
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                Log.d("TAG","error in db");
+
+                callback.onComplete(null);
 
             }
         });
-
     }
 
 
-    public static void getAllAlbumsAndObserve(String serialNumber, long lastUpdate, final OnAlbumEvent listener) {
+    public static void getAllAlbumsAndObserve(String serialNumber, long lastUpdate, final Callback<List<Album>> callback) {
 
         Log.d("TAG", "getAllAlbumsAndObserve " + lastUpdate);
         Log.d("TAG", "getAllAlbumsAndObserve");
@@ -144,40 +133,29 @@ public class AlbumFirebase {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("albums").child(serialNumber);
-        ChildEventListener childListener = myRef.addChildEventListener(new ChildEventListener() {
+        Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
+        Log.d("TAG","the query is ok");
+
+        ValueEventListener listener = query.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("TAG", "child was added");
-                Album album = dataSnapshot.getValue(Album.class);
-                Log.d("TAG", "the name of the child is:" + album.getAlbumId());
-                listener.OnCompletion(album,"add");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("TAG","the data changed");
+                List<Album> list = new LinkedList<Album>();
+
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    Log.d("TAG","got the children");
+
+                    Album album = snap.getValue(Album.class);
 
 
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Album album = dataSnapshot.getValue(Album.class);
-                Log.d("TAG", "THE child changed:" + album.getAlbumId());
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                String val = dataSnapshot.getKey();
-                Log.d("TAG", "child was deleted");
-                Album album=new Album();
-                album.setAlbumId(val);
-                listener.OnCompletion(album,"del");
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Album album = dataSnapshot.getValue(Album.class);
-                Log.d("TAG", "THE child moved:" + album.getAlbumId());
+                    list.add(album);
+                }
+                callback.onComplete(list);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                callback.onComplete(null);
             }
         });
     }

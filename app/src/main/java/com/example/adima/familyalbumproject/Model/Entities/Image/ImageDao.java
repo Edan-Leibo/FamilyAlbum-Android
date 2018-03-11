@@ -1,4 +1,4 @@
-package Model.Entities.Image;
+package com.example.adima.familyalbumproject.Model.Entities.Image;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;

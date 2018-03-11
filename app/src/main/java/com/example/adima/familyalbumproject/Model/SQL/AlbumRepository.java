@@ -1,4 +1,4 @@
-package Model.SQL;
+package com.example.adima.familyalbumproject.Model.SQL;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -7,12 +7,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import Model.Entities.Album.Album;
 
 /**
  * Created by adima on 02/03/2018.
@@ -35,18 +34,18 @@ public class AlbumRepository {
 
                 albumsListliveData = new MutableLiveData<List<Album>>();
 
-                AlbumFirebase.getAllAlbumsAndObserve(serialNumber, new AlbumFirebase.OnAlbumEvent() {
-                    @Override
-                    public void OnCompletion(Album album,String event) {
-                        List<Album> list = new LinkedList<>();
-                        list.add(album);
-                        if (list != null) {
-                            albumsListliveData.setValue(list);
-                        }
+                AlbumFirebase.getAllAlbumsAndObserve(serialNumber, new AlbumFirebase.Callback<List<Album>>() {
+                            @Override
+                            public void onComplete(List<Album> data) {
 
-                    }
-                });
-            //}
+                                if (data != null) albumsListliveData.setValue(data);
+
+
+                                }
+
+
+                        });
+                        //}
         }
         return albumsListliveData;
     }
@@ -66,22 +65,14 @@ public class AlbumRepository {
 
             }
 
-            AlbumFirebase.getAllAlbumsAndObserve(serialNumber, lastUpdateDate, new AlbumFirebase.OnAlbumEvent() {
+            AlbumFirebase.getAllAlbumsAndObserve(serialNumber, new AlbumFirebase.Callback<List<Album>>() {
                 @Override
-                public void OnCompletion(Album album,String event) {
-                    if(event.equals("del")){
-
-                        removeFromLocalDb(album,serialNumber);
-                    }
-                    else {
-                        Log.d("TAG", "The data change");
-                        List<Album> list = new LinkedList<>();
-                        list.add(album);
-                        updateAlbumDataInLocalStorage(list, serialNumber);
-                    }
+                public void onComplete(List<Album> data) {
+                    updateAlbumDataInLocalStorage(data,serialNumber);
 
                 }
             });
+
         }
         return albumsListliveData;
     }

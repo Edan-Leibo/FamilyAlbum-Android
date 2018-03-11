@@ -1,4 +1,4 @@
-package Model.Entities.Image;
+package com.example.adima.familyalbumproject.Model.Entities.Image;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

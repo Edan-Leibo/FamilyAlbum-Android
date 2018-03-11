@@ -1,4 +1,4 @@
-package Model.SQL;
+package com.example.adima.familyalbumproject.Model.SQL;
 
 import android.util.Log;
 
@@ -8,7 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import Model.Entities.Album.Album;
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 
 /**
  * Created by adima on 05/03/2018.

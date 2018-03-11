@@ -20,8 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import Model.Entities.Album.Album;
-import Model.Model;
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
+import com.example.adima.familyalbumproject.Model.Model;
 
 
 public class CreateAlbumFragment extends Fragment {

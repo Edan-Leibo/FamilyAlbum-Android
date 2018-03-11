@@ -1,4 +1,4 @@
-package Model.SQL;
+package com.example.adima.familyalbumproject.Model.SQL;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -11,7 +11,7 @@ import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;
 
-import Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
 
 /**
  * Created by adima on 05/03/2018.

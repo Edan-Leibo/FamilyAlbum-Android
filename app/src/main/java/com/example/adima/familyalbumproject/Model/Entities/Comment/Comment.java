@@ -1,4 +1,4 @@
-package Model.Entities.Comment;
+package com.example.adima.familyalbumproject.Model.Entities.Comment;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -30,7 +30,7 @@ public class Comment {
         this.userId=userId;
     }
 
-    
+
 
     public Comment(){
 

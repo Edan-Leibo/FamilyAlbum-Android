@@ -16,7 +16,7 @@ import com.example.adima.familyalbumproject.Controller.MainActivity;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
-import Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
 
 /**
  * Created by adima on 03/03/2018.

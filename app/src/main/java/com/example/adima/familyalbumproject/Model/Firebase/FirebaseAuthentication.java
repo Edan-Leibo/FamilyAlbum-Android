@@ -1,4 +1,4 @@
-package Model.Firebase;
+package com.example.adima.familyalbumproject.Model.Firebase;
 
 import android.support.annotation.NonNull;
 

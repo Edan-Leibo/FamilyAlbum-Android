@@ -1,4 +1,4 @@
-package Model;
+package com.example.adima.familyalbumproject.Model;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,13 +20,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import Model.Entities.Album.Album;
-import Model.Entities.Comment.Comment;
-import Model.Entities.Image.Image;
-import Model.Firebase.ModelFirebase;
-import Model.SQL.AlbumRepository;
-import Model.SQL.CommentRepository;
-import Model.SQL.ImageRepository;
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
+import com.example.adima.familyalbumproject.Model.SQL.AlbumRepository;
+import com.example.adima.familyalbumproject.Model.SQL.CommentRepository;
+import com.example.adima.familyalbumproject.Model.SQL.ImageRepository;
 
 import static android.content.Context.MODE_PRIVATE;
 

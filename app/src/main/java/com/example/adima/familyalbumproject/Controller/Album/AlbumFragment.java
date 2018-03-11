@@ -36,10 +36,10 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import Model.Entities.Image.Image;
-import Model.Entities.Image.ImagesUrlListViewModel;
-import Model.Firebase.FirebaseAuthentication;
-import Model.Model;
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Entities.Image.ImagesUrlListViewModel;
+import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Model;
 
 import static android.app.Activity.RESULT_OK;
 

@@ -1,4 +1,4 @@
-package Model.SQL;
+package com.example.adima.familyalbumproject.Model.SQL;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -7,11 +7,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;
-
-import Model.Entities.Comment.Comment;
 
 /**
  * Created by adima on 04/03/2018.
