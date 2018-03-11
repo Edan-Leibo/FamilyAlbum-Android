@@ -25,6 +25,7 @@ abstract class AppLocalStoreDb extends RoomDatabase {
     public abstract CommentDao commentDao();
     public abstract ImageDao imageDao();
     public abstract FamilyMemberDao familyMemberDao();
+    
 }
 
 public class AppLocalStore {
