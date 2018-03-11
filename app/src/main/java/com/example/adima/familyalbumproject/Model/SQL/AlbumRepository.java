@@ -27,21 +27,22 @@ public class AlbumRepository {
 
     public LiveData<List<Album>> getAlbumsList(String serialNumber) {
         synchronized (this) {
-            Log.d("TAG", "comment live data is null");
+           // if (albumsListliveData == null) {
+                Log.d("TAG", "comment live data is null");
 
-            albumsListliveData = new MutableLiveData<List<Album>>();
+                albumsListliveData = new MutableLiveData<List<Album>>();
 
-            AlbumFirebase.getAllAlbumsAndObserve(serialNumber,new AlbumFirebase.Callback<List<Album>>() {
-                @Override
-                public void onComplete(List<Album> data) {
+                AlbumFirebase.getAllAlbumsAndObserve(serialNumber, new AlbumFirebase.Callback<List<Album>>() {
+                    @Override
+                    public void onComplete(List<Album> data) {
 
-                    if (data != null) albumsListliveData.setValue(data);
-                    Log.d("TAG", "got comments data");
+                        if (data != null) albumsListliveData.setValue(data);
+                        Log.d("TAG", "got comments data");
 
-                }
-            });
+                    }
+                });
 
-
+            //}
         }
         return albumsListliveData;
     }
@@ -77,32 +78,34 @@ public class AlbumRepository {
 
     public LiveData<List<Album>> getAllAlbums(final String serialNumber) {
         synchronized (this) {
-            // if (commentsListliveData == null) {
-            Log.d("TAG","Live data is null");
-            albumsListliveData = new MutableLiveData<List<Album>>();
+          //  if (albumsListliveData == null) {
+                // if (commentsListliveData == null) {
+                Log.d("TAG", "Live data is null");
+                albumsListliveData = new MutableLiveData<List<Album>>();
 
-            //1. get the last update date
-            long lastUpdateDate = 0;
-            try {
-                lastUpdateDate = MyApplication.getMyContext()
-                        .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments", 0);
-            }catch (Exception e){
+                //1. get the last update date
+                long lastUpdateDate = 0;
+                try {
+                    lastUpdateDate = MyApplication.getMyContext()
+                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments", 0);
+                } catch (Exception e) {
 
-            }
-
-
-            AlbumFirebase.getAllAlbumsAndObserve(serialNumber,lastUpdateDate, new AlbumFirebase.Callback<List<Album>>() {
-                @Override
-                public void onComplete(List<Album> data) {
-
-                    updateCommentDataInLocalStorage(data,serialNumber);
                 }
-            });
 
 
+                AlbumFirebase.getAllAlbumsAndObserve(serialNumber, lastUpdateDate, new AlbumFirebase.Callback<List<Album>>() {
+                    @Override
+                    public void onComplete(List<Album> data) {
+
+                        updateCommentDataInLocalStorage(data, serialNumber);
+                    }
+                });
+
+           // }
         }
 
         return albumsListliveData;
+
     }
 
     private void updateCommentDataInLocalStorage(List<Album> data,String serialNumber) {
@@ -140,6 +143,7 @@ public class AlbumRepository {
                     //3. update the local DB
                     long reacentUpdate = lastUpdateDate;
 
+
                     for (Album album : data) {
                         if (album.getAlbumId() != null) {
 
@@ -160,6 +164,10 @@ public class AlbumRepository {
                 List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
                 Log.d("TAG",""+albumsList.size());
                 Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
+                List<Album> albumsOldList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
+                for(Album a : albumsOldList){
+                    removeFromLocalDb(a);
+                }
 
                 return albumsList;
             }
@@ -170,6 +178,7 @@ public class AlbumRepository {
         protected void onPostExecute(List<Album> albums) {
             super.onPostExecute(albums);
             albumsListliveData.setValue(albums);
+
             Log.d("TAG","update updateAlbumDataInLocalStorage in main thread");
 
         }
