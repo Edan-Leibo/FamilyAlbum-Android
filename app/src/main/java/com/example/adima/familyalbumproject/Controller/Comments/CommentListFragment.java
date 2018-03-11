@@ -4,9 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,7 +32,6 @@ import java.util.List;
 
 import Model.Entities.Comment.Comment;
 import Model.Entities.Comment.CommentListViewModel;
-import Model.Entities.User.User;
 import Model.Firebase.FirebaseAuthentication;
 import Model.Model;
 
@@ -119,73 +114,17 @@ public class CommentListFragment extends Fragment {
                         commentsProgressBar.setVisibility(View.VISIBLE);
                         commentEditText.setText("");
 
-                        Model.instance().getUserProfilePicture(new Model.GetKeyListener() {
+                        final Comment comment =new Comment();
+                        comment.setText(text);
+                        comment.setAlbumId(albumId);
+                        comment.setUserId(FirebaseAuthentication.getUserEmail());
+                        Model.instance().addComment(albumId, comment, new Model.OnCreation() {
                             @Override
-                            public void onCompletion(String success) {
-                                final Comment comment =new Comment();
-                                comment.setText(text);
-                                comment.setAlbumId(albumId);
-                                comment.setUserId(FirebaseAuthentication.getUserEmail());
-
-                                if(success!=null) {
-                                    Log.d("TAG","suc not null");
-                                    Log.d("TAG","suc"+success);
-                                    comment.setImageUrl(success);
-                                    Model.instance().addComment(albumId, comment, new Model.OnCreation() {
-                                        @Override
-                                        public void onCompletion(boolean success) {
-                                            Log.d("TAG","creat comment"+success);
-                                            commentsProgressBar.setVisibility(View.GONE);
-                                        }
-                                    });
-                                }
-                                else{
-                                    Drawable myDrawable = getResources().getDrawable(R.drawable.avatar);
-                                    Bitmap imageBitmap = ((BitmapDrawable) myDrawable).getBitmap();
-
-                                    if (imageBitmap != null) {
-                                        Model.instance().saveImage(imageBitmap, FirebaseAuthentication.getUserEmail(), new Model.SaveImageListener() {
-                                            @Override
-                                            public void complete(String url) {
-
-                                                User user = new User();
-                                                user.setEmailUser(FirebaseAuthentication.getUserEmail());
-                                                user.setImageUrl(url);
-                                                comment.setImageUrl(url);
-                                                Log.d("TAG","THE URL OF THE USER "+user.getImageUrl());
-                                                Model.instance().addUserProfilePicture(user, new Model.OnCreation() {
-                                                    @Override
-                                                    public void onCompletion(boolean success) {
-                                                        if (success) {
-                                                            Log.d("TAG","the saving is ok");
-                                                            Model.instance().addComment(albumId, comment, new Model.OnCreation() {
-                                                                @Override
-                                                                public void onCompletion(boolean success) {
-                                                                    Log.d("TAG","creat comment"+success);
-                                                                    commentsProgressBar.setVisibility(View.GONE);
-                                                                }
-                                                            });
-                                                        } else {
-                                                            Log.d("TAG","the saving is not ok");
-                                                        }
-                                                        commentsProgressBar.setVisibility(View.GONE);
-                                                    }
-                                                });
-                                            }
-                                            @Override
-                                            public void fail() {
-                                                commentsProgressBar.setVisibility(View.GONE);
-                                            }
-                                        });
-                                    } else {
-                                        Toast.makeText(MyApplication.getMyContext(), "Error", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-
+                            public void onCompletion(boolean success) {
+                                Log.d("TAG","creat comment"+success);
+                                commentsProgressBar.setVisibility(View.GONE);
                             }
                         });
-
                     }
                 });
 
@@ -239,8 +178,8 @@ public class CommentListFragment extends Fragment {
         if (context instanceof OnFragmentCommentInteractionListener) {
             mListener = (OnFragmentCommentInteractionListener) context;
         } else {
-            //throw new RuntimeException(context.toString()
-            //        + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
         Bundle args = getArguments();
         albumId = args.getString("albumId", "");
@@ -301,36 +240,8 @@ public class CommentListFragment extends Fragment {
                 convertView = inflater.inflate(R.layout.cell_comment, null);
             }
             TextView commentText = (TextView) convertView.findViewById(R.id.cell_comment_text);
-            final ImageView imageView = (ImageView) convertView.findViewById(R.id.cell_comment_user_image);
-            imageView.setImageResource(R.drawable.avatar);
-            final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.comment_cell_progressBar);
             final Comment cmt = commentList.get(position);
             commentText.setText(cmt.getText());
-            imageView.setTag(cmt.getImageUrl());
-            //imageView.setImageDrawable(getContext().getDrawable(R.drawable.avatar));
-            if (cmt.getImageUrl() != null && !cmt.getImageUrl().isEmpty() && !cmt.getImageUrl().equals("")) {
-                progressBar.setVisibility(View.VISIBLE);
-                Model.instance().getImage(cmt.getImageUrl(), new Model.GetImageListener() {
-                    @Override
-                    public void onSuccess(Bitmap image) {
-                        String tagUrl = imageView.getTag().toString();
-                        Log.d("TAG","THE TAGURL IS:"+tagUrl);
-                        if (tagUrl.equals(cmt.getImageUrl())) {
-                            Log.d("TAG","they equal");
-                            imageView.setImageBitmap(image);
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onFail() {
-                        Log.d("TAG","not equal");
-                        imageView.setImageResource(R.drawable.avatar);
-                        progressBar.setVisibility(View.GONE);
-
-                    }
-                });
-            }
             return convertView;
         }
     }

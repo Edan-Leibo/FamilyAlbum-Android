@@ -4,14 +4,8 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -39,11 +33,9 @@ import java.util.List;
 
 import Model.Entities.Album.Album;
 import Model.Entities.Album.AlbumsListViewModel;
-import Model.Entities.User.User;
 import Model.Firebase.FirebaseAuthentication;
 import Model.Model;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -138,32 +130,6 @@ public class AlbumsFragment extends Fragment {
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
                 return true;
-            case R.id.btn_edit_photo:
-                AlertDialog.Builder alertDialogBuilderGetSerial = new AlertDialog.Builder(getContext());
-                alertDialogBuilderGetSerial.setTitle("Get a photo");
-                alertDialogBuilderGetSerial.setMessage("Where do you want to take the photo from?\n");
-                alertDialogBuilderGetSerial.setPositiveButton("From camera", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        dispatchTakePictureIntent();
-                    }
-                });
-                alertDialogBuilderGetSerial.setNegativeButton("From Gallery", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        dispatchGetPictureFromGalleryIntent();
-                    }
-                });
-                alertDialogBuilderGetSerial.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
-                AlertDialog alertDialogGetSerial = alertDialogBuilderGetSerial.create();
-                alertDialogGetSerial.show();
-                return true;
             case R.id.btn_join_family:
                 final AlertDialog.Builder alertDialogBuilderJoin = new AlertDialog.Builder(getContext());
                 alertDialogBuilderJoin.setMessage("Please enter the family's serial number\n");
@@ -234,71 +200,8 @@ public class AlbumsFragment extends Fragment {
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Bitmap imageBitmap = null;
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            imageBitmap = BitmapFactory.decodeFile(picturePath);
-        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-        }
-        if (imageBitmap != null) {
-            Model.instance().saveImage(imageBitmap, FirebaseAuthentication.getUserEmail(), new Model.SaveImageListener() {
-                @Override
-                public void complete(String url) {
-                    User user = new User();
-                    user.setEmailUser(FirebaseAuthentication.getUserEmail());
-                    user.setImageUrl(url);
-                    Model.instance().addUserProfilePicture(user, new Model.OnCreation() {
-                        @Override
-                        public void onCompletion(boolean success) {
-                            if (success) {
-                                Toast.makeText(MyApplication.getMyContext(), "Photo was saved successfully", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
-                            }
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    });
-                }
-
-                @Override
-                public void fail() {
-                    Toast.makeText(MyApplication.getMyContext(), "Failed to save photo", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                }
-            });
-        } else {
-            Toast.makeText(MyApplication.getMyContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-            progressBar.setVisibility(View.GONE);
-        }
-    }
 
 
-
-
-    private void dispatchGetPictureFromGalleryIntent() {
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (pickPhoto.resolveActivity(getContext().getPackageManager()) != null) {
-            this.startActivityForResult(pickPhoto, PICK_IMAGE);
-        }
-    }
-
-    private void dispatchTakePictureIntent() {
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-            this.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

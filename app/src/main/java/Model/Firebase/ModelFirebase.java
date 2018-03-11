@@ -23,13 +23,11 @@ import java.util.List;
 import Model.Entities.Album.Album;
 import Model.Entities.Comment.Comment;
 import Model.Entities.Image.Image;
-import Model.Entities.User.User;
 import Model.Model;
 import Model.SQL.AlbumFirebase;
 import Model.SQL.CommentFirebase;
 import Model.SQL.FamiliesFirebase;
 import Model.SQL.ImageFirebase;
-import Model.SQL.UserModel;
 
 /**
  * Created by adima on 01/03/2018.
@@ -71,14 +69,7 @@ public class ModelFirebase {
         public void onCompletion(String success);
     }
 
-    public void getUserImageUrl(final Model.GetKeyListener listener){
-        UserModel.getUserImageUrl(new GetKeyListener() {
-            @Override
-            public void onCompletion(String success) {
-                listener.onCompletion(success);
-            }
-        });
-    }
+
     public interface IsFamilyExistCallback{
         void onComplete(boolean exist);
         void onCancel();
@@ -247,13 +238,6 @@ public class ModelFirebase {
             }
         });
     }
-    public void addUserProfilePicture(User user, final OnCreation listener){
-        UserModel.addUserProfilePicture(user, new UserModel.OnCreationUser() {
-            @Override
-            public void onCompletion(boolean success) {
-                listener.onCompletion(success);
-            }
-        });
-    }
+
 
     }

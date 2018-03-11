@@ -21,7 +21,6 @@ public class Comment {
     private String userId;
     private String albumId;
     private String text;
-    private String imageUrl;
     public long lastUpdated;
 
     public Comment(String text,String userId,String albumId) {
@@ -76,18 +75,11 @@ public class Comment {
         this.text = text;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public Comment (Map<String,Object> commentFromFirebase){
         this.setCommentId((String)commentFromFirebase.get("commentId"));
         this.setAlbumId((String)commentFromFirebase.get("albumId"));
-        this.setImageUrl((String)commentFromFirebase.get("imageUrl"));
         this.setLastUpdated((long)commentFromFirebase.get("lastUpdated"));
         this.setText((String)commentFromFirebase.get("text"));
         this.setUserId((String)commentFromFirebase.get("userId"));
@@ -99,7 +91,6 @@ public class Comment {
         HashMap<String,Object> result = new HashMap<>();
         result.put("commentId",this.commentId);
         result.put("albumId",this.albumId);
-        result.put("imageUrl",this.imageUrl);
         result.put("lastUpdated",this.lastUpdated);
         result.put("text",this.text);
         result.put("userId",this.userId);

@@ -23,7 +23,6 @@ import java.util.List;
 import Model.Entities.Album.Album;
 import Model.Entities.Comment.Comment;
 import Model.Entities.Image.Image;
-import Model.Entities.User.User;
 import Model.Firebase.ModelFirebase;
 import Model.SQL.AlbumRepository;
 import Model.SQL.CommentRepository;
@@ -62,14 +61,7 @@ public class Model {
         return familySerial;
     }
 
-    public void addUserProfilePicture(User user, final OnCreation listener){
-        this.modelFirebase.addUserProfilePicture(user, new ModelFirebase.OnCreation() {
-            @Override
-            public void onCompletion(boolean success) {
-                listener.onCompletion(success);
-            }
-        });
-    }
+
     public void writeToSharedPreferences(String name, String key, String value) {
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences(name,MODE_PRIVATE);
         SharedPreferences.Editor ed = ref.edit();
@@ -274,15 +266,7 @@ checks if family exist in firebase
 
     }
 
-    public void getUserProfilePicture(final GetKeyListener listener){
-        modelFirebase.getUserImageUrl(new GetKeyListener() {
-            @Override
-            public void onCompletion(String success) {
-                listener.onCompletion(success);
 
-            }
-        });
-    }
 
 public interface OnRemove{
     public void onCompletion(boolean success);

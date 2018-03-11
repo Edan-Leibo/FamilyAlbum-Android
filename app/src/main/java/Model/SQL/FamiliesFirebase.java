@@ -9,8 +9,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import Model.Entities.Album.Album;
-import Model.Entities.User.User;
-import Model.Firebase.FirebaseAuthentication;
 
 /**
  * Created by adima on 05/03/2018.
@@ -21,27 +19,7 @@ public class FamiliesFirebase {
         public void onCompletion(String success);
     }
 
-    public static void getUserImageUrl(final GetKeyListener listener){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String emailUser = FirebaseAuthentication.getUserEmail();
-        DatabaseReference ref= database.getReference("usersProfiles").child(emailUser);
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        User user = snap.getValue(User.class);
-                        listener.onCompletion(user.getImageUrl());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("TAG", "onCancelled", databaseError.toException());
-            }
-        });
-
-    }
 
     public static void addFamily(final GetKeyListener listener){
         Log.d("TAG", "add family to firebase");
