@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentFirebase;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;

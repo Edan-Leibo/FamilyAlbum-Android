@@ -1,11 +1,11 @@
 package com.example.adima.familyalbumproject.Controller;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.adima.familyalbumproject.Controller.Album.AlbumFragment;
 import com.example.adima.familyalbumproject.Controller.Album.CreateAlbumFragment;
+import com.example.adima.familyalbumproject.Controller.Album.ShowImageFragment;
 import com.example.adima.familyalbumproject.Controller.Albums.AlbumsFragment;
 import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragment;
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
@@ -33,6 +33,11 @@ public class MainActivity extends AppCompatActivity implements AlbumFragment.OnF
                 .beginTransaction()
                 .replace(R.id.container, AlbumsFragment.newInstance())
                 .commit();
+    }
+
+    @Override
+    public void showImageFragment(String imageUrl) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, ShowImageFragment.newInstance(imageUrl)).commit();
     }
 
     public void showCreateAlbumFragment() {

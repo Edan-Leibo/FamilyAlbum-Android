@@ -24,10 +24,10 @@ import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
 import com.example.adima.familyalbumproject.Model.Model;
-import com.example.adima.familyalbumproject.Model.SQL.AlbumFirebase;
-import com.example.adima.familyalbumproject.Model.SQL.CommentFirebase;
-import com.example.adima.familyalbumproject.Model.SQL.FamiliesFirebase;
-import com.example.adima.familyalbumproject.Model.SQL.ImageFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Family.FamiliesFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Image.ImageFirebase;
 
 /**
  * Created by adima on 01/03/2018.

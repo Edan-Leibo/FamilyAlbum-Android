@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Model.SQL;
+package com.example.adima.familyalbumproject.Model.Entities.Family;
 
 import android.util.Log;
 

@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
+import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumFirebase;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;
@@ -116,7 +117,7 @@ public class AlbumRepository {
     class MyTask extends AsyncTask<List<Album>,String,List<Album>> {
         private String serialNumber;
 
-        public void setSerialNumber(String albumId) {
+        public void setSerialNumber(String serialNumber) {
             this.serialNumber = serialNumber;
         }
         @Override
@@ -157,6 +158,7 @@ public class AlbumRepository {
                 }
                 //return the complete student list to the caller
                 List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
+                Log.d("TAG",""+albumsList.size());
                 Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
 
                 return albumsList;

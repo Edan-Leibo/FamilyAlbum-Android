@@ -3,9 +3,9 @@ package com.example.adima.familyalbumproject.Model.Entities.Album;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import java.util.List;
-
 import com.example.adima.familyalbumproject.Model.SQL.AlbumRepository;
+
+import java.util.List;
 
 /**
  * Created by adima on 02/03/2018.

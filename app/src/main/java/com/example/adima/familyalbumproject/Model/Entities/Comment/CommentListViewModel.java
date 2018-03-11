@@ -3,9 +3,9 @@ package com.example.adima.familyalbumproject.Model.Entities.Comment;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import java.util.List;
-
 import com.example.adima.familyalbumproject.Model.SQL.CommentRepository;
+
+import java.util.List;
 
 /**
  * Created by adima on 04/03/2018.

@@ -7,11 +7,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Entities.Image.ImageFirebase;
 import com.example.adima.familyalbumproject.MyApplication;
 
 import java.util.List;
-
-import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
 
 /**
  * Created by adima on 05/03/2018.

@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +28,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Entities.Image.ImagesUrlListViewModel;
+import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Model;
 import com.example.adima.familyalbumproject.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
@@ -35,11 +40,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
-import com.example.adima.familyalbumproject.Model.Entities.Image.ImagesUrlListViewModel;
-import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
-import com.example.adima.familyalbumproject.Model.Model;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -65,6 +65,7 @@ public class AlbumFragment extends Fragment {
     public interface OnFragmentAlbumInteractionListener {
 
         void showAlbumsFragment();
+        void showImageFragment(String imageUrl);
 
         void showCommentsFragment(String albumId);
 
@@ -150,6 +151,17 @@ public class AlbumFragment extends Fragment {
         GridView grid = view.findViewById(R.id.gridview);
         adapter = new ImageGridViewAdapter();
         grid.setAdapter(adapter);
+
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Image image = imageList.get(i);
+                Log.d("TAG","THE IMAGE URL IN THE ALBUM:"+image.getImageUrl());
+                ;
+                mListener.showImageFragment(image.getImageUrl());
+
+            }
+        });
 
         grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
