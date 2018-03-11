@@ -24,16 +24,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.adima.familyalbumproject.MyApplication;
-import com.example.adima.familyalbumproject.R;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentListViewModel;
 import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
 import com.example.adima.familyalbumproject.Model.Model;
+import com.example.adima.familyalbumproject.MyApplication;
+import com.example.adima.familyalbumproject.R;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class CommentListFragment extends Fragment {
@@ -239,9 +239,17 @@ public class CommentListFragment extends Fragment {
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.cell_comment, null);
             }
+            //TextView messageText = (TextView)convertView.findViewById(R.id.message_text);
+            TextView messageUser = (TextView)convertView.findViewById(R.id.message_user);
+            TextView messageTime = (TextView)convertView.findViewById(R.id.message_time);
+
             TextView commentText = (TextView) convertView.findViewById(R.id.cell_comment_text);
             final Comment cmt = commentList.get(position);
             commentText.setText(cmt.getText());
+            messageUser.setText(cmt.getUserId());
+            Date d = new Date(cmt.getLastUpdated());
+
+            messageTime.setText(d.toString());
             return convertView;
         }
     }

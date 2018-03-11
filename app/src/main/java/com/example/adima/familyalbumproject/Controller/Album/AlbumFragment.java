@@ -65,7 +65,7 @@ public class AlbumFragment extends Fragment {
     public interface OnFragmentAlbumInteractionListener {
 
         void showAlbumsFragment();
-        void showImageFragment(String imageUrl);
+        void showImageFragment(String imageUrl,String albumId);
 
         void showCommentsFragment(String albumId);
 
@@ -158,7 +158,7 @@ public class AlbumFragment extends Fragment {
                 final Image image = imageList.get(i);
                 Log.d("TAG","THE IMAGE URL IN THE ALBUM:"+image.getImageUrl());
                 ;
-                mListener.showImageFragment(image.getImageUrl());
+                mListener.showImageFragment(image.getImageUrl(),albumId);
 
             }
         });

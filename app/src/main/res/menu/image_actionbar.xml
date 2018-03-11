@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Controller.MainActivity">
+    <item android:id="@+id/btn_back_to_album"
+        android:icon="@drawable/back_button"
+        android:title="@string/btn_back_album"
+        app:showAsAction="always" />
+</menu>

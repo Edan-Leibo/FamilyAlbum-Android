@@ -12,6 +12,7 @@
         <ListView
             android:id="@+id/comment_listView"
             android:layout_width="match_parent"
+        android:dividerHeight="5sp"
             android:layout_height="match_parent"/>
         <ProgressBar
             android:id="@+id/commentList_progressbar"

@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,21 +23,18 @@ import com.example.adima.familyalbumproject.R;
 
 public class ShowImageFragment extends Fragment {
     static String imageUrl;
-   // private OnFragmentAlbumInteractionListener mListener;
+    static String albumId;
+   private OnFragmentShowImageInteractionListener mListener;
 
 
     public ShowImageFragment() {
     }
-/*
-    public interface OnFragmentAlbumInteractionListener {
 
-        void showAlbumsFragment();
-        void showImageFragment(String imageUrl);
-
-        void showCommentsFragment(String albumId);
+    public interface OnFragmentShowImageInteractionListener {
+        void showAlbumFragment(String albumId);
 
     }
-*/
+
 
     /**
      * Use this factory method to create a new instance of
@@ -43,27 +43,28 @@ public class ShowImageFragment extends Fragment {
      * @return A new instance of fragment EmployeeListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ShowImageFragment newInstance(String imageUrlF) {
+    public static ShowImageFragment newInstance(String imageUrlF,String albumIdF) {
         Log.d("TAG","in new instancee");
         imageUrl=imageUrlF;
-
-
-
+        albumId=albumIdF;
         ShowImageFragment fragment = new ShowImageFragment();
+        Bundle args = new Bundle();
+        args.putString("imageUrl", imageUrl);
+        args.putString("albumId",albumId);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("TAG","in on create func");
+        setHasOptionsMenu(true);
 
-        //setHasOptionsMenu(true);
     }
-/*
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.album_actionbar, menu);
+        inflater.inflate(R.menu.image_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -71,44 +72,16 @@ public class ShowImageFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.btn_back_to_albums:
-                mListener.showAlbumsFragment();
-                return true;
-            case R.id.btn_comments:
-                mListener.showCommentsFragment(albumId);
-                return true;
-            case R.id.fragment_album_btn_add:
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                alertDialogBuilder.setTitle("Add A photo to an album");
-                alertDialogBuilder.setMessage("Where do you want to take the photo from?\n");
-                alertDialogBuilder.setPositiveButton("From camera", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        dispatchTakePictureIntent();
-                    }
-                });
-                alertDialogBuilder.setNegativeButton("From Gallery", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        progressBar.setVisibility(View.VISIBLE);
-                        dispatchGetPictureFromGalleryIntent();
-                    }
-                });
-                alertDialogBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-
+            case R.id.btn_back_to_album:
+                Log.d("TAG","THE ALBUM ID IS:"+albumId);
+                mListener.showAlbumFragment(albumId);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+
         }
     }
-*/
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -151,6 +124,15 @@ public class ShowImageFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof OnFragmentShowImageInteractionListener) {
+            mListener = (OnFragmentShowImageInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+        Bundle args = getArguments();
+        albumId = args.getString("albumId", "");
+        imageUrl=args.getString("imageUrl","");
         /*
         if (context instanceof OnFragmentAlbumInteractionListener) {
             mListener = (OnFragmentAlbumInteractionListener) context;
@@ -167,6 +149,7 @@ public class ShowImageFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener=null;
 
     }
 

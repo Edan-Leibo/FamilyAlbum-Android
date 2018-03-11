@@ -11,7 +11,7 @@ import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragm
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
 import com.example.adima.familyalbumproject.R;
 
-public class MainActivity extends AppCompatActivity implements AlbumFragment.OnFragmentAlbumInteractionListener, CommentListFragment.OnFragmentCommentInteractionListener,CreateAlbumFragment.OnFragmentCreateAlbumInteractionListener,AlbumsFragment.OnFragmentAlbumsInteractionListener {
+public class MainActivity extends AppCompatActivity implements ShowImageFragment.OnFragmentShowImageInteractionListener, AlbumFragment.OnFragmentAlbumInteractionListener, CommentListFragment.OnFragmentCommentInteractionListener,CreateAlbumFragment.OnFragmentCreateAlbumInteractionListener,AlbumsFragment.OnFragmentAlbumsInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +35,11 @@ public class MainActivity extends AppCompatActivity implements AlbumFragment.OnF
                 .commit();
     }
 
+
+
     @Override
-    public void showImageFragment(String imageUrl) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, ShowImageFragment.newInstance(imageUrl)).commit();
+    public void showImageFragment(String imageUrl,String albumId) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, ShowImageFragment.newInstance(imageUrl,albumId)).commit();
     }
 
     public void showCreateAlbumFragment() {
