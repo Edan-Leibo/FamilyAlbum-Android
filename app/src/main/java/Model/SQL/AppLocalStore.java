@@ -10,7 +10,6 @@ import Model.Entities.Album.Album;
 import Model.Entities.Album.AlbumDao;
 import Model.Entities.Comment.Comment;
 import Model.Entities.Comment.CommentDao;
-import Model.Entities.FamilyMember.FamilyMember;
 import Model.Entities.FamilyMember.FamilyMemberDao;
 import Model.Entities.Image.Image;
 import Model.Entities.Image.ImageDao;
