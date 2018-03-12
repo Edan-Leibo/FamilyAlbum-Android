@@ -3,6 +3,7 @@ package com.example.adima.familyalbumproject.Model.Entities.Comment;
 import android.util.Log;
 
 import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,8 +21,10 @@ import java.util.List;
  */
 
 public class CommentFirebase {
-    CommentFirebase() {
+    private static ChildEventListener listener;
+    private static DatabaseReference lastRef;
 
+    CommentFirebase() {
     }
 
 
@@ -29,72 +32,67 @@ public class CommentFirebase {
         void onComplete(T data);
     }
 
-    public static void getAllCommentsAndObserve(String albumId, final Callback<List<Comment>> callback) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("comments").child(albumId);
-
-
-        ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                List<Comment> list = new LinkedList<Comment>();
-
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-
-                    Comment comment = snap.getValue(Comment.class);
-                    Log.d("TAG", comment.getText());
-                    list.add(comment);
-                }
-
-                callback.onComplete(list);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("TAG", "error in db");
-
-                callback.onComplete(null);
-
-            }
-        });
+    public interface CallbackOnCommentUpdate<Comment> {
+        void onAdded(Comment data);
+        void onDeleted(Comment data);
+        void initialData(List<Comment> commentList);
     }
 
-    public static void getAllCommentsAndObserve(String albumId, long lastUpdate, final Callback<List<Comment>> callback) {
+    public static void observeAllComments(String albumId, long lastUpdate, final CallbackOnCommentUpdate<Comment> callback) {
         Log.d("TAG", "getAllCommentsAndObserve " + lastUpdate);
         Log.d("TAG", "getAllCommentsAndObserve");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //DatabaseReference myRef = database.getReference("comments");
+        if (listener!=null && lastRef!=null) {
+            lastRef.removeEventListener(listener);
+        }
+
         DatabaseReference myRef = database.getReference("comments").child(albumId);
+        lastRef=myRef;
 
         Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
         Log.d("TAG", "the query is ok");
 
-        ValueEventListener listener = query.addValueEventListener(new ValueEventListener() {
+        listener=new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("TAG", "the data changed");
-                List<Comment> list = new LinkedList<Comment>();
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                callback.onAdded(dataSnapshot.getValue(Comment.class));
+            }
 
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    Log.d("TAG", "got the children");
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
 
-                    Comment comment = snap.getValue(Comment.class);
-                    Log.d("TAG", "got the data in comment repository" + comment.getAlbumId());
-                    Log.d("TAG", "got the data in comment repository" + comment.getCommentId());
-                    Log.d("TAG", "got the data in comment repository" + comment.getText());
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                callback.onDeleted(dataSnapshot.getValue(Comment.class));
+            }
 
-                    Log.d("TAG", "got the data in comment repository" + comment.getUserId());
-
-                    list.add(comment);
-                }
-                callback.onComplete(list);
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                callback.onComplete(null);
+            }
+        };
+
+        query.addChildEventListener(listener);
+
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Comment> list = new LinkedList<>();
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    Comment comment = snap.getValue(Comment.class);
+                    list.add(comment);
+                }
+                callback.initialData(list);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.initialData(null);
             }
         });
     }

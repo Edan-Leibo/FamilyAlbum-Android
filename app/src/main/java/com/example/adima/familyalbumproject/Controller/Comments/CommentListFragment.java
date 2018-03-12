@@ -121,7 +121,7 @@ public class CommentListFragment extends Fragment {
                         Model.instance().addComment(albumId, comment, new Model.OnCreation() {
                             @Override
                             public void onCompletion(boolean success) {
-                                Log.d("TAG","creat comment"+success);
+                                Log.d("TAG","create comment"+success);
                                 commentsProgressBar.setVisibility(View.GONE);
                             }
                         });

@@ -272,11 +272,13 @@ public interface OnRemove{
 }
 
 public void removeComment(final Comment comment,final OnRemove listener){
-    CommentRepository.instance.removeFromLocalDb(comment);
 
     modelFirebase.removeComment(comment, new ModelFirebase.OnRemove() {
         @Override
         public void onCompletion(boolean success) {
+            if (success){
+                CommentRepository.instance.removeFromLocalDb(comment);
+            }
             listener.onCompletion(success);
         }
     });

@@ -252,7 +252,7 @@ public class AlbumRepository {
 /*
     public void updateAlbumDataInLocalStorage(List<Album> data, String serialNumber) {
         Log.d("TAG", "got items from firebase: " + data.size());
-        MyTask task = new MyTask();
+        AddingTask task = new AddingTask();
         task.setAlbumId(serialNumber);
         task.execute(data);
     }
@@ -261,7 +261,7 @@ public class AlbumRepository {
     delete albums from cache
     */
 /*
-    class MyDelete extends AsyncTask<Album,String,Boolean> {
+    class DeletionTask extends AsyncTask<Album,String,Boolean> {
 
 
         @Override
@@ -283,13 +283,13 @@ public class AlbumRepository {
 
 
     public void removeFromLocalDb(Album album,String serialNumber) {
-        AlbumRepository.MyDelete delete= new AlbumRepository.MyDelete();
+        AlbumRepository.DeletionTask delete= new AlbumRepository.DeletionTask();
         delete.execute(album);
 
     }
 
 
-    class MyTask extends AsyncTask<List<Album>, String, List<Album>> {
+    class AddingTask extends AsyncTask<List<Album>, String, List<Album>> {
         private String serialNumber;
 
         public void setSerialNumber(String serialNumber) {

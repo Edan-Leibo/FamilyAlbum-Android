@@ -11,6 +11,7 @@ import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentFirebase;
 import com.example.adima.familyalbumproject.MyApplication;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,58 +25,22 @@ public class CommentRepository {
 
     CommentRepository() {
     }
+
+
+
     MutableLiveData<List<Comment>> commentsListliveData;
-
-    public LiveData<List<Comment>> getCommentsList(String albumId) {
-        synchronized (this) {
-                Log.d("TAG", "comment live data is null");
-
-                commentsListliveData = new MutableLiveData<List<Comment>>();
-
-                CommentFirebase.getAllCommentsAndObserve(albumId,new CommentFirebase.Callback<List<Comment>>() {
-                    @Override
-                    public void onComplete(List<Comment> data) {
-
-                            if (data != null) commentsListliveData.setValue(data);
-                            Log.d("TAG", "got comments data");
-
-                    }
-                });
-
-
-            }
-        return commentsListliveData;
-    }
 
     /*
     delete comment from cache
      */
-    class MyDelete extends AsyncTask<Comment,String,Boolean> {
 
 
-        @Override
-        protected Boolean doInBackground(Comment... comments) {
-            Log.d("TAG","starting delte from local storage in thread");
-            if (comments!=null) {
-
-                for (Comment comment : comments) {
-
-                    Log.d("TAG","the text of the comment is:"+comment.getText());
-                    AppLocalStore.db.commentDao().delete(comment);
-
-                }
-
-            }
-            return true;
-
-        }
-    }
-
-    public void removeFromLocalDb(Comment comment){
-        CommentRepository.MyDelete delete= new CommentRepository.MyDelete();
+    /*public void removeFromLocalDb(Comment comment){
+        CommentRepository.DeletionTask delete= new CommentRepository.DeletionTask();
         delete.execute(comment);
+    }*/
 
-    }
+
 
     public LiveData<List<Comment>> getAllComments(final String albumId) {
         synchronized (this) {
@@ -93,30 +58,116 @@ public class CommentRepository {
                 }
 
 
-                CommentFirebase.getAllCommentsAndObserve(albumId,lastUpdateDate, new CommentFirebase.Callback<List<Comment>>() {
+                CommentFirebase.observeAllComments(albumId, lastUpdateDate, new CommentFirebase.CallbackOnCommentUpdate<Comment>() {
                     @Override
-                    public void onComplete(List<Comment> data) {
+                    public void onAdded(Comment data) {
 
-                        updateCommentDataInLocalStorage(data,albumId);
+                        List<Comment> list = new LinkedList<>();
+                        list.add(data);
+                        addCommentDataInLocalStorage(list,albumId);
                     }
+
+                    @Override
+                    public void onDeleted(Comment data) {
+                        List<Comment> list = new LinkedList<>();
+                        list.add(data);
+                        deleteCommentDataInLocalStorage(list,albumId);
+                    }
+
+                    @Override
+                    public void initialData(List<Comment> comments) {
+                        addCommentDataInLocalStorage(comments, albumId);
+                    }
+
+
                 });
-
-
-            }
-
+        }
         return commentsListliveData;
     }
 
-    private void updateCommentDataInLocalStorage(List<Comment> data,String albumId) {
-        Log.d("TAG", "got items from firebase: " + data.size());
-        CommentRepository.MyTask task = new CommentRepository.MyTask();
-
+/*
+    private void getAllCommentDataInLocalStorage(String albumId) {
+        GetAllTask task = new GetAllTask();
         task.setAlbumId(albumId);
-
+        task.execute();
+    }
+*/
+    private void addCommentDataInLocalStorage(List<Comment> data, String albumId) {
+        AddingTask task = new AddingTask();
+        task.setAlbumId(albumId);
         task.execute(data);
     }
 
-    class MyTask extends AsyncTask<List<Comment>,String,List<Comment>> {
+    private void deleteCommentDataInLocalStorage(List<Comment> data,String albumId) {
+        DeletionTask task = new DeletionTask();
+        task.setAlbumId(albumId);
+        task.execute(data);
+    }
+
+    public void removeFromLocalDb(Comment comment) {
+        List<Comment> list = new LinkedList<>();
+        list.add(comment);
+        deleteCommentDataInLocalStorage(list,comment.getAlbumId());
+    }
+
+    ///
+    class GetAllTask extends AsyncTask<List<Comment>,String,List<Comment>> {
+
+        private String albumId;
+
+        public void setAlbumId(String albumId) {
+            this.albumId = albumId;
+        }
+
+        @Override
+        protected List<Comment> doInBackground(List<Comment>[] lists) {
+
+            List<Comment> commentList = AppLocalStore.db.commentDao().loadAllByIds(albumId);
+            Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
+
+            return commentList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Comment> comments) {
+            super.onPostExecute(comments);
+            commentsListliveData.setValue(comments);
+        }
+    }
+
+    ////
+
+    class DeletionTask extends AsyncTask<List<Comment>,String,List<Comment>> {
+
+        private String albumId;
+
+        public void setAlbumId(String albumId) {
+            this.albumId = albumId;
+        }
+
+        @Override
+        protected List<Comment> doInBackground(List<Comment>[] lists) {
+            List<Comment> data = lists[0];
+
+            for (Comment comment : data) {
+                    AppLocalStore.db.commentDao().delete(comment);
+            }
+
+            List<Comment> commentList = AppLocalStore.db.commentDao().loadAllByIds(albumId);
+            return commentList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Comment> comments) {
+            super.onPostExecute(comments);
+            commentsListliveData.setValue(comments);
+        }
+    }
+
+
+
+/////
+    class AddingTask extends AsyncTask<List<Comment>,String,List<Comment>> {
         private String albumId;
 
         public void setAlbumId(String albumId) {
