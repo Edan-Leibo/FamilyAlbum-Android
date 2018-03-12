@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     public void showLoginFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, new LoginFragment())
+                .replace(R.id.container, LoginFragment.newInstance())
                 .commit();
     }
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     public void showCreateAlbumFragment() {
         getSupportFragmentManager()
                 .beginTransaction()//.remove(getFragmentManager().getFragments())
-                .replace(R.id.container, new CreateAlbumFragment())
+                .replace(R.id.container, CreateAlbumFragment.newInstance())
                 .commit();
     }
 

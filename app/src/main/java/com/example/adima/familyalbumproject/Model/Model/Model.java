@@ -78,6 +78,10 @@ public class Model {
         ed.commit();
     }
 
+    public void stopListeningAlbumsOnPath() {
+         AlbumRepository.stopListeningAlbumsOnPath();
+    }
+
 
     public interface IsFamilyExistCallback{
         void onComplete(boolean exist);

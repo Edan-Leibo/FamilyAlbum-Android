@@ -271,7 +271,6 @@ public class AlbumsFragment extends Fragment {
         }
 
         this.albumListViewModel = ViewModelProviders.of(this).get(AlbumsListViewModel.class);
-        //familySerial="-L6pJ7h5JSIjz-WQctTl";
         this.albumListViewModel.init(familySerial);
         albumListViewModel.getAlbumList().observe(this, new Observer<List<Album>>() {
             @Override
@@ -290,6 +289,7 @@ public class AlbumsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        Model.instance().stopListeningAlbumsOnPath();
     }
 
     /**

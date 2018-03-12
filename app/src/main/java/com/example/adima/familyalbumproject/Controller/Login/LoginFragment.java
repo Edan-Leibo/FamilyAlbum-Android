@@ -29,24 +29,15 @@ import static android.content.Context.MODE_PRIVATE;
 public class LoginFragment extends Fragment {
     private OnFragmentLoginInteractionListener mListener;
     ProgressBar progressBar;
-    private final static String LAST_USER = "lastUser";
     private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
 
-    private static String lastUser;
-
-    public interface OnFragmentLoginInteractionListener{
-        public void showAlbumsFragment();
-
+    public interface OnFragmentLoginInteractionListener {
+        void showAlbumsFragment();
     }
-
-
-
-
 
     public static LoginFragment newInstance() {
         LoginFragment fragment = new LoginFragment();
-        SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("lastUser", MODE_PRIVATE);
-        lastUser = ref.getString(LAST_USER, "NONE");
+        Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, "NONE");
         return fragment;
     }
 
@@ -67,28 +58,23 @@ public class LoginFragment extends Fragment {
         view.findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (password.getText().length()<6){
+                if (password.getText().length() < 6) {
                     Toast.makeText(MyApplication.getMyContext(), "Password must have minimum 6 characters", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!isValidEmail(email.getText())){
+                if (!isValidEmail(email.getText())) {
                     Toast.makeText(MyApplication.getMyContext(), "Please insert a correct Email", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 progressBar.setVisibility(View.VISIBLE);
-                FirebaseAuthentication.loginUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.loginUserCallBack(){
+                FirebaseAuthentication.loginUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.loginUserCallBack() {
 
                     @Override
                     public void onLogin(boolean t) {
-                        if (t==true){
+                        if (t == true) {
                             Toast.makeText(MyApplication.getMyContext(), "You have been successfully logged in", Toast.LENGTH_SHORT).show();
-                            if(lastUser !=FirebaseAuthentication.getUserEmail()){
-                                Log.d("TAG","DIFFRENT USER");
-                                Model.instance().writeToSharedPreferences("familyInfo",LAST_USER ,FirebaseAuthentication.getUserEmail() );
-                                Model.instance().writeToSharedPreferences("familyInfo",FAMILY_SERIAL ,"NONE" );
-                                mListener.showAlbumsFragment();
-                        }}
-                        else{
+                            mListener.showAlbumsFragment();
+                        } else {
                             Toast.makeText(MyApplication.getMyContext(), "Login failed", Toast.LENGTH_SHORT).show();
                         }
                         progressBar.setVisibility(View.GONE);
@@ -99,26 +85,22 @@ public class LoginFragment extends Fragment {
         view.findViewById(R.id.createNewAccount).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (password.getText().length()<6){
+                if (password.getText().length() < 6) {
                     Toast.makeText(MyApplication.getMyContext(), "Password must have minimum 6 characters", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!isValidEmail(email.getText())){
+                if (!isValidEmail(email.getText())) {
                     Toast.makeText(MyApplication.getMyContext(), "Please insert a correct Email", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 progressBar.setVisibility(View.VISIBLE);
-                FirebaseAuthentication.registerUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.regUserCallBack(){
+                FirebaseAuthentication.registerUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.regUserCallBack() {
                     @Override
                     public void onRegistration(boolean t) {
-                        if (t==true){
-                            if(lastUser !=FirebaseAuthentication.getUserEmail()){
-                                Model.instance().writeToSharedPreferences("familyInfo",LAST_USER ,FirebaseAuthentication.getUserEmail() );
-                                Model.instance().writeToSharedPreferences("familyInfo",FAMILY_SERIAL ,"NONE" );
-                                Toast.makeText(MyApplication.getMyContext(), "You have been successfully registered", Toast.LENGTH_SHORT).show();
+                        if (t == true) {
+                            Toast.makeText(MyApplication.getMyContext(), "You have been successfully registered", Toast.LENGTH_SHORT).show();
                             mListener.showAlbumsFragment();
-                        }}
-                        else{
+                        } else {
                             Toast.makeText(MyApplication.getMyContext(), "Registration failed\nPlease try different Email or password", Toast.LENGTH_SHORT).show();
                         }
                         progressBar.setVisibility(View.GONE);

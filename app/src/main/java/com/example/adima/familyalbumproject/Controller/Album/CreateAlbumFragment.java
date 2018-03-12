@@ -35,6 +35,10 @@ public class CreateAlbumFragment extends Fragment {
         void showAlbumsFragment();
     }
 
+    public static CreateAlbumFragment newInstance() {
+        CreateAlbumFragment fragment = new CreateAlbumFragment();
+        return fragment;
+    }
 
     @Nullable
     @Override

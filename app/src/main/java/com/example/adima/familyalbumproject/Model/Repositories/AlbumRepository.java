@@ -28,6 +28,10 @@ public class AlbumRepository {
     }
     MutableLiveData<List<Album>> albumsListliveData;
 
+    public static void stopListeningAlbumsOnPath() {
+        AlbumFirebase.stopListeningAlbumsOnPath();
+    }
+
     /*
     Delete albums from the cache
      */

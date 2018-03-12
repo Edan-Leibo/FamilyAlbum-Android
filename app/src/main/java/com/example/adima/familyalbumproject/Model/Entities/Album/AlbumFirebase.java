@@ -22,40 +22,21 @@ import java.util.List;
 Interaction between album to firebase
  */
 public class AlbumFirebase {
-    AlbumFirebase() {
+    private static ValueEventListener listener;
+    private static Query query;
 
+    AlbumFirebase() {
+    }
+
+    public static void stopListeningAlbumsOnPath() {
+        query.removeEventListener(listener);
     }
 
     public interface Callback<T> {
         void onComplete(T data);
     }
 
-    /**
-     * Get all the albums from firebase
-     * @param serialNumber
-     * @param callback
-     */
-    public static void getAllAlbumsAndObserve(String serialNumber, final Callback<List<Album>> callback) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("albums").child(serialNumber);
-        ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Album> list = new LinkedList<Album>();
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    Album album = snap.getValue(Album.class);
-                    list.add(album);
-                }
-                callback.onComplete(list);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("TAG", "error in db");
-                callback.onComplete(null);
-            }
-        });
-    }
 
     /**
      * Get all the albums from firebase according to their last update date
@@ -68,8 +49,8 @@ public class AlbumFirebase {
         Log.d("TAG", "getAllAlbumsAndObserve");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("albums").child(serialNumber);
-        Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
-        ValueEventListener listener = query.addValueEventListener(new ValueEventListener() {
+        query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
+        listener = query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("TAG", "the data changed");
