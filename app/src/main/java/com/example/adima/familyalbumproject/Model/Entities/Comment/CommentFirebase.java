@@ -76,7 +76,7 @@ public class CommentFirebase {
             }
         };
 
-        query.addChildEventListener(listener);
+        myRef.addChildEventListener(listener);
 
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {

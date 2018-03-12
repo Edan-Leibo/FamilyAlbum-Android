@@ -1,9 +1,12 @@
 package com.example.adima.familyalbumproject.Controller.Login;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,19 +15,37 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.adima.familyalbumproject.Controller.MainActivity;
-import com.example.adima.familyalbumproject.MyApplication;
+import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
-import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by adima on 03/03/2018.
  */
 
 public class LoginFragment extends Fragment {
-
+    private OnFragmentLoginInteractionListener mListener;
     ProgressBar progressBar;
+    private final static String LAST_USER = "lastUser";
+    private static String lastUser;
+
+    public interface OnFragmentLoginInteractionListener{
+        public void showAlbumsFragment();
+
+    }
+
+
+
+
+
+    public static LoginFragment newInstance() {
+        LoginFragment fragment = new LoginFragment();
+        SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("lastUser", MODE_PRIVATE);
+        lastUser = ref.getString(LAST_USER, "NONE");
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -57,8 +78,14 @@ public class LoginFragment extends Fragment {
                     public void onLogin(boolean t) {
                         if (t==true){
                             Toast.makeText(MyApplication.getMyContext(), "You have been successfully logged in", Toast.LENGTH_SHORT).show();
-                            ((MainActivity) getActivity()).showAlbumsFragment();
-                        }
+                            if(lastUser !=FirebaseAuthentication.getUserEmail()){
+                                Log.d("TAG","DIFFRENT USER");
+                               Bundle args = new Bundle();
+                            args.putString(LAST_USER,FirebaseAuthentication.getUserEmail() );
+                            args.putString("FAMILY_SERIAL","NONE");
+                           newInstance().setArguments(args);
+                            mListener.showAlbumsFragment();
+                        }}
                         else{
                             Toast.makeText(MyApplication.getMyContext(), "Login failed", Toast.LENGTH_SHORT).show();
                         }
@@ -83,9 +110,15 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onRegistration(boolean t) {
                         if (t==true){
+                            if(lastUser !=FirebaseAuthentication.getUserEmail()){
+                                Log.d("TAG","DIFFRENT USER");
+                                Bundle args = new Bundle();
+                                args.putString(LAST_USER,FirebaseAuthentication.getUserEmail() );
+                                args.putString("FAMILY_SERIAL","NONE");
+                                newInstance().setArguments(args);
                             Toast.makeText(MyApplication.getMyContext(), "You have been successfully registered", Toast.LENGTH_SHORT).show();
-                            ((MainActivity) getActivity()).showAlbumsFragment();
-                        }
+                            mListener.showAlbumsFragment();
+                        }}
                         else{
                             Toast.makeText(MyApplication.getMyContext(), "Registration failed\nPlease try different Email or password", Toast.LENGTH_SHORT).show();
                         }
@@ -100,5 +133,15 @@ public class LoginFragment extends Fragment {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentLoginInteractionListener) {
+            mListener = (OnFragmentLoginInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 
 }

@@ -2,7 +2,7 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Controller.MainActivity">
+    tools:context=".Controller.Start.MainActivity">
     <item android:id="@+id/btn_back_to_albums"
         android:icon="@drawable/back_button"
         android:title="@string/btn_back_albums"

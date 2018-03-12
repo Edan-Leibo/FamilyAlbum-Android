@@ -29,7 +29,7 @@ import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumsListViewModel;
 import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
 import com.example.adima.familyalbumproject.Model.Model;
-import com.example.adima.familyalbumproject.MyApplication;
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
 import java.util.LinkedList;

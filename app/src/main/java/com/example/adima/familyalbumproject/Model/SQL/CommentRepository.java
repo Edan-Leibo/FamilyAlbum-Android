@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentFirebase;
-import com.example.adima.familyalbumproject.MyApplication;
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -16,7 +16,7 @@ import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
 import com.example.adima.familyalbumproject.Model.SQL.AlbumRepository;
 import com.example.adima.familyalbumproject.Model.SQL.CommentRepository;
 import com.example.adima.familyalbumproject.Model.SQL.ImageRepository;
-import com.example.adima.familyalbumproject.MyApplication;
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 
 import java.io.File;
 import java.io.FileInputStream;

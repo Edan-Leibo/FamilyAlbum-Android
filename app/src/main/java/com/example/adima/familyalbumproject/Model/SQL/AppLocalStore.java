@@ -4,7 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 
-import com.example.adima.familyalbumproject.MyApplication;
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 
 import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumDao;

@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumFirebase;
-import com.example.adima.familyalbumproject.MyApplication;
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 
 import java.util.List;
 

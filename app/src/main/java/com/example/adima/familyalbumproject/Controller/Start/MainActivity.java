@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Controller;
+package com.example.adima.familyalbumproject.Controller.Start;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +11,7 @@ import com.example.adima.familyalbumproject.Controller.Comments.CommentListFragm
 import com.example.adima.familyalbumproject.Controller.Login.LoginFragment;
 import com.example.adima.familyalbumproject.R;
 
-public class MainActivity extends AppCompatActivity implements ShowImageFragment.OnFragmentShowImageInteractionListener, AlbumFragment.OnFragmentAlbumInteractionListener, CommentListFragment.OnFragmentCommentInteractionListener,CreateAlbumFragment.OnFragmentCreateAlbumInteractionListener,AlbumsFragment.OnFragmentAlbumsInteractionListener {
+public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentLoginInteractionListener, ShowImageFragment.OnFragmentShowImageInteractionListener, AlbumFragment.OnFragmentAlbumInteractionListener, CommentListFragment.OnFragmentCommentInteractionListener,CreateAlbumFragment.OnFragmentCreateAlbumInteractionListener,AlbumsFragment.OnFragmentAlbumsInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
