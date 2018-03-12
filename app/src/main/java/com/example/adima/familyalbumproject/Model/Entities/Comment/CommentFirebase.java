@@ -19,7 +19,9 @@ import java.util.List;
 /**
  * Created by adima on 04/03/2018.
  */
-
+/*
+Interaction between comments to firebase
+ */
 public class CommentFirebase {
     private static ChildEventListener listener;
     private static DatabaseReference lastRef;
@@ -38,6 +40,12 @@ public class CommentFirebase {
         void initialData(List<Comment> commentList);
     }
 
+    /**
+     * Get all comments from firebase according to the id of an album and the last update date
+     * @param albumId
+     * @param lastUpdate
+     * @param callback
+     */
     public static void observeAllComments(String albumId, long lastUpdate, final CallbackOnCommentUpdate<Comment> callback) {
         Log.d("TAG", "getAllCommentsAndObserve " + lastUpdate);
         Log.d("TAG", "getAllCommentsAndObserve");
@@ -48,10 +56,7 @@ public class CommentFirebase {
 
         DatabaseReference myRef = database.getReference("comments").child(albumId);
         lastRef=myRef;
-
         Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
-        Log.d("TAG", "the query is ok");
-
         listener=new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -77,8 +82,6 @@ public class CommentFirebase {
         };
 
         myRef.addChildEventListener(listener);
-
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -101,15 +104,19 @@ public class CommentFirebase {
         public void onCompletion(boolean success);
     }
 
+    /**
+     * Add a comment to firebase
+     * @param albumId
+     * @param comment
+     * @param listener
+     */
     public static void addComment(String albumId, Comment comment, final OnCreationComment listener) {
         Log.d("TAG", "add comment to firebase");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String key = database.getReference("comments").child(albumId).push().getKey();
         comment.setCommentId(key);
-
         HashMap<String, Object> json = comment.toJson();
         json.put("lastUpdated", ServerValue.TIMESTAMP);
-
         Log.d("TAG", "the command id is:" + comment.getCommentId());
         DatabaseReference ref = database.getReference("comments").child(albumId).child(comment.getCommentId());
         ref.setValue(json, new DatabaseReference.CompletionListener() {
@@ -128,6 +135,11 @@ public class CommentFirebase {
 
     }
 
+    /**
+     * Remove a comment from firebase
+     * @param comment
+     * @param listener
+     */
     public static void removeComment(Comment comment, final ModelFirebase.OnRemove listener) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("comments").child(comment.getAlbumId()).child(comment.getCommentId());

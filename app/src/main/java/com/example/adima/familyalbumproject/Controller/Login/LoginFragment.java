@@ -15,8 +15,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
 import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
+import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Model.Model;
 import com.example.adima.familyalbumproject.R;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -29,6 +30,8 @@ public class LoginFragment extends Fragment {
     private OnFragmentLoginInteractionListener mListener;
     ProgressBar progressBar;
     private final static String LAST_USER = "lastUser";
+    private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
+
     private static String lastUser;
 
     public interface OnFragmentLoginInteractionListener{
@@ -74,17 +77,16 @@ public class LoginFragment extends Fragment {
                 }
                 progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuthentication.loginUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.loginUserCallBack(){
+
                     @Override
                     public void onLogin(boolean t) {
                         if (t==true){
                             Toast.makeText(MyApplication.getMyContext(), "You have been successfully logged in", Toast.LENGTH_SHORT).show();
                             if(lastUser !=FirebaseAuthentication.getUserEmail()){
                                 Log.d("TAG","DIFFRENT USER");
-                               Bundle args = new Bundle();
-                            args.putString(LAST_USER,FirebaseAuthentication.getUserEmail() );
-                            args.putString("FAMILY_SERIAL","NONE");
-                           newInstance().setArguments(args);
-                            mListener.showAlbumsFragment();
+                                Model.instance().writeToSharedPreferences("familyInfo",LAST_USER ,FirebaseAuthentication.getUserEmail() );
+                                Model.instance().writeToSharedPreferences("familyInfo",FAMILY_SERIAL ,"NONE" );
+                                mListener.showAlbumsFragment();
                         }}
                         else{
                             Toast.makeText(MyApplication.getMyContext(), "Login failed", Toast.LENGTH_SHORT).show();
@@ -111,12 +113,9 @@ public class LoginFragment extends Fragment {
                     public void onRegistration(boolean t) {
                         if (t==true){
                             if(lastUser !=FirebaseAuthentication.getUserEmail()){
-                                Log.d("TAG","DIFFRENT USER");
-                                Bundle args = new Bundle();
-                                args.putString(LAST_USER,FirebaseAuthentication.getUserEmail() );
-                                args.putString("FAMILY_SERIAL","NONE");
-                                newInstance().setArguments(args);
-                            Toast.makeText(MyApplication.getMyContext(), "You have been successfully registered", Toast.LENGTH_SHORT).show();
+                                Model.instance().writeToSharedPreferences("familyInfo",LAST_USER ,FirebaseAuthentication.getUserEmail() );
+                                Model.instance().writeToSharedPreferences("familyInfo",FAMILY_SERIAL ,"NONE" );
+                                Toast.makeText(MyApplication.getMyContext(), "You have been successfully registered", Toast.LENGTH_SHORT).show();
                             mListener.showAlbumsFragment();
                         }}
                         else{

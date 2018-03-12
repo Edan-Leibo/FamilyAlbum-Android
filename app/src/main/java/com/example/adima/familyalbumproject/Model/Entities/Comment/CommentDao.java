@@ -11,21 +11,19 @@ import java.util.List;
 /**
  * Created by adima on 04/03/2018.
  */
-
+/*
+Dao of Comment
+ */
 @Dao
 public interface CommentDao {
     @Query("SELECT * FROM Comment")
     List<Comment> getAll();
-
     @Query("SELECT * FROM Comment WHERE albumId IN (:albumId)")
     List<Comment> loadAllByIds(String albumId);
-
     @Query("SELECT * FROM Comment WHERE albumId = :id")
     Comment findById(String id);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Comment... comments);
-
     @Delete
     void delete(Comment comment);
 

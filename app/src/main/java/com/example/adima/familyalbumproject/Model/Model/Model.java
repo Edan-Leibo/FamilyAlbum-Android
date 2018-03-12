@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Model;
+package com.example.adima.familyalbumproject.Model.Model;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,14 +9,14 @@ import android.os.Environment;
 import android.util.Log;
 import android.webkit.URLUtil;
 
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
 import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
-import com.example.adima.familyalbumproject.Model.SQL.AlbumRepository;
-import com.example.adima.familyalbumproject.Model.SQL.CommentRepository;
-import com.example.adima.familyalbumproject.Model.SQL.ImageRepository;
-import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
+import com.example.adima.familyalbumproject.Model.Repositories.AlbumRepository;
+import com.example.adima.familyalbumproject.Model.Repositories.CommentRepository;
+import com.example.adima.familyalbumproject.Model.Repositories.ImageRepository;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -34,7 +33,9 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 
-
+/*
+This class represents the Model of the application
+ */
 public class Model {
 
     private static Model instance = new Model();
@@ -42,7 +43,6 @@ public class Model {
     private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
 
     ModelFirebase modelFirebase;
-
 
     private Model() {
         this.modelFirebase  = new ModelFirebase();
@@ -53,14 +53,24 @@ public class Model {
         return instance;
     }
 
-
+    /**
+     *
+     * @param familyInfo
+     * @param familySerial
+     * @return the serial number of a family
+     */
     public String getFamilySerialFromSharedPrefrences(String familyInfo, String familySerial) {
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
         familySerial = ref.getString(FAMILY_SERIAL, "NONE");
         return familySerial;
     }
 
-
+    /**
+     * Write to Shared Preferences
+     * @param name
+     * @param key
+     * @param value
+     */
     public void writeToSharedPreferences(String name, String key, String value) {
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences(name,MODE_PRIVATE);
         SharedPreferences.Editor ed = ref.edit();
@@ -69,12 +79,6 @@ public class Model {
     }
 
 
-    public interface GetAllAlbumsAndObserveCallback {
-        void onComplete(List<Album> list);
-
-        void onCancel();
-    }
-
     public interface IsFamilyExistCallback{
         void onComplete(boolean exist);
 
@@ -82,9 +86,11 @@ public class Model {
     }
 
 
-/*
-checks if family exist in firebase
- */
+    /**
+     * checks if family exist in firebase
+     * @param serialNumber
+     * @param callback
+     */
     public void isFamilyExist(final String serialNumber,final IsFamilyExistCallback callback){
        modelFirebase.isFamilyExist(serialNumber,new ModelFirebase.IsFamilyExistCallback() {
            @Override
@@ -106,6 +112,12 @@ checks if family exist in firebase
         void fail();
     }
 
+    /**
+     * Save an new image to firebase and to the local storage
+     * @param imageBmp
+     * @param name
+     * @param listener
+     */
     public void saveImage(final Bitmap imageBmp, final String name, final SaveImageListener listener) {
         modelFirebase.saveImage(imageBmp, name, new SaveImageListener() {
             @Override
@@ -122,7 +134,6 @@ checks if family exist in firebase
             }
         });
 
-
     }
 
 
@@ -131,22 +142,23 @@ checks if family exist in firebase
         void onSuccess(Bitmap image);
         void onFail();
     }
+
+    /**
+     * Get an image from local or from remote storage
+     * @param url
+     * @param listener
+     */
     public void getImage(final String url, final GetImageListener listener) {
         //check if image exsist localy
-        Log.d("TAG","LOOK FOR IMAGEURL"+url);
         String fileName = URLUtil.guessFileName(url, null, null);
         Bitmap image = loadImageFromFile(fileName);
-
         if (image != null){
-            Log.d("TAG","the image already exist in local so i dont look in firebase");
-            Log.d("TAG","getImage from local success " + fileName);
             listener.onSuccess(image);
         }else {
             modelFirebase.getImage(url, new GetImageListener() {
                 @Override
                 public void onSuccess(Bitmap image) {
                     String fileName = URLUtil.guessFileName(url, null, null);
-                    Log.d("TAG","getImage from FB success " + fileName);
                     saveImageToFile(image,fileName);
                     listener.onSuccess(image);
                 }
@@ -162,8 +174,11 @@ checks if family exist in firebase
     }
 
 
-    ////// SAVE FILES TO LOCAL STORAGE ///////
-
+    /**
+     * Save file to local storage
+     * @param imageBitmap
+     * @param imageFileName
+     */
     private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
         try {
             Log.d("TAG","THE IMAGE FILE NAME IN SAVE IMAGE TO FILE FUNC IS:"+imageFileName);
@@ -187,6 +202,11 @@ checks if family exist in firebase
         }
     }
 
+    /**
+     *
+     * @param imageFileName
+     * @return Bitmap of an file name
+     */
     private Bitmap loadImageFromFile(String imageFileName){
         Bitmap bitmap = null;
         try {
@@ -203,6 +223,10 @@ checks if family exist in firebase
         return bitmap;
     }
 
+    /**
+     * Add a picture to the device gallery
+     * @param imageFile
+     */
     private void addPicureToGallery(File imageFile){
         //add the picture to the gallery so we dont need to manage the cache size
         Intent mediaScanIntent = new
@@ -213,8 +237,12 @@ checks if family exist in firebase
     }
 
 
-
-
+    /**
+     * Add a comment to an album according to the id of the album
+     * @param albumId
+     * @param comment
+     * @param listener
+     */
     public void addComment(String albumId, Comment comment, final OnCreation listener){
         this.modelFirebase.addComment(albumId, comment, new ModelFirebase.OnCreation() {
             @Override
@@ -224,6 +252,12 @@ checks if family exist in firebase
         });
     }
 
+    /**
+     * Add an image to an album
+     * @param albumId
+     * @param image
+     * @param listener
+     */
     public void addImage(String albumId, Image image, final OnCreation listener){
         this.modelFirebase.addImage(albumId, image, new ModelFirebase.OnCreation() {
             @Override
@@ -238,6 +272,10 @@ checks if family exist in firebase
         public void onCompletion(String success);
     }
 
+    /**
+     * Add new family
+     * @param listener
+     */
     public void addNewFamily(final GetKeyListener listener){
         modelFirebase.addNewFamily(new GetKeyListener() {
             @Override
@@ -253,6 +291,12 @@ checks if family exist in firebase
         public void onCompletion(boolean success);
     }
 
+    /**
+     * Add new album
+     * @param album
+     * @param serialNumber
+     * @param listener
+     */
     public void addAlbum(Album album, String serialNumber, final OnCreation listener) {
         //this.databaseFirebase.addAlbum(album);
         modelFirebase.addAlbum(album, serialNumber, new ModelFirebase.OnCreation() {
@@ -271,7 +315,12 @@ public interface OnRemove{
     public void onCompletion(boolean success);
 }
 
-public void removeComment(final Comment comment,final OnRemove listener){
+    /**
+     * Remove a comment
+     * @param comment
+     * @param listener
+     */
+    public void removeComment(final Comment comment,final OnRemove listener){
 
     modelFirebase.removeComment(comment, new ModelFirebase.OnRemove() {
         @Override
@@ -286,6 +335,12 @@ public void removeComment(final Comment comment,final OnRemove listener){
 
 }
 
+    /**
+     * Remove an album
+     * @param album
+     * @param serialNumber
+     * @param listener
+     */
     public void removeAlbum(final Album album,String serialNumber, final OnRemove listener) {
         AlbumRepository.instance.removeFromLocalDb(album);
 
@@ -298,6 +353,11 @@ public void removeComment(final Comment comment,final OnRemove listener){
         });
     }
 
+    /**
+     * Remove an image
+     * @param image
+     * @param listener
+     */
     public void removeImage(final Image image, final OnRemove listener){
         ImageRepository.instance.removeFromLocalDb(image);
 

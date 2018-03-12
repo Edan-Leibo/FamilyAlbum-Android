@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
-import com.example.adima.familyalbumproject.Model.Model;
+import com.example.adima.familyalbumproject.Model.Model.Model;
 
 
 public class CreateAlbumFragment extends Fragment {

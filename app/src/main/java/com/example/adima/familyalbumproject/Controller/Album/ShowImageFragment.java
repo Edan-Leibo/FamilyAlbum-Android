@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.adima.familyalbumproject.Model.Model;
+import com.example.adima.familyalbumproject.Model.Model.Model;
 import com.example.adima.familyalbumproject.R;
 
 /**

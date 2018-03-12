@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Model.SQL;
+package com.example.adima.familyalbumproject.Model.Repositories;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;

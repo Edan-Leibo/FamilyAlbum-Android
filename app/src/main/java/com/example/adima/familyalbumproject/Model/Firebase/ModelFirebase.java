@@ -5,6 +5,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
+import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Family.FamiliesFirebase;
+import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
+import com.example.adima.familyalbumproject.Model.Entities.Image.ImageFirebase;
+import com.example.adima.familyalbumproject.Model.Model.Model;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -17,32 +25,25 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
-import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
-import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
-import com.example.adima.familyalbumproject.Model.Model;
-import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumFirebase;
-import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentFirebase;
-import com.example.adima.familyalbumproject.Model.Entities.Family.FamiliesFirebase;
-import com.example.adima.familyalbumproject.Model.Entities.Image.ImageFirebase;
 
 /**
  * Created by adima on 01/03/2018.
  */
-
+/*
+This class represnts The model interaction with firebase
+ */
 public class ModelFirebase {
 
-   public DatabaseFirebase databaseFirebase;
-
     public ModelFirebase(){
-    this.databaseFirebase = new DatabaseFirebase();
 
     }
 
-
+    /**
+     * Add a new comment to an album
+     * @param albumId
+     * @param comment
+     * @param listener
+     */
     public void addComment(String albumId, Comment comment, final OnCreation listener){
         CommentFirebase.addComment(albumId, comment, new CommentFirebase.OnCreationComment() {
             @Override
@@ -53,6 +54,12 @@ public class ModelFirebase {
 
     }
 
+    /**
+     * Add an image to an album
+     * @param albumId
+     * @param image
+     * @param listener
+     */
     public void addImage(String albumId, Image image, final OnCreation listener){
         ImageFirebase.addImage(albumId, image, new ImageFirebase.OnCreationImage() {
             @Override
@@ -61,13 +68,7 @@ public class ModelFirebase {
             }
         });
     }
-    public interface GetAllAlbumsAndObserveCallback {
-        void onComplete(List<Album> list);
-        void onCancel();
-    }
-    public interface GetKeyListener{
-        public void onCompletion(String success);
-    }
+
 
 
     public interface IsFamilyExistCallback{
@@ -79,6 +80,12 @@ public class ModelFirebase {
         public void onCompletion(boolean success);
     }
 
+    /**
+     * Add an album to a family
+     * @param album
+     * @param serialNumber
+     * @param listener
+     */
     public void addAlbum(Album album, String serialNumber, final OnCreation listener){
         //this.databaseFirebase.addAlbum(album);
         AlbumFirebase.addAlbum(album, serialNumber, new AlbumFirebase.OnCreationAlbum() {
@@ -89,6 +96,10 @@ public class ModelFirebase {
         });
     }
 
+    /**
+     * Add a new family
+     * @param listener
+     */
         public void addNewFamily(final Model.GetKeyListener listener) {
 
            FamiliesFirebase.addFamily(new FamiliesFirebase.GetKeyListener() {
@@ -99,10 +110,11 @@ public class ModelFirebase {
             });
         }
 
-        /*
-
-        checks if the serial number of the family exist
-       */
+    /**
+     *  Checks if the serial number of the family exist
+     * @param serialNumber
+     * @param callback
+     */
     public void isFamilyExist(final String serialNumber,final IsFamilyExistCallback callback){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("families").child(serialNumber);
@@ -128,35 +140,13 @@ public class ModelFirebase {
 
     }
 
-    public void getAllAlbumsAndObserve(final GetAllAlbumsAndObserveCallback callback) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("albums");
-        ValueEventListener listener = myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Album> list = new LinkedList<Album>();
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    Album album = snap.getValue(Album.class);
-                    Log.d("TAG","got the data in Album repository"+album.name);
-                    Log.d("TAG","got the data in Album repository"+album.location);
-                    Log.d("TAG","got the data in Album repository"+album.serialNumber);
 
-                    Log.d("TAG","got the data in Album repository"+album.date);
-                    list.add(album);
-                }
-                callback.onComplete(list);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                callback.onCancel();
-            }
-        });
-    }
-
-
-
-//save image in firebase storage
+    /**
+     * Save an image in firebase storage
+     * @param imageBmp
+     * @param name
+     * @param listener
+     */
     public void saveImage(Bitmap imageBmp, String name, final Model.SaveImageListener listener){
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -181,7 +171,11 @@ public class ModelFirebase {
         });
     }
 
-
+    /**
+     * Get image from firebase
+     * @param url
+     * @param listener
+     */
     public void getImage(String url, final Model.GetImageListener listener){
         FirebaseStorage storage = FirebaseStorage.getInstance();
         Log.d("TAGGGGG","the url is"+url);
@@ -205,8 +199,12 @@ public class ModelFirebase {
         public void onCompletion(boolean success);
     }
 
+    /**
+     * Remove an album from firebase
+     * @param album
+     * @param listener
+     */
     public void removeAlbum(Album album, final OnRemove listener){
-
         AlbumFirebase.removeAlbum(album, new OnRemove() {
             @Override
             public void onCompletion(boolean success) {
@@ -216,6 +214,11 @@ public class ModelFirebase {
 
     }
 
+    /**
+     * Remove a comment from firebase
+     * @param comment
+     * @param listener
+     */
     public  void removeComment(Comment comment, final OnRemove listener) {
         CommentFirebase.removeComment(comment, new OnRemove() {
             @Override
@@ -226,11 +229,12 @@ public class ModelFirebase {
         });
     }
 
-    public  void removeFamily(String serialNumber) {
-        FamiliesFirebase.removeFamily(serialNumber);
-    }
+    /**
+     * Remove an image from firebase
+     * @param image
+     * @param listener
+     */
     public  void removeImage(Image image, final OnRemove listener) {
-
         ImageFirebase.removeImage(image, new OnRemove() {
             @Override
             public void onCompletion(boolean success) {

@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Model.SQL;
+package com.example.adima.familyalbumproject.Model.Repositories;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -16,6 +16,9 @@ import java.util.List;
 /**
  * Created by adima on 05/03/2018.
  */
+/*
+This class represnts the image repository
+ */
 
 public class ImageRepository {
 
@@ -25,29 +28,13 @@ public class ImageRepository {
     }
     MutableLiveData<List<Image>> imagesListliveData;
 
-    public LiveData<List<Image>> getImagesList(String albumId) {
-        synchronized (this) {
-                Log.d("TAG", "images live data is null");
-
-                imagesListliveData = new MutableLiveData<List<Image>>();
-
-                ImageFirebase.getAllImagesAndObserve(albumId,new ImageFirebase.Callback<List<Image>>() {
-                    @Override
-                    public void onComplete(List<Image> data) {
-
-                        if (data != null) imagesListliveData.setValue(data);
-                        Log.d("TAG", "got comments data");
-
-                    }
-                });
-
-        }
-        return imagesListliveData;
-    }
-
+    /**
+     * Get all the images according to the id of an album
+     * @param albumId
+     * @return
+     */
         public LiveData<List<Image>> getAllImages(final String albumId) {
             synchronized (this) {
-                    Log.d("TAG", "Live data is null");
                     imagesListliveData = new MutableLiveData<List<Image>>();
                  long lastUpdateDate = 0;
                     try {
@@ -56,8 +43,6 @@ public class ImageRepository {
                     } catch (Exception e) {
 
                     }
-
-
                     ImageFirebase.getAllImagesAndObserve(albumId, lastUpdateDate, new ImageFirebase.Callback<List<Image>>() {
                         @Override
                         public void onComplete(List<Image> data) {
@@ -68,7 +53,11 @@ public class ImageRepository {
                 return imagesListliveData;
             }
 
-
+    /**
+     * Update the images in local db
+     * @param data
+     * @param albumId
+     */
     private void updateImageDataInLocalStorage(List<Image> data,String albumId) {
         Log.d("TAG", "got items from firebase: " + data.size());
         ImageRepository.MyTask task = new ImageRepository.MyTask();
@@ -78,7 +67,7 @@ public class ImageRepository {
         task.execute(data);
     }
     /*
-    delete images from cache
+    Delete images from cache
      */
     class MyDelete extends AsyncTask<Image,String,Boolean> {
 
@@ -153,7 +142,7 @@ public class ImageRepository {
                     }
                 }
                 List<Image> imagesList = AppLocalStore.db.imageDao().loadAllByIds(albumId);
-                Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
+                Log.d("TAG","finish updateImagesDataInLocalStorage in thread");
 
                 return imagesList;
             }

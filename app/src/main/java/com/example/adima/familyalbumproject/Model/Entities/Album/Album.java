@@ -12,13 +12,15 @@ import java.util.Map;
  * Created by adima on 01/03/2018.
  */
 
+/**
+ * this class represents an album of a family
+ */
 @Entity
 public class Album {
 
     @PrimaryKey
     @NonNull
     public String albumId;
-
     public String name;
     public String date;
     public String location;
@@ -27,7 +29,6 @@ public class Album {
     public Album (){
 
     }
-
 
     public Album (String name,String date,String location,String serialNumber){
         this.name=name;
@@ -45,46 +46,39 @@ public class Album {
         this.lastUpdated = lastUpdated;
     }
 
+    /**
+     * get set methods
+     */
     public String getName() {
         return name;
     }
-
     public String getAlbumId() {
         return albumId;
     }
-
     public String getDate() {
         return date;
     }
-
     public String getLocation() {
         return location;
     }
-
     public String getSerialNumber() {
         return serialNumber;
     }
-
     public long getLastUpdated() {
         return lastUpdated;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public void setAlbumId(String albumId) {
         this.albumId = albumId;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
-
     public void setLocation(String location) {
         this.location = location;
     }
-
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }

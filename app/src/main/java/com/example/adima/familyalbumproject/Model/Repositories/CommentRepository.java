@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Model.SQL;
+package com.example.adima.familyalbumproject.Model.Repositories;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -17,29 +17,16 @@ import java.util.List;
 /**
  * Created by adima on 04/03/2018.
  */
-
+/*
+This class represnts Comment repository
+ */
 public class CommentRepository {
-
-
     public static final CommentRepository instance = new CommentRepository();
 
     CommentRepository() {
     }
 
-
-
     MutableLiveData<List<Comment>> commentsListliveData;
-
-    /*
-    delete comment from cache
-     */
-
-
-    /*public void removeFromLocalDb(Comment comment){
-        CommentRepository.DeletionTask delete= new CommentRepository.DeletionTask();
-        delete.execute(comment);
-    }*/
-
 
 
     public LiveData<List<Comment>> getAllComments(final String albumId) {
