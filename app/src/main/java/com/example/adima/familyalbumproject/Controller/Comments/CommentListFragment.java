@@ -24,13 +24,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentListViewModel;
 import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
 import com.example.adima.familyalbumproject.Model.Model.Model;
-import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -249,7 +251,15 @@ public class CommentListFragment extends Fragment {
             messageUser.setText(cmt.getUserId());
             Date d = new Date(cmt.getLastUpdated());
 
-            messageTime.setText(d.toString());
+
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            DateFormat dfFr = new SimpleDateFormat(
+                    "dd-MM-yy");
+            String m = dfFr.format(cmt.getLastUpdated());
+
+            String dateFormatted = formatter.format(d);
+
+            messageTime.setText(m+" "+"("+dateFormatted+")");
             return convertView;
         }
     }

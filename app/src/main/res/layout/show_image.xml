@@ -8,18 +8,13 @@
 
     <ImageView
         android:id="@+id/large_image"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:gravity="center"
+        android:scaleType="fitCenter"
 
 
-        android:scaleType="fitXY"
-        android:src="@drawable/photo_avatar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
+
 
 </android.support.constraint.ConstraintLayout>

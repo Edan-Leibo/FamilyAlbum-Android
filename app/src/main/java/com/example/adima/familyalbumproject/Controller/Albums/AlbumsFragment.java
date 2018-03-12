@@ -304,6 +304,8 @@ public class AlbumsFragment extends Fragment {
      */
 
 
+    
+
 
     class AlbumListAdapter extends BaseAdapter {
         LayoutInflater inflater = getActivity().getLayoutInflater();
