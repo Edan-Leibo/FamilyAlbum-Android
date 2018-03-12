@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Controller.Start.MainActivity">
     <item android:id="@+id/btn_back_to_album"
-        android:icon="@drawable/back_button"
+        android:icon="@drawable/back_cam"
         android:title="@string/btn_back_album"
         app:showAsAction="always" />
 </menu>
