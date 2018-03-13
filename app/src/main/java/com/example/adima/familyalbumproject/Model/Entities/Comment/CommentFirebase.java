@@ -96,7 +96,7 @@ public class CommentFirebase {
 
     public static void removeAllObservers(){
         query.removeEventListener(changesListener);
-        myRef.removeEventListener(deleteListener);
+        //myRef.removeEventListener(deleteListener);
     }
 
     public interface OnCreationComment {

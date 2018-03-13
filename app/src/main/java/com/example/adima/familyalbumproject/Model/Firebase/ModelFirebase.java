@@ -34,17 +34,18 @@ This class represnts The model interaction with firebase
  */
 public class ModelFirebase {
 
-    public ModelFirebase(){
+    public ModelFirebase() {
 
     }
 
     /**
      * Add a new comment to an album
+     *
      * @param albumId
      * @param comment
      * @param listener
      */
-    public void addComment(String albumId, Comment comment, final OnCreation listener){
+    public void addComment(String albumId, Comment comment, final OnCreation listener) {
         CommentFirebase.addComment(albumId, comment, new CommentFirebase.OnCreationComment() {
             @Override
             public void onCompletion(boolean success) {
@@ -56,11 +57,12 @@ public class ModelFirebase {
 
     /**
      * Add an image to an album
+     *
      * @param albumId
      * @param image
      * @param listener
      */
-    public void addImage(String albumId, Image image, final OnCreation listener){
+    public void addImage(String albumId, Image image, final OnCreation listener) {
         ImageFirebase.addImage(albumId, image, new ImageFirebase.OnCreationImage() {
             @Override
             public void onCompletion(boolean success) {
@@ -70,12 +72,16 @@ public class ModelFirebase {
     }
 
 
-
-    public interface IsFamilyExistCallback{
+    public interface IsFamilyExistCallback {
         void onComplete(boolean exist);
+
         void onCancel();
     }
 
+    public void removeAllObserversFromComments() {
+
+    CommentFirebase.removeAllObservers();
+}
     public interface OnCreation{
         public void onCompletion(boolean success);
     }
@@ -88,14 +94,20 @@ public class ModelFirebase {
      */
     public void addAlbum(Album album, String serialNumber, final OnCreation listener){
         //this.databaseFirebase.addAlbum(album);
-        AlbumFirebase.addAlbum(album, serialNumber, new AlbumFirebase.OnCreationAlbum() {
+        AlbumFirebase.addAlbum(serialNumber, album, new AlbumFirebase.OnCreationAlbum() {
+
             @Override
             public void onCompletion(boolean success) {
                 listener.onCompletion(success);
-            }
-        });
-    }
 
+            }
+
+            });
+        }
+
+    public void removeAllObserversFromAlbums(){
+        AlbumFirebase.removeAllObservers();
+    }
     /**
      * Add a new family
      * @param listener

@@ -7,10 +7,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumFirebase;
-import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -28,86 +29,114 @@ public class AlbumRepository {
     }
     MutableLiveData<List<Album>> albumsListliveData;
 
-    public static void stopListeningAlbumsOnPath() {
-        AlbumFirebase.stopListeningAlbumsOnPath();
-    }
-
-    /*
-    Delete albums from the cache
-     */
-    class MyDelete extends AsyncTask<Album,String,Boolean> {
-        @Override
-        protected Boolean doInBackground(Album... albums) {
-            Log.d("TAG","starting delte from local storage in thread");
-            if (albums!=null) {
-
-                for (Album album : albums) {
-
-                    AppLocalStore.db.albumDao().delete(album);
-
-                }
-
-            }
-            return true;
-
-        }
-    }
-
-    /**
-     * Remove an album from local db
-     * @param album
-     */
-    public void removeFromLocalDb(Album album){
-        AlbumRepository.MyDelete delete= new AlbumRepository.MyDelete();
-        delete.execute(album);
-
-    }
-
-
-
-    /**
-     * Get all the albums
-     * @param serialNumber
-     * @return
-     */
     public LiveData<List<Album>> getAllAlbums(final String serialNumber) {
         synchronized (this) {
-                albumsListliveData = new MutableLiveData<List<Album>>();
-                //1. get the last update date
-                long lastUpdateDate = 0;
-                try {
-                    lastUpdateDate = MyApplication.getMyContext()
-                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateAlbums", 0);
-                } catch (Exception e) {
 
+            albumsListliveData = new MutableLiveData<List<Album>>();
+
+            //1. get the last update date
+            long lastUpdateDate = 0;
+            try {
+                lastUpdateDate = MyApplication.getMyContext()
+                        .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateAlbums"+serialNumber, 0);
+            }catch (Exception e){
+            }
+
+            AlbumFirebase.observeAllAlbums(serialNumber, lastUpdateDate, new AlbumFirebase.CallbackOnCommentUpdate<Album>() {
+
+                @Override
+                public void onDeleted(Album data) {
+                    List<Album> list = new LinkedList<>();
+                    list.add(data);
+                    deleteAlbumDataInLocalStorage(list,serialNumber);
                 }
-                AlbumFirebase.getAllAlbumsAndObserve(serialNumber, lastUpdateDate, new AlbumFirebase.Callback<List<Album>>() {
-                    @Override
-                    public void onComplete(List<Album> data) {
-                        updateAlbumDataInLocalStorage(data, serialNumber);
-                    }
-                });
+
+                @Override
+                public void dataChanged(List<Album> list) {
+                    addAlbumDataInLocalStorage(list,serialNumber);
+                }
+            });
         }
-
         return albumsListliveData;
-
     }
 
-    /**
-     * Update the local db with new albums
-     * @param data
-     * @param serialNumber
-     */
-    private void updateAlbumDataInLocalStorage(List<Album> data,String serialNumber) {
-        Log.d("TAG", "got items from firebase: " + data.size());
-        AlbumRepository.MyTask task = new AlbumRepository.MyTask();
 
+    private void addAlbumDataInLocalStorage(List<Album> data, String serialNumber) {
+        AddingTask task = new AddingTask();
         task.setSerialNumber(serialNumber);
-
         task.execute(data);
     }
 
-    class MyTask extends AsyncTask<List<Album>,String,List<Album>> {
+    private void deleteAlbumDataInLocalStorage(List<Album> data,String serialNumber) {
+        DeletionTask task = new DeletionTask();
+        task.setSerialNumber(serialNumber);
+        task.execute(data);
+    }
+
+    public void removeFromLocalDb(Album album) {
+        List<Album> list = new LinkedList<>();
+        list.add(album);
+        deleteAlbumDataInLocalStorage(list,album.getSerialNumber());
+    }
+
+    ///
+    class GetAllTask extends AsyncTask<List<Album>,String,List<Album>> {
+
+        private String serialNumber;
+
+        public void setSerialNumber(String serialNumber) {
+            this.serialNumber = serialNumber;
+        }
+
+        @Override
+        protected List<Album> doInBackground(List<Album>[] lists) {
+
+            List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
+            Log.d("TAG","finish updateAlbumsDataInLocalStorage in thread");
+
+            return albumsList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Album> albums) {
+            super.onPostExecute(albums);
+            albumsListliveData.setValue(albums);
+        }
+    }
+
+    ////
+
+    class DeletionTask extends AsyncTask<List<Album>,String,List<Album>> {
+
+        private String serialNumber;
+
+        public void setSerialNumber(String serialNumber) {
+            this.serialNumber = serialNumber;
+        }
+
+        @Override
+        protected List<Album> doInBackground(List<Album>[] lists) {
+            List<Album> data = lists[0];
+
+            for (Album album : data) {
+                AppLocalStore.db.albumDao().delete(album);
+            }
+
+            List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
+            return albumsList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Album> albums) {
+            super.onPostExecute(albums);
+            albumsListliveData.setValue(albums);
+        }
+    }
+
+
+
+    /////
+    class AddingTask extends AsyncTask<List<Album>,String,List<Album>> {
         private String serialNumber;
 
         public void setSerialNumber(String serialNumber) {
@@ -123,15 +152,22 @@ public class AlbumRepository {
                     lastUpdateDate = MyApplication.getMyContext()
                             .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateAlbums"+serialNumber, 0);
 
+                    Log.d("Tag","got the last update date");
                 }catch (Exception e){
+                    Log.d("Tag","in the exception");
+
 
                 }
                 if (data != null && data.size() > 0) {
                     //3. update the local DB
                     long reacentUpdate = lastUpdateDate;
+
                     for (Album album : data) {
                         if (album.getAlbumId() != null) {
+
                             AppLocalStore.db.albumDao().insertAll(album);
+                            Log.d("Tag", "after insert all");
+
                             if (album.getLastUpdated() > reacentUpdate) {
                                 reacentUpdate = album.getLastUpdated();
                             }
@@ -144,12 +180,7 @@ public class AlbumRepository {
                 }
                 //return the complete student list to the caller
                 List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
-                Log.d("TAG",""+albumsList.size());
-                Log.d("TAG","finish updateAlbumsDataInLocalStorage in thread");
-                List<Album> albumsOldList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
-                for(Album a : albumsOldList){
-                    removeFromLocalDb(a);
-                }
+                Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
 
                 return albumsList;
             }
@@ -161,8 +192,10 @@ public class AlbumRepository {
             super.onPostExecute(albums);
             albumsListliveData.setValue(albums);
             Log.d("TAG","update updateAlbumDataInLocalStorage in main thread");
+            Log.d("TAG", "got items from local db: " + albums.size());
 
         }
     }
+
 
 }

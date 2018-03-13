@@ -77,9 +77,7 @@ public class Model {
         ed.commit();
     }
 
-    public void stopListeningAlbumsOnPath() {
-         AlbumRepository.stopListeningAlbumsOnPath();
-    }
+
 
 
     public interface IsFamilyExistCallback{
@@ -337,6 +335,12 @@ public interface OnRemove{
 
 
 }
+    public void removeAllObserversFromComments(){
+        this.modelFirebase.removeAllObserversFromComments();
+    }
+    public void removeAllObserversFromAlbums(){
+        this.modelFirebase.removeAllObserversFromAlbums();
+    }
 
     /**
      * Remove an album

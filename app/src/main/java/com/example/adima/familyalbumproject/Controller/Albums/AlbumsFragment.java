@@ -284,7 +284,8 @@ public class AlbumsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        Model.instance().stopListeningAlbumsOnPath();
+        //Model.instance().stopListeningAlbumsOnPath();
+        Model.instance().removeAllObserversFromAlbums();
     }
 
     /**
