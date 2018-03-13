@@ -335,6 +335,11 @@ public interface OnRemove{
 
 
 }
+
+    public void removeAllObserversFromImages(){
+        this.modelFirebase.removeAllObserversFromImages();
+
+    }
     public void removeAllObserversFromComments(){
         this.modelFirebase.removeAllObserversFromComments();
     }

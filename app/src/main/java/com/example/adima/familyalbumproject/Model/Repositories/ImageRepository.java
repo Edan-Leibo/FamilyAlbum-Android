@@ -7,10 +7,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
 import com.example.adima.familyalbumproject.Model.Entities.Image.ImageFirebase;
-import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -28,78 +29,114 @@ public class ImageRepository {
     }
     MutableLiveData<List<Image>> imagesListliveData;
 
-    /**
-     * Get all the images according to the id of an album
-     * @param albumId
-     * @return
-     */
-        public LiveData<List<Image>> getAllImages(final String albumId) {
-            synchronized (this) {
-                    imagesListliveData = new MutableLiveData<List<Image>>();
-                 long lastUpdateDate = 0;
-                    try {
-                        lastUpdateDate = MyApplication.getMyContext()
-                                .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateImages"+albumId, 0);
-                    } catch (Exception e) {
+    public LiveData<List<Image>> getAllImages(final String albumId) {
+        synchronized (this) {
 
-                    }
-                    ImageFirebase.getAllImagesAndObserve(albumId, lastUpdateDate, new ImageFirebase.Callback<List<Image>>() {
-                        @Override
-                        public void onComplete(List<Image> data) {
-                            updateImageDataInLocalStorage(data, albumId);
-                        }
-                    });
-                }
-                return imagesListliveData;
+            imagesListliveData = new MutableLiveData<List<Image>>();
+
+            //1. get the last update date
+            long lastUpdateDate = 0;
+            try {
+                lastUpdateDate = MyApplication.getMyContext()
+                        .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateImages"+albumId, 0);
+            }catch (Exception e){
             }
 
-    /**
-     * Update the images in local db
-     * @param data
-     * @param albumId
-     */
-    private void updateImageDataInLocalStorage(List<Image> data,String albumId) {
-        Log.d("TAG", "got items from firebase: " + data.size());
-        ImageRepository.MyTask task = new ImageRepository.MyTask();
+            ImageFirebase.observeAllImages(albumId, lastUpdateDate, new ImageFirebase.CallbackOnImageUpdate<Image>() {
 
+                @Override
+                public void onDeleted(Image data) {
+                    List<Image> list = new LinkedList<>();
+                    list.add(data);
+                    deleteImageDataInLocalStorage(list,albumId);
+                }
+
+                @Override
+                public void dataChanged(List<Image> list) {
+                    addImageDataInLocalStorage(list,albumId);
+                }
+            });
+        }
+        return imagesListliveData;
+    }
+
+
+    private void addImageDataInLocalStorage(List<Image> data, String albumId) {
+        AddingTask task = new AddingTask();
         task.setAlbumId(albumId);
-
         task.execute(data);
     }
-    /*
-    Delete images from cache
-     */
-    class MyDelete extends AsyncTask<Image,String,Boolean> {
 
+    private void deleteImageDataInLocalStorage(List<Image> data,String albumId) {
+        DeletionTask task = new DeletionTask();
+        task.setAlbumId(albumId);
+        task.execute(data);
+    }
+
+    public void removeFromLocalDb(Image image) {
+        List<Image> list = new LinkedList<>();
+        list.add(image);
+        deleteImageDataInLocalStorage(list,image.getAlbumId());
+    }
+
+    ///
+    class GetAllTask extends AsyncTask<List<Image>,String,List<Image>> {
+
+        private String albumId;
+
+        public void setAlbumId(String albumId) {
+            this.albumId = albumId;
+        }
 
         @Override
-        protected Boolean doInBackground(Image... images) {
-            Log.d("TAG","starting delete from local storage in thread");
-            if (images!=null) {
+        protected List<Image> doInBackground(List<Image>[] lists) {
 
-                for (Image image : images) {
+            List<Image> imagesList = AppLocalStore.db.imageDao().loadAllByIds(albumId);
+            Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
 
-                    Log.d("TAG","the name of the album is:"+image.getName());
-                    Log.d("TAG","the id of the album is:"+image.getImageUrl());
-                    AppLocalStore.db.imageDao().delete(image);
+            return imagesList;
+        }
 
-                }
-
-            }
-            return true;
-
+        @Override
+        protected void onPostExecute(List<Image> images) {
+            super.onPostExecute(images);
+            imagesListliveData.setValue(images);
         }
     }
 
-    public void removeFromLocalDb(Image image){
-        ImageRepository.MyDelete delete= new ImageRepository.MyDelete();
-        delete.execute(image);
+    ////
 
+    class DeletionTask extends AsyncTask<List<Image>,String,List<Image>> {
+
+        private String albumId;
+
+        public void setAlbumId(String albumId) {
+            this.albumId = albumId;
+        }
+
+        @Override
+        protected List<Image> doInBackground(List<Image>[] lists) {
+            List<Image> data = lists[0];
+
+            for (Image image : data) {
+                AppLocalStore.db.imageDao().delete(image);
+            }
+
+            List<Image> imagesList = AppLocalStore.db.imageDao().loadAllByIds(albumId);
+            return imagesList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Image> images) {
+            super.onPostExecute(images);
+            imagesListliveData.setValue(images);
+        }
     }
 
 
 
-    class MyTask extends AsyncTask<List<Image>,String,List<Image>> {
+    /////
+    class AddingTask extends AsyncTask<List<Image>,String,List<Image>> {
         private String albumId;
 
         public void setAlbumId(String albumId) {
@@ -107,7 +144,7 @@ public class ImageRepository {
         }
         @Override
         protected List<Image> doInBackground(List<Image>[] lists) {
-            Log.d("TAG","starting updateAlbumDataInLocalStorage in thread");
+            Log.d("TAG","starting updateImageDataInLocalStorage in thread");
             if (lists.length > 0) {
                 List<Image> data = lists[0];
                 long lastUpdateDate = 0;
@@ -126,8 +163,8 @@ public class ImageRepository {
                     long reacentUpdate = lastUpdateDate;
 
                     for (Image image : data) {
-
                         if (image.getImageId() != null) {
+
                             AppLocalStore.db.imageDao().insertAll(image);
                             Log.d("Tag", "after insert all");
 
@@ -136,13 +173,14 @@ public class ImageRepository {
                             }
                             Log.d("TAG", "updating: " + image.toString());
                         }
-                        SharedPreferences.Editor editor = MyApplication.getMyContext().getSharedPreferences("TAG", Context.MODE_PRIVATE).edit();
-                        editor.putLong("lastUpdateDateImages" + albumId, reacentUpdate);
-                        editor.commit();
                     }
+                    SharedPreferences.Editor editor = MyApplication.getMyContext().getSharedPreferences("TAG", Context.MODE_PRIVATE).edit();
+                    editor.putLong("lastUpdateDateImages"+albumId, reacentUpdate);
+                    editor.commit();
                 }
+                //return the complete student list to the caller
                 List<Image> imagesList = AppLocalStore.db.imageDao().loadAllByIds(albumId);
-                Log.d("TAG","finish updateImagesDataInLocalStorage in thread");
+                Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
 
                 return imagesList;
             }
@@ -153,9 +191,10 @@ public class ImageRepository {
         protected void onPostExecute(List<Image> images) {
             super.onPostExecute(images);
             imagesListliveData.setValue(images);
-            Log.d("TAG","update updateImageDataInLocalStorage in main thread");
+            Log.d("TAG","update updateAlbumDataInLocalStorage in main thread");
             Log.d("TAG", "got items from local db: " + images.size());
 
         }
     }
+
 }

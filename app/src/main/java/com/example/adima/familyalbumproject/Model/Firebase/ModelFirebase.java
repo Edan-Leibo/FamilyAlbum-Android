@@ -78,6 +78,10 @@ public class ModelFirebase {
         void onCancel();
     }
 
+    public void removeAllObserversFromImages(){
+        ImageFirebase.removeAllObservers();
+    }
+
     public void removeAllObserversFromComments() {
 
     CommentFirebase.removeAllObservers();

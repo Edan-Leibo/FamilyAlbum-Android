@@ -34,13 +34,13 @@ public class AlbumFirebase {
 
 
 
-    public interface CallbackOnCommentUpdate<Album> {
+    public interface CallbackOnAlbumUpdate<Album> {
         void onDeleted(Album data);
         void dataChanged(List<Album> list);
     }
 
 
-    public static void observeAllAlbums(String serialNumber, long lastUpdate, final CallbackOnCommentUpdate<Album> callback) {
+    public static void observeAllAlbums(String serialNumber, long lastUpdate, final CallbackOnAlbumUpdate<Album> callback) {
 
         myRef = FirebaseDatabase.getInstance().getReference("albums").child(serialNumber);
         query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);

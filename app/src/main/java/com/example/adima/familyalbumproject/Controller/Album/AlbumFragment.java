@@ -228,6 +228,7 @@ public class AlbumFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        Model.instance().removeAllObserversFromImages();
     }
 
     /**
