@@ -85,12 +85,12 @@ public class AlbumFirebase {
         };
 
         query.addValueEventListener(changesListener);
+        myRef.removeEventListener(deleteListener);
         myRef.addChildEventListener(deleteListener);
     }
 
     public static void removeAllObservers(){
         query.removeEventListener(changesListener);
-        //myRef.removeEventListener(deleteListener);
     }
 
     public interface OnCreationAlbum {

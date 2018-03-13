@@ -91,6 +91,7 @@ public class CommentFirebase {
         };
 
         query.addValueEventListener(changesListener);
+        myRef.removeEventListener(deleteListener);
         myRef.addChildEventListener(deleteListener);
     }
 

@@ -42,7 +42,7 @@ public class AlbumRepository {
             }catch (Exception e){
             }
 
-            AlbumFirebase.observeAllAlbums(serialNumber, lastUpdateDate, new AlbumFirebase.CallbackOnCommentUpdate<Album>() {
+            AlbumFirebase.observeAllAlbums(serialNumber, lastUpdateDate, new AlbumFirebase.CallbackOnAlbumUpdate<Album>() {
 
                 @Override
                 public void onDeleted(Album data) {
