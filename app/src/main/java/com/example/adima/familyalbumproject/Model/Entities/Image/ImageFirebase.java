@@ -123,7 +123,7 @@ public class ImageFirebase {
         HashMap<String, Object> json = image.toJson();
         json.put("lastUpdated", ServerValue.TIMESTAMP);
         Log.d("TAG", "the image id is:" + image.getImageId());
-        DatabaseReference ref = database.getReference("comments").child(albumId).child(image.getImageId());
+        DatabaseReference ref = database.getReference("images").child(albumId).child(image.getImageId());
         ref.setValue(json, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {

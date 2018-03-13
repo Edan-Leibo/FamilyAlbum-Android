@@ -47,6 +47,8 @@ import static android.app.Activity.RESULT_OK;
  * Created by adima on 03/03/2018.
  */
 
+
+
 public class AlbumFragment extends Fragment {
 
     private OnFragmentAlbumInteractionListener mListener;
