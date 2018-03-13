@@ -191,7 +191,18 @@ public class CommentListFragment extends Fragment {
         commentsListViewModel.getCommentsList().observe(this, new Observer<List<Comment>>() {
             @Override
             public void onChanged(@Nullable List<Comment> comments) {
-                commentList = comments;
+                if(comments!=null&&comments.size()>0){
+                    if(albumId.equals(comments.get(0).getAlbumId())){
+                        commentList = comments;
+                    }
+
+
+                }
+                else if (comments.size()==0||comments==null){
+                    commentList=comments;
+
+                }
+
                 if (adapter != null) adapter.notifyDataSetChanged();
             }
         });

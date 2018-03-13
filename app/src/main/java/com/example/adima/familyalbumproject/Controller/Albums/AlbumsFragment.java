@@ -270,8 +270,17 @@ public class AlbumsFragment extends Fragment {
         albumListViewModel.getAlbumList().observe(this, new Observer<List<Album>>() {
             @Override
             public void onChanged(@Nullable List<Album> albums) {
-                //if (albums.size() > 0) {
-                albumList = albums;
+                if(albums!=null&&albums.size()>0){
+                    if(familySerial.equals(albums.get(0).getSerialNumber())){
+                        albumList = albums;
+                    }
+
+
+                }
+                else if (albums.size()==0||albums==null){
+                    albumList=albums;
+
+                }
                 if (adapter != null) adapter.notifyDataSetChanged();
                 //} else {
                 //

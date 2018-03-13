@@ -218,7 +218,17 @@ public class AlbumFragment extends Fragment {
         imagesListViewModel.getImagesList().observe(this, new Observer<List<Image>>() {
             @Override
             public void onChanged(@Nullable List<Image> images) {
-                imageList = images;
+                if(images!=null&&images.size()>0){
+                    if(albumId.equals(images.get(0).getAlbumId())){
+                        imageList = images;
+                    }
+
+
+                }
+                else if (images.size()==0||images==null){
+                    imageList=images;
+
+                }
                 if (adapter != null) adapter.notifyDataSetChanged();
             }
         });
