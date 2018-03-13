@@ -46,7 +46,6 @@ public class AlbumsFragment extends Fragment {
     AlbumListAdapter adapter;
     ProgressBar progressBar;
     private static String familySerial;
-    ListView list;
 
     MenuItem  addAlbumItem;
     MenuItem getSerialItem;
@@ -206,7 +205,7 @@ public class AlbumsFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
 
-        list = view.findViewById(R.id.albums_list);
+        ListView list = view.findViewById(R.id.albums_list);
         adapter = new AlbumListAdapter();
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -285,10 +284,7 @@ public class AlbumsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        adapter=null;
-        list.setAdapter(null);
         Model.instance().removeAllObserversFromAlbums();
-        //Model.instance().stopListeningAlbumsOnPath();
     }
 
     /**

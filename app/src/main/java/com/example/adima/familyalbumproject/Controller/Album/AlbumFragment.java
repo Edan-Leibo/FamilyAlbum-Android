@@ -47,8 +47,6 @@ import static android.app.Activity.RESULT_OK;
  * Created by adima on 03/03/2018.
  */
 
-
-
 public class AlbumFragment extends Fragment {
 
     private OnFragmentAlbumInteractionListener mListener;
@@ -60,7 +58,6 @@ public class AlbumFragment extends Fragment {
 
     public static final int REQUEST_IMAGE_CAPTURE = 0;
     public static final int PICK_IMAGE = 1;
-    private GridView grid;
 
     public AlbumFragment() {
     }
@@ -151,7 +148,7 @@ public class AlbumFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_album, container, false);
         progressBar = view.findViewById(R.id.album_progressbar);
         progressBar.setVisibility(View.VISIBLE);
-        grid = view.findViewById(R.id.gridview);
+        GridView grid = view.findViewById(R.id.gridview);
         adapter = new ImageGridViewAdapter();
         grid.setAdapter(adapter);
 
@@ -231,8 +228,6 @@ public class AlbumFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        adapter=null;
-        grid.setAdapter(null);
         Model.instance().removeAllObserversFromImages();
     }
 
