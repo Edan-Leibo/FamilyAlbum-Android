@@ -31,54 +31,36 @@ public class CommentRepository {
 
     public LiveData<List<Comment>> getAllComments(final String albumId) {
         synchronized (this) {
-           // if (commentsListliveData == null) {
-                Log.d("TAG","Live data is null");
-                commentsListliveData = new MutableLiveData<List<Comment>>();
 
-                //1. get the last update date
-                long lastUpdateDate = 0;
-                try {
-                    lastUpdateDate = MyApplication.getMyContext()
-                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments"+albumId, 0);
-                }catch (Exception e){
+            commentsListliveData = new MutableLiveData<List<Comment>>();
 
+            //1. get the last update date
+            long lastUpdateDate = 0;
+            try {
+                lastUpdateDate = MyApplication.getMyContext()
+                        .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments"+albumId, 0);
+            }catch (Exception e){
+            }
+
+            CommentFirebase.observeAllComments(albumId, lastUpdateDate, new CommentFirebase.CallbackOnCommentUpdate<Comment>() {
+
+                @Override
+                public void onDeleted(Comment data) {
+                    List<Comment> list = new LinkedList<>();
+                    list.add(data);
+                    deleteCommentDataInLocalStorage(list,albumId);
                 }
 
-
-                CommentFirebase.observeAllComments(albumId, lastUpdateDate, new CommentFirebase.CallbackOnCommentUpdate<Comment>() {
-                    @Override
-                    public void onAdded(Comment data) {
-
-                        List<Comment> list = new LinkedList<>();
-                        list.add(data);
-                        addCommentDataInLocalStorage(list,albumId);
-                    }
-
-                    @Override
-                    public void onDeleted(Comment data) {
-                        List<Comment> list = new LinkedList<>();
-                        list.add(data);
-                        deleteCommentDataInLocalStorage(list,albumId);
-                    }
-
-                    @Override
-                    public void initialData(List<Comment> comments) {
-                        addCommentDataInLocalStorage(comments, albumId);
-                    }
-
-
-                });
+                @Override
+                public void dataChanged(List<Comment> list) {
+                    addCommentDataInLocalStorage(list,albumId);
+                }
+            });
         }
         return commentsListliveData;
     }
 
-/*
-    private void getAllCommentDataInLocalStorage(String albumId) {
-        GetAllTask task = new GetAllTask();
-        task.setAlbumId(albumId);
-        task.execute();
-    }
-*/
+
     private void addCommentDataInLocalStorage(List<Comment> data, String albumId) {
         AddingTask task = new AddingTask();
         task.setAlbumId(albumId);
@@ -137,7 +119,7 @@ public class CommentRepository {
             List<Comment> data = lists[0];
 
             for (Comment comment : data) {
-                    AppLocalStore.db.commentDao().delete(comment);
+                AppLocalStore.db.commentDao().delete(comment);
             }
 
             List<Comment> commentList = AppLocalStore.db.commentDao().loadAllByIds(albumId);
@@ -153,7 +135,7 @@ public class CommentRepository {
 
 
 
-/////
+    /////
     class AddingTask extends AsyncTask<List<Comment>,String,List<Comment>> {
         private String albumId;
 

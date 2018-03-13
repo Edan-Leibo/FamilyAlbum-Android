@@ -23,21 +23,20 @@ import java.util.List;
 Interaction between comments to firebase
  */
 public class CommentFirebase {
-    private static ChildEventListener listener;
-    private static DatabaseReference lastRef;
+
+    private static ChildEventListener deleteListener;
+    private static ValueEventListener changesListener;
+    private static Query query;
+    private static DatabaseReference myRef;
 
     CommentFirebase() {
     }
 
 
-    public interface Callback<T> {
-        void onComplete(T data);
-    }
 
     public interface CallbackOnCommentUpdate<Comment> {
-        void onAdded(Comment data);
         void onDeleted(Comment data);
-        void initialData(List<Comment> commentList);
+        void dataChanged(List<Comment> list);
     }
 
     /**
@@ -46,21 +45,15 @@ public class CommentFirebase {
      * @param lastUpdate
      * @param callback
      */
-    public static void observeAllComments(String albumId, long lastUpdate, final CallbackOnCommentUpdate<Comment> callback) {
-        Log.d("TAG", "getAllCommentsAndObserve " + lastUpdate);
-        Log.d("TAG", "getAllCommentsAndObserve");
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        if (listener!=null && lastRef!=null) {
-            lastRef.removeEventListener(listener);
-        }
 
-        DatabaseReference myRef = database.getReference("comments").child(albumId);
-        lastRef=myRef;
-        Query query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
-        listener=new ChildEventListener() {
+    public static void observeAllComments(String albumId, long lastUpdate, final CallbackOnCommentUpdate<Comment> callback) {
+
+        myRef = FirebaseDatabase.getInstance().getReference("comments").child(albumId);
+        query = myRef.orderByChild("lastUpdated").startAt(lastUpdate);
+
+        deleteListener=new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                callback.onAdded(dataSnapshot.getValue(Comment.class));
             }
 
             @Override
@@ -81,8 +74,7 @@ public class CommentFirebase {
             }
         };
 
-        myRef.addChildEventListener(listener);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        changesListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Comment> list = new LinkedList<>();
@@ -90,19 +82,28 @@ public class CommentFirebase {
                     Comment comment = snap.getValue(Comment.class);
                     list.add(comment);
                 }
-                callback.initialData(list);
+                callback.dataChanged(list);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                callback.initialData(null);
             }
-        });
+        };
+
+        query.addValueEventListener(changesListener);
+        myRef.addChildEventListener(deleteListener);
+    }
+
+    public static void removeAllObservers(){
+        query.removeEventListener(changesListener);
+        myRef.removeEventListener(deleteListener);
     }
 
     public interface OnCreationComment {
-        public void onCompletion(boolean success);
+        void onCompletion(boolean success);
     }
+
+
 
     /**
      * Add a comment to firebase

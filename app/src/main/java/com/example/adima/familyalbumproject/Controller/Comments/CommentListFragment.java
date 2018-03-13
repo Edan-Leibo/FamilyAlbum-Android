@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
+import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentFirebase;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentListViewModel;
 import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
 import com.example.adima.familyalbumproject.Model.Model.Model;
@@ -201,6 +202,7 @@ public class CommentListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        CommentFirebase.removeAllObservers();
     }
 
     /**
