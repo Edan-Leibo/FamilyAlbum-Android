@@ -14,11 +14,9 @@ import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumFirebase;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by adima on 02/03/2018.
- */
+
 /*
-This class represnets the repository of an album
+This class represents the repository of an album
  */
 public class AlbumRepository {
 
@@ -29,6 +27,12 @@ public class AlbumRepository {
     }
     MutableLiveData<List<Album>> albumsListliveData;
 
+
+    /**
+     * Get all albums
+     * @param serialNumber
+     * @return
+     */
     public LiveData<List<Album>> getAllAlbums(final String serialNumber) {
         synchronized (this) {
 
@@ -60,51 +64,29 @@ public class AlbumRepository {
         return albumsListliveData;
     }
 
-
+    /**
+     * Add an album
+     * @param data
+     * @param serialNumber
+     */
     private void addAlbumDataInLocalStorage(List<Album> data, String serialNumber) {
         AddingTask task = new AddingTask();
         task.setSerialNumber(serialNumber);
         task.execute(data);
     }
 
+    /**
+     * Delete an album
+     * @param data
+     * @param serialNumber
+     */
     private void deleteAlbumDataInLocalStorage(List<Album> data,String serialNumber) {
         DeletionTask task = new DeletionTask();
         task.setSerialNumber(serialNumber);
         task.execute(data);
     }
 
-    public void removeFromLocalDb(Album album) {
-        List<Album> list = new LinkedList<>();
-        list.add(album);
-        deleteAlbumDataInLocalStorage(list,album.getSerialNumber());
-    }
 
-    ///
-    class GetAllTask extends AsyncTask<List<Album>,String,List<Album>> {
-
-        private String serialNumber;
-
-        public void setSerialNumber(String serialNumber) {
-            this.serialNumber = serialNumber;
-        }
-
-        @Override
-        protected List<Album> doInBackground(List<Album>[] lists) {
-
-            List<Album> albumsList = AppLocalStore.db.albumDao().loadAllByIds(serialNumber);
-            Log.d("TAG","finish updateAlbumsDataInLocalStorage in thread");
-
-            return albumsList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Album> albums) {
-            super.onPostExecute(albums);
-            albumsListliveData.setValue(albums);
-        }
-    }
-
-    ////
 
     class DeletionTask extends AsyncTask<List<Album>,String,List<Album>> {
 

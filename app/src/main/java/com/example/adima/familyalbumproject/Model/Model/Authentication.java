@@ -1,4 +1,4 @@
-package com.example.adima.familyalbumproject.Model.Firebase;
+package com.example.adima.familyalbumproject.Model.Model;
 
 import android.support.annotation.NonNull;
 
@@ -8,7 +8,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class FirebaseAuthentication {
+public class Authentication {
     private static FirebaseAuth mAuth;
     private static String  userEmail; //The string of the current user which logged in to the app
     private static FirebaseUser user;
@@ -17,7 +17,13 @@ public class FirebaseAuthentication {
     public static interface loginUserCallBack{
         void onLogin(boolean t);
     }
-    //validate the value entered by the user when the user is logging in to the app
+
+    /**
+     * Validate the value entered by the user when the user is logging in to the app
+     * @param email
+     * @param password
+     * @param callback
+     */
     public static void loginUser(final String email, String password, final loginUserCallBack callback) {
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -73,8 +79,9 @@ public class FirebaseAuthentication {
         userEmail = null;
     }
 
-    /*
-    returns if the user is signed in or not
+    /**
+     * Returns if the user is signed in or not
+     * @return
      */
     public static boolean isSignedIn() {
 
@@ -88,8 +95,9 @@ public class FirebaseAuthentication {
         }
     }
 
-    /*
-    Return the User email
+    /**
+     * Return the User email
+     * @return
      */
     public static String getUserEmail() {
         return userEmail;

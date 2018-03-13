@@ -12,7 +12,7 @@ import java.util.List;
  * Created by adima on 05/03/2018.
  */
 /*
-Dao of a comment
+Dao of an image
  */
 @Dao
 public interface ImageDao {

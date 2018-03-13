@@ -8,9 +8,7 @@ import android.support.annotation.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by adima on 01/03/2018.
- */
+
 
 /**
  * this class represents an album of a family

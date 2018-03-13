@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by adima on 03/03/2018.
  */
 /*
-this class represents a image in an album
+this class represents an image in an album
  */
 @Entity
 public class Image {

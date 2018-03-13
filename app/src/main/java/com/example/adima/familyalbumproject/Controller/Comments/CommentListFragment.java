@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.CommentListViewModel;
-import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Model.Authentication;
 import com.example.adima.familyalbumproject.Model.Model.Model;
 import com.example.adima.familyalbumproject.R;
 
@@ -119,7 +119,7 @@ public class CommentListFragment extends Fragment {
                         final Comment comment =new Comment();
                         comment.setText(text);
                         comment.setAlbumId(albumId);
-                        comment.setUserId(FirebaseAuthentication.getUserEmail());
+                        comment.setUserId(Authentication.getUserEmail());
                         Model.instance().addComment(albumId, comment, new Model.OnCreation() {
                             @Override
                             public void onCompletion(boolean success) {
@@ -194,13 +194,10 @@ public class CommentListFragment extends Fragment {
                 if(comments!=null&&comments.size()>0){
                     if(albumId.equals(comments.get(0).getAlbumId())){
                         commentList = comments;
+                        Log.d("TAG","update the list");
                     }
-
-
-                }
-                else if (comments.size()==0||comments==null){
-                    commentList=comments;
-
+                }else if (comments.size()==0){
+                    commentList = comments;
                 }
 
                 if (adapter != null) adapter.notifyDataSetChanged();

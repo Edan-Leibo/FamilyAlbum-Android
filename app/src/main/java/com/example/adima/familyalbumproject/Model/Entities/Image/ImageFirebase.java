@@ -43,7 +43,7 @@ public class ImageFirebase {
     }
 
     /**
-     * Get all comments from firebase according to the id of an album and the last update date
+     * Get all images from firebase according to the id of an album and the last update date
      * @param albumId
      * @param lastUpdate
      * @param callback
@@ -108,11 +108,10 @@ public class ImageFirebase {
     }
 
 
-
     /**
-     * Add a comment to firebase
+     * Add an image to firebase
      * @param albumId
-     * @param comment
+     * @param image
      * @param listener
      */
     public static void addImage(String albumId, Image image, final OnCreationImage listener) {
@@ -141,8 +140,8 @@ public class ImageFirebase {
     }
 
     /**
-     * Remove a comment from firebase
-     * @param comment
+     * Remove an image from firebase
+     * @param image
      * @param listener
      */
     public static void removeImage(Image image, final ModelFirebase.OnRemove listener) {

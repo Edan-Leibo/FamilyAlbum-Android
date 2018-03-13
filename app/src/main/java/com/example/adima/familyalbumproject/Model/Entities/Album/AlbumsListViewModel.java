@@ -7,9 +7,7 @@ import com.example.adima.familyalbumproject.Model.Repositories.AlbumRepository;
 
 import java.util.List;
 
-/**
- * Created by adima on 02/03/2018.
- */
+
 /*
 view model of albums list
  */

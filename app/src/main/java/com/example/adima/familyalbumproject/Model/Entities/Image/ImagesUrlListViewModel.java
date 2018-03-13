@@ -11,7 +11,7 @@ import java.util.List;
  * Created by adima on 05/03/2018.
  */
 /*
-represnts the view model of images list
+represents the view model of images list
  */
 
 public class ImagesUrlListViewModel extends ViewModel {

@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Model.Entities.Album.AlbumsListViewModel;
-import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Model.Authentication;
 import com.example.adima.familyalbumproject.Model.Model.Model;
 import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.R;
@@ -72,7 +72,7 @@ public class AlbumsFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static AlbumsFragment newInstance() {
         AlbumsFragment fragment = new AlbumsFragment();
-        String userName = FirebaseAuthentication.getUserEmail();
+        String userName = Authentication.getUserEmail();
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
         familySerial = ref.getString(userName, "NONE");
         Bundle args = new Bundle();
@@ -85,7 +85,7 @@ public class AlbumsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        String userName = FirebaseAuthentication.getUserEmail();
+        String userName = Authentication.getUserEmail();
         Bundle args = getArguments();
         familySerial = args.getString(userName, "NONE");
     }
@@ -142,7 +142,7 @@ public class AlbumsFragment extends Fragment {
                             @Override
                             public void onComplete(boolean exist) {
                                 if (exist) {
-                                    Model.instance().writeToSharedPreferences("familyInfo", FirebaseAuthentication.getUserEmail(), serial);
+                                    Model.instance().writeToSharedPreferences("familyInfo", Authentication.getUserEmail(), serial);
                                     mListener.showAlbumsFragment();
                                     addAlbumItem.setVisible(true);
                                     getSerialItem.setVisible(true);
@@ -174,7 +174,7 @@ public class AlbumsFragment extends Fragment {
                             Toast.makeText(MyApplication.getMyContext(), "Creation of a family failed", Toast.LENGTH_SHORT).show();
                         } else {
                             familySerial = success;
-                            Model.instance().writeToSharedPreferences("familyInfo", FirebaseAuthentication.getUserEmail(), familySerial);
+                            Model.instance().writeToSharedPreferences("familyInfo", Authentication.getUserEmail(), familySerial);
                             Toast.makeText(MyApplication.getMyContext(), "New family was created", Toast.LENGTH_SHORT).show();
                             mListener.showAlbumsFragment();
                         }
@@ -184,7 +184,7 @@ public class AlbumsFragment extends Fragment {
                 return true;
             case R.id.btn_albums_exit:
                 progressBar.setVisibility(View.VISIBLE);
-                FirebaseAuthentication.signOut();
+                Authentication.signOut();
                 progressBar.setVisibility(View.GONE);
                 mListener.showLoginFragment();
                 return true;
@@ -273,18 +273,13 @@ public class AlbumsFragment extends Fragment {
                 if(albums!=null&&albums.size()>0){
                     if(familySerial.equals(albums.get(0).getSerialNumber())){
                         albumList = albums;
+                        Log.d("TAG","update the list");
                     }
-
-
-                }
-                else if (albums.size()==0||albums==null){
-                    albumList=albums;
-
+                }else if (albums.size()==0){
+                    albumList = albums;
                 }
                 if (adapter != null) adapter.notifyDataSetChanged();
-                //} else {
-                //
-                //}
+
             }
         });
     }

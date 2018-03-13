@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
 import com.example.adima.familyalbumproject.Model.Entities.Image.ImagesUrlListViewModel;
-import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Model.Authentication;
 import com.example.adima.familyalbumproject.Model.Model.Model;
 import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import com.example.adima.familyalbumproject.R;
@@ -221,13 +221,10 @@ public class AlbumFragment extends Fragment {
                 if(images!=null&&images.size()>0){
                     if(albumId.equals(images.get(0).getAlbumId())){
                         imageList = images;
+                        Log.d("TAG","update the list");
                     }
-
-
-                }
-                else if (images.size()==0||images==null){
-                    imageList=images;
-
+                }else if (images.size()==0){
+                    imageList = images;
                 }
                 if (adapter != null) adapter.notifyDataSetChanged();
             }
@@ -284,7 +281,7 @@ public class AlbumFragment extends Fragment {
             imageBitmap = (Bitmap) extras.get("data");
         }
         if (imageBitmap != null) {
-            final String uniqueName = FirebaseAuthentication.getUserEmail() + getUniqueId();
+            final String uniqueName = Authentication.getUserEmail() + getUniqueId();
             Model.instance().saveImage(imageBitmap, uniqueName, new Model.SaveImageListener() {
                 @Override
                 public void complete(String url) {

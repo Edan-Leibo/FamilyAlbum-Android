@@ -14,11 +14,9 @@ import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by adima on 04/03/2018.
- */
+
 /*
-This class represnts Comment repository
+This class represents Comment repository
  */
 public class CommentRepository {
     public static final CommentRepository instance = new CommentRepository();
@@ -28,7 +26,11 @@ public class CommentRepository {
 
     MutableLiveData<List<Comment>> commentsListliveData;
 
-
+    /**
+     * Get all comments
+     * @param albumId
+     * @return
+     */
     public LiveData<List<Comment>> getAllComments(final String albumId) {
         synchronized (this) {
 
@@ -60,51 +62,30 @@ public class CommentRepository {
         return commentsListliveData;
     }
 
-
+    /**
+     * Add a comment
+     * @param data
+     * @param albumId
+     */
     private void addCommentDataInLocalStorage(List<Comment> data, String albumId) {
         AddingTask task = new AddingTask();
         task.setAlbumId(albumId);
         task.execute(data);
     }
 
+    /**
+     * Delete a comment
+     * @param data
+     * @param albumId
+     */
     private void deleteCommentDataInLocalStorage(List<Comment> data,String albumId) {
         DeletionTask task = new DeletionTask();
         task.setAlbumId(albumId);
         task.execute(data);
     }
 
-    public void removeFromLocalDb(Comment comment) {
-        List<Comment> list = new LinkedList<>();
-        list.add(comment);
-        deleteCommentDataInLocalStorage(list,comment.getAlbumId());
-    }
 
-    ///
-    class GetAllTask extends AsyncTask<List<Comment>,String,List<Comment>> {
 
-        private String albumId;
-
-        public void setAlbumId(String albumId) {
-            this.albumId = albumId;
-        }
-
-        @Override
-        protected List<Comment> doInBackground(List<Comment>[] lists) {
-
-            List<Comment> commentList = AppLocalStore.db.commentDao().loadAllByIds(albumId);
-            Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
-
-            return commentList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Comment> comments) {
-            super.onPostExecute(comments);
-            commentsListliveData.setValue(comments);
-        }
-    }
-
-    ////
 
     class DeletionTask extends AsyncTask<List<Comment>,String,List<Comment>> {
 

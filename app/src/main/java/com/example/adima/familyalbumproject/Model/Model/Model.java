@@ -14,9 +14,6 @@ import com.example.adima.familyalbumproject.Model.Entities.Album.Album;
 import com.example.adima.familyalbumproject.Model.Entities.Comment.Comment;
 import com.example.adima.familyalbumproject.Model.Entities.Image.Image;
 import com.example.adima.familyalbumproject.Model.Firebase.ModelFirebase;
-import com.example.adima.familyalbumproject.Model.Repositories.AlbumRepository;
-import com.example.adima.familyalbumproject.Model.Repositories.CommentRepository;
-import com.example.adima.familyalbumproject.Model.Repositories.ImageRepository;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -326,9 +323,11 @@ public interface OnRemove{
     modelFirebase.removeComment(comment, new ModelFirebase.OnRemove() {
         @Override
         public void onCompletion(boolean success) {
+            /*
             if (success){
                 CommentRepository.instance.removeFromLocalDb(comment);
             }
+            */
             listener.onCompletion(success);
         }
     });
@@ -354,7 +353,7 @@ public interface OnRemove{
      * @param listener
      */
     public void removeAlbum(final Album album,String serialNumber, final OnRemove listener) {
-        AlbumRepository.instance.removeFromLocalDb(album);
+        //AlbumRepository.instance.removeFromLocalDb(album);
 
         modelFirebase.removeAlbum(album, new ModelFirebase.OnRemove() {
             @Override
@@ -371,7 +370,7 @@ public interface OnRemove{
      * @param listener
      */
     public void removeImage(final Image image, final OnRemove listener){
-        ImageRepository.instance.removeFromLocalDb(image);
+        //ImageRepository.instance.removeFromLocalDb(image);
 
         modelFirebase.removeImage(image, new ModelFirebase.OnRemove() {
             @Override

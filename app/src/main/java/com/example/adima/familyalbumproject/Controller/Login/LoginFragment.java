@@ -1,12 +1,10 @@
 package com.example.adima.familyalbumproject.Controller.Login;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
-import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
-import com.example.adima.familyalbumproject.Model.Model.Model;
+import com.example.adima.familyalbumproject.Model.Model.Authentication;
 import com.example.adima.familyalbumproject.R;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by adima on 03/03/2018.
@@ -66,7 +61,7 @@ public class LoginFragment extends Fragment {
                     return;
                 }
                 progressBar.setVisibility(View.VISIBLE);
-                FirebaseAuthentication.loginUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.loginUserCallBack() {
+                Authentication.loginUser(email.getText().toString(), password.getText().toString(), new Authentication.loginUserCallBack() {
 
                     @Override
                     public void onLogin(boolean t) {
@@ -93,7 +88,7 @@ public class LoginFragment extends Fragment {
                     return;
                 }
                 progressBar.setVisibility(View.VISIBLE);
-                FirebaseAuthentication.registerUser(email.getText().toString(), password.getText().toString(), new FirebaseAuthentication.regUserCallBack() {
+                Authentication.registerUser(email.getText().toString(), password.getText().toString(), new Authentication.regUserCallBack() {
                     @Override
                     public void onRegistration(boolean t) {
                         if (t == true) {

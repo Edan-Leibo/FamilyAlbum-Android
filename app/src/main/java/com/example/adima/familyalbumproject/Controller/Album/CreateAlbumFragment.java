@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.adima.familyalbumproject.Controller.Start.MyApplication;
-import com.example.adima.familyalbumproject.Model.Firebase.FirebaseAuthentication;
+import com.example.adima.familyalbumproject.Model.Model.Authentication;
 import com.example.adima.familyalbumproject.R;
 
 import java.text.SimpleDateFormat;
@@ -55,7 +55,7 @@ public class CreateAlbumFragment extends Fragment {
         final EditText albumLocation= (EditText) view.findViewById(R.id.createAlbum_album_location);
 
 
-        final String familySerial = Model.instance().getFamilySerialFromSharedPrefrences("familyInfo", FirebaseAuthentication.getUserEmail());
+        final String familySerial = Model.instance().getFamilySerialFromSharedPrefrences("familyInfo", Authentication.getUserEmail());
 
         view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override

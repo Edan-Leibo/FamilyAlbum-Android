@@ -14,11 +14,9 @@ import com.example.adima.familyalbumproject.Model.Entities.Image.ImageFirebase;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by adima on 05/03/2018.
- */
+
 /*
-This class represnts the image repository
+This class represents the image repository
  */
 
 public class ImageRepository {
@@ -29,6 +27,11 @@ public class ImageRepository {
     }
     MutableLiveData<List<Image>> imagesListliveData;
 
+    /**
+     * Get all images
+     * @param albumId
+     * @return
+     */
     public LiveData<List<Image>> getAllImages(final String albumId) {
         synchronized (this) {
 
@@ -60,51 +63,29 @@ public class ImageRepository {
         return imagesListliveData;
     }
 
-
+    /**
+     * Add an image
+     * @param data
+     * @param albumId
+     */
     private void addImageDataInLocalStorage(List<Image> data, String albumId) {
         AddingTask task = new AddingTask();
         task.setAlbumId(albumId);
         task.execute(data);
     }
 
+    /**
+     * Delete an image
+     * @param data
+     * @param albumId
+     */
     private void deleteImageDataInLocalStorage(List<Image> data,String albumId) {
         DeletionTask task = new DeletionTask();
         task.setAlbumId(albumId);
         task.execute(data);
     }
 
-    public void removeFromLocalDb(Image image) {
-        List<Image> list = new LinkedList<>();
-        list.add(image);
-        deleteImageDataInLocalStorage(list,image.getAlbumId());
-    }
 
-    ///
-    class GetAllTask extends AsyncTask<List<Image>,String,List<Image>> {
-
-        private String albumId;
-
-        public void setAlbumId(String albumId) {
-            this.albumId = albumId;
-        }
-
-        @Override
-        protected List<Image> doInBackground(List<Image>[] lists) {
-
-            List<Image> imagesList = AppLocalStore.db.imageDao().loadAllByIds(albumId);
-            Log.d("TAG","finish updateEmployeeDataInLocalStorage in thread");
-
-            return imagesList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Image> images) {
-            super.onPostExecute(images);
-            imagesListliveData.setValue(images);
-        }
-    }
-
-    ////
 
     class DeletionTask extends AsyncTask<List<Image>,String,List<Image>> {
 

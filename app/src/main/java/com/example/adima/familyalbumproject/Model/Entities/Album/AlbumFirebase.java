@@ -39,7 +39,12 @@ public class AlbumFirebase {
         void dataChanged(List<Album> list);
     }
 
-
+    /**
+     * Get all albums
+     * @param serialNumber
+     * @param lastUpdate
+     * @param callback
+     */
     public static void observeAllAlbums(String serialNumber, long lastUpdate, final CallbackOnAlbumUpdate<Album> callback) {
 
         myRef = FirebaseDatabase.getInstance().getReference("albums").child(serialNumber);
@@ -98,11 +103,10 @@ public class AlbumFirebase {
     }
 
 
-
     /**
-     * Add a comment to firebase
-     * @param albumId
-     * @param comment
+     *  Add an image to firebase
+     * @param serialNumber
+     * @param album
      * @param listener
      */
     public static void addAlbum(String serialNumber, Album album, final OnCreationAlbum listener) {
@@ -131,8 +135,8 @@ public class AlbumFirebase {
     }
 
     /**
-     * Remove a comment from firebase
-     * @param comment
+     * Remove an image from firebase
+     * @param album
      * @param listener
      */
     public static void removeAlbum(Album album, final ModelFirebase.OnRemove listener) {
