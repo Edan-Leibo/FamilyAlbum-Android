@@ -40,7 +40,6 @@ public class Model {
 
     private static Model instance = new Model();
 
-    private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
 
     ModelFirebase modelFirebase;
 
@@ -56,13 +55,13 @@ public class Model {
     /**
      *
      * @param familyInfo
-     * @param familySerial
+     * @param key
      * @return the serial number of a family
      */
-    public String getFamilySerialFromSharedPrefrences(String familyInfo, String familySerial) {
-        SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
-        familySerial = ref.getString(FAMILY_SERIAL, "NONE");
-        return familySerial;
+    public String getFamilySerialFromSharedPrefrences(String familyInfo, String key) {
+        SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences(familyInfo, MODE_PRIVATE);
+        return ref.getString(key, "NONE");
+
     }
 
     /**

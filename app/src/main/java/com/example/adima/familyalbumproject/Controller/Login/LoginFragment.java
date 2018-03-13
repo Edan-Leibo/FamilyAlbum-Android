@@ -37,7 +37,6 @@ public class LoginFragment extends Fragment {
 
     public static LoginFragment newInstance() {
         LoginFragment fragment = new LoginFragment();
-        Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, "NONE");
         return fragment;
     }
 

@@ -41,19 +41,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AlbumsFragment extends Fragment {
     private OnFragmentAlbumsInteractionListener mListener;
-    ListView albumsListView;
 
     private static List<Album> albumList = new LinkedList<>();
     AlbumListAdapter adapter;
     ProgressBar progressBar;
     private static String familySerial;
-    private final static String FAMILY_SERIAL = "FAMILY_SERIAL";
-    public static final int REQUEST_IMAGE_CAPTURE = 0;
-    public static final int PICK_IMAGE = 1;
+
     MenuItem  addAlbumItem;
     MenuItem getSerialItem;
-    //MenuItem getJoinItem;
-    //MenuItem createItem;
 
     private AlbumsListViewModel albumListViewModel;
 
@@ -77,10 +72,11 @@ public class AlbumsFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static AlbumsFragment newInstance() {
         AlbumsFragment fragment = new AlbumsFragment();
+        String userName = FirebaseAuthentication.getUserEmail();
         SharedPreferences ref = MyApplication.getMyContext().getSharedPreferences("familyInfo", MODE_PRIVATE);
-        familySerial = ref.getString(FAMILY_SERIAL, "NONE");
+        familySerial = ref.getString(userName, "NONE");
         Bundle args = new Bundle();
-        args.putString(FAMILY_SERIAL, familySerial);
+        args.putString(userName, familySerial);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,9 +85,9 @@ public class AlbumsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        String userName = FirebaseAuthentication.getUserEmail();
         Bundle args = getArguments();
-        familySerial = args.getString(FAMILY_SERIAL, "NONE");
-
+        familySerial = args.getString(userName, "NONE");
     }
 
     @Override
@@ -104,7 +100,7 @@ public class AlbumsFragment extends Fragment {
         if (familySerial == "NONE") {
             addAlbumItem.setVisible(false);
             getSerialItem.setVisible(false);
-            Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApplication.getMyContext(), "You are not connected to any family yet", Toast.LENGTH_LONG).show();
         } else {
             addAlbumItem.setVisible(true);
             getSerialItem.setVisible(true);
@@ -146,7 +142,7 @@ public class AlbumsFragment extends Fragment {
                             @Override
                             public void onComplete(boolean exist) {
                                 if (exist) {
-                                    Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, serial);
+                                    Model.instance().writeToSharedPreferences("familyInfo", FirebaseAuthentication.getUserEmail(), serial);
                                     mListener.showAlbumsFragment();
                                     addAlbumItem.setVisible(true);
                                     getSerialItem.setVisible(true);
@@ -178,8 +174,8 @@ public class AlbumsFragment extends Fragment {
                             Toast.makeText(MyApplication.getMyContext(), "Creation of a family failed", Toast.LENGTH_SHORT).show();
                         } else {
                             familySerial = success;
+                            Model.instance().writeToSharedPreferences("familyInfo", FirebaseAuthentication.getUserEmail(), familySerial);
                             Toast.makeText(MyApplication.getMyContext(), "New family was created", Toast.LENGTH_SHORT).show();
-                            Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, success);
                             mListener.showAlbumsFragment();
                         }
                         progressBar.setVisibility(View.GONE);
@@ -189,7 +185,6 @@ public class AlbumsFragment extends Fragment {
             case R.id.btn_albums_exit:
                 progressBar.setVisibility(View.VISIBLE);
                 FirebaseAuthentication.signOut();
-                Model.instance().writeToSharedPreferences("familyInfo", FAMILY_SERIAL, "NONE");
                 progressBar.setVisibility(View.GONE);
                 mListener.showLoginFragment();
                 return true;
