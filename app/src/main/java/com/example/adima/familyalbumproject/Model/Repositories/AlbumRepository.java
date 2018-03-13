@@ -75,7 +75,7 @@ public class AlbumRepository {
                 long lastUpdateDate = 0;
                 try {
                     lastUpdateDate = MyApplication.getMyContext()
-                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments", 0);
+                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateAlbums", 0);
                 } catch (Exception e) {
 
                 }
@@ -119,7 +119,7 @@ public class AlbumRepository {
                 long lastUpdateDate = 0;
                 try {
                     lastUpdateDate = MyApplication.getMyContext()
-                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateComments"+serialNumber, 0);
+                            .getSharedPreferences("TAG", Context.MODE_PRIVATE).getLong("lastUpdateDateAlbums"+serialNumber, 0);
 
                 }catch (Exception e){
 
@@ -137,7 +137,7 @@ public class AlbumRepository {
                         }
                     }
                     SharedPreferences.Editor editor = MyApplication.getMyContext().getSharedPreferences("TAG", Context.MODE_PRIVATE).edit();
-                    editor.putLong("lastUpdateDateComments"+serialNumber, reacentUpdate);
+                    editor.putLong("lastUpdateDateAlbums"+serialNumber, reacentUpdate);
                     editor.commit();
                 }
                 //return the complete student list to the caller
