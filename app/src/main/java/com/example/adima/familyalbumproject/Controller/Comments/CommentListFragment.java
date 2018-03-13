@@ -44,6 +44,7 @@ public class CommentListFragment extends Fragment {
     List<Comment> commentList = new LinkedList<>();
     CommentListAdapter adapter;
     ProgressBar commentsProgressBar;
+    ListView list;
     private CommentListViewModel commentsListViewModel;
 
     public CommentListFragment() {
@@ -130,7 +131,7 @@ public class CommentListFragment extends Fragment {
                     }
                 });
 
-        ListView list = view.findViewById(R.id.comment_listView);
+        list= view.findViewById(R.id.comment_listView);
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -201,6 +202,8 @@ public class CommentListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        adapter=null;
+        list.setAdapter(null);
         Model.instance().removeAllObserversFromComments();
     }
 
