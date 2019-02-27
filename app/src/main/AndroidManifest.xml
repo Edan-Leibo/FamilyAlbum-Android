@@ -9,20 +9,20 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CLEAR_APP_CACHE"/>
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
 
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:permissionGroup="android.permission-group.STORAGE"
+        android:protectionLevel="dangerous" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <application
         android:name=".Controller.Start.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/family_foreground"
-        android:label="Family Photo"
+        android:label="Family Album"
         android:roundIcon="@mipmap/family_foreground"
-        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Controller.Start.MainActivity">
             <intent-filter>
