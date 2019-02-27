@@ -174,6 +174,7 @@ public class AlbumsFragment extends Fragment {
                             Toast.makeText(MyApplication.getMyContext(), "Creation of a family failed", Toast.LENGTH_SHORT).show();
                         } else {
                             familySerial = success;
+                            albumList = new LinkedList<>();
                             Model.instance().writeToSharedPreferences("familyInfo", Authentication.getUserEmail(), familySerial);
                             Toast.makeText(MyApplication.getMyContext(), "New family was created", Toast.LENGTH_SHORT).show();
                             mListener.showAlbumsFragment();
