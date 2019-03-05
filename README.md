@@ -5,39 +5,39 @@ FamilyAlbum is an Android app which creates and manages photo albums for familie
 ## :iphone: Usage :video_game: ##
 The app features a user authentication step, which prompts the user to create a new FamilyAlbum account, or login using an existing account.
 
-<img src="https://i.imgur.com/vCbUxPs.png" width="250">
+<img src="https://i.imgur.com/kuV0wUi.png" width="250">
 
 Once the user has logged in, if he is not already connected to a family, two options are available. He can either create a new family and invite others to join, or he can join an existing family. 
 
-<img src="https://i.imgur.com/tfTcCZ9.png" width="250">
+<img src="https://i.imgur.com/N3PCvMM.png" width="250">
 
 If the user decided to create a new family, or alternatively if he is connected to an existing family, he can access the family serial number which allows others to connect by using the "join" option.
 
-<img src="https://i.imgur.com/63pkpTe.png" width="250">
+<img src="https://i.imgur.com/RjYxAQw.png" width="250">
 
 Clicking the "Get Serial" allows the user to view the serial number in order to share with his family.
 
-<img src="https://i.imgur.com/W1gw1SC.png" width="250">
+<img src="https://i.imgur.com/1ZT8qhr.png" width="250">
 
 Once connected to a family, the user can create new albums. Details about the event that is connected to the album are delivered at the time of creating the album.
 
-<img src="https://i.imgur.com/H2Ojb9Q.png" width="250">
+<img src="https://i.imgur.com/sj8SrgH.png" width="250">
 
 Albums can be viewed at the homepage of the app.
 
-<img src="https://i.imgur.com/esXuCCC.png" width="250">
+<img src="https://i.imgur.com/Pplqif0.png" width="250">
 
 Inside an album, by pressing the camera symbol, every user can add photos, either from the phone gallery, or directly using the camera in real-time.
 
-<img src="https://i.imgur.com/Po5WoJy.png" width="250">
+<img src="https://i.imgur.com/IvYfFUz.png" width="250">
 
 The albums update when photos are added and can be viewed by all users.
 
-<img src="https://i.imgur.com/iipsOl9.png" width="250">
+<img src="https://i.imgur.com/1hdJjF9.png" width="250">
 
 Clicking the chat button, which appears in each album, opens a chat that allows the users to comment about photos in the album, discuss, share their experience etc. 
 
-<img src="https://i.imgur.com/g8c4EkT.png" width="250">
+<img src="https://i.imgur.com/wrQwoBv.png" width="250">
 
 ## :hammer: App Architecture :construction_worker: ##
 FamilyAlbum is used for album management which includes both keeping the photos themselves and the chats about each album. As such, it has to store textual data as well as images.
